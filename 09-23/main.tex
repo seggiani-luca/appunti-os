@@ -1,0 +1,343 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[a4paper, margin=8em]{geometry}
+
+% usa i pacchetti per la scrittura in italiano
+\usepackage[french,italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\frenchspacing 
+
+% usa i pacchetti per la formattazione matematica
+\usepackage{amsmath, amssymb, amsthm, amsfonts}
+
+% usa altri pacchetti
+\usepackage{gensymb}
+\usepackage{hyperref}
+\usepackage{standalone}
+
+\usepackage{colortbl}
+
+\usepackage{xstring}
+\usepackage{karnaugh-map}
+
+% imposta il titolo
+\title{Appunti Sistemi Operativi}
+\author{Luca Seggiani}
+\date{2025}
+
+% imposta lo stile
+% usa helvetica
+\usepackage[scaled]{helvet}
+% usa palatino
+\usepackage{palatino}
+% usa un font monospazio guardabile
+\usepackage{lmodern}
+
+\renewcommand{\rmdefault}{ppl}
+\renewcommand{\sfdefault}{phv}
+\renewcommand{\ttdefault}{lmtt}
+
+% circuiti
+\usepackage{circuitikz}
+\usetikzlibrary{babel}
+
+% testo cerchiato
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+            \node[shape=circle,draw,inner sep=2pt] (char) {#1};}}
+
+% disponi il titolo
+\makeatletter
+\renewcommand{\maketitle} {
+	\begin{center} 
+		\begin{minipage}[t]{.8\textwidth}
+			\textsf{\huge\bfseries \@title} 
+		\end{minipage}%
+		\begin{minipage}[t]{.2\textwidth}
+			\raggedleft \vspace{-1.65em}
+			\textsf{\small \@author} \vfill
+			\textsf{\small \@date}
+		\end{minipage}
+		\par
+	\end{center}
+
+	\thispagestyle{empty}
+	\pagestyle{fancy}
+}
+\makeatother
+
+% disponi teoremi
+\usepackage{tcolorbox}
+\newtcolorbox[auto counter, number within=section]{theorem}[2][]{%
+	colback=blue!10, 
+	colframe=blue!40!black, 
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries, 
+	title=Teorema~\thetcbcounter: #2, 
+	#1
+}
+
+% disponi definizioni
+\newtcolorbox[auto counter, number within=section]{definition}[2][]{%
+	colback=red!10,
+	colframe=red!40!black,
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries,
+	title=Definizione~\thetcbcounter: #2,
+	#1
+}
+
+% disponi codice
+\usepackage{listings}
+\usepackage[table]{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{codestyle}{
+		backgroundcolor=\color{black!5}, 
+		commentstyle=\color{codegreen},
+		keywordstyle=\bfseries\color{magenta},
+		numberstyle=\sffamily\tiny\color{black!60},
+		stringstyle=\color{green!50!black},
+		basicstyle=\ttfamily\footnotesize,
+		breakatwhitespace=false,         
+		breaklines=true,                 
+		captionpos=b,                    
+		keepspaces=true,                 
+		numbers=left,                    
+		numbersep=5pt,                  
+		showspaces=false,                
+		showstringspaces=false,
+		showtabs=false,                  
+		tabsize=2
+}
+
+\lstdefinestyle{shellstyle}{
+		backgroundcolor=\color{black!5}, 
+		basicstyle=\ttfamily\footnotesize\color{black}, 
+		commentstyle=\color{black}, 
+		keywordstyle=\color{black},
+		numberstyle=\color{black!5},
+		stringstyle=\color{black}, 
+		showspaces=false,
+		showstringspaces=false, 
+		showtabs=false, 
+		tabsize=2, 
+		numbers=none, 
+		breaklines=true
+}
+
+
+\lstdefinelanguage{assembler}{ 
+  keywords={AAA, AAD, AAM, AAS, ADC, ADCB, ADCW, ADCL, ADD, ADDB, ADDW, ADDL, AND, ANDB, ANDW, ANDL,
+        ARPL, BOUND, BSF, BSFL, BSFW, BSR, BSRL, BSRW, BSWAP, BT, BTC, BTCB, BTCW, BTCL, BTR, 
+        BTRB, BTRW, BTRL, BTS, BTSB, BTSW, BTSL, CALL, CBW, CDQ, CLC, CLD, CLI, CLTS, CMC, CMP,
+        CMPB, CMPW, CMPL, CMPS, CMPSB, CMPSD, CMPSW, CMPXCHG, CMPXCHGB, CMPXCHGW, CMPXCHGL,
+        CMPXCHG8B, CPUID, CWDE, DAA, DAS, DEC, DECB, DECW, DECL, DIV, DIVB, DIVW, DIVL, ENTER,
+        HLT, IDIV, IDIVB, IDIVW, IDIVL, IMUL, IMULB, IMULW, IMULL, IN, INB, INW, INL, INC, INCB,
+        INCW, INCL, INS, INSB, INSD, INSW, INT, INT3, INTO, INVD, INVLPG, IRET, IRETD, JA, JAE,
+        JB, JBE, JC, JCXZ, JE, JECXZ, JG, JGE, JL, JLE, JMP, JNA, JNAE, JNB, JNBE, JNC, JNE, JNG,
+        JNGE, JNL, JNLE, JNO, JNP, JNS, JNZ, JO, JP, JPE, JPO, JS, JZ, LAHF, LAR, LCALL, LDS,
+        LEA, LEAVE, LES, LFS, LGDT, LGS, LIDT, LMSW, LOCK, LODSB, LODSD, LODSW, LOOP, LOOPE,
+        LOOPNE, LSL, LSS, LTR, MOV, MOVB, MOVW, MOVL, MOVSB, MOVSD, MOVSW, MOVSX, MOVSXB,
+        MOVSXW, MOVSXL, MOVZX, MOVZXB, MOVZXW, MOVZXL, MUL, MULB, MULW, MULL, NEG, NEGB, NEGW,
+        NEGL, NOP, NOT, NOTB, NOTW, NOTL, OR, ORB, ORW, ORL, OUT, OUTB, OUTW, OUTL, OUTSB, OUTSD,
+        OUTSW, POP, POPL, POPW, POPB, POPA, POPAD, POPF, POPFD, PUSH, PUSHL, PUSHW, PUSHB, PUSHA, 
+				PUSHAD, PUSHF, PUSHFD, RCL, RCLB, RCLW, MOVSL, MOVSB, MOVSW, STOSL, STOSB, STOSW, LODSB, LODSW,
+				LODSL, INSB, INSW, INSL, OUTSB, OUTSL, OUTSW
+        RCLL, RCR, RCRB, RCRW, RCRL, RDMSR, RDPMC, RDTSC, REP, REPE, REPNE, RET, ROL, ROLB, ROLW,
+        ROLL, ROR, RORB, RORW, RORL, SAHF, SAL, SALB, SALW, SALL, SAR, SARB, SARW, SARL, SBB,
+        SBBB, SBBW, SBBL, SCASB, SCASD, SCASW, SETA, SETAE, SETB, SETBE, SETC, SETE, SETG, SETGE,
+        SETL, SETLE, SETNA, SETNAE, SETNB, SETNBE, SETNC, SETNE, SETNG, SETNGE, SETNL, SETNLE,
+        SETNO, SETNP, SETNS, SETNZ, SETO, SETP, SETPE, SETPO, SETS, SETZ, SGDT, SHL, SHLB, SHLW,
+        SHLL, SHLD, SHR, SHRB, SHRW, SHRL, SHRD, SIDT, SLDT, SMSW, STC, STD, STI, STOSB, STOSD,
+        STOSW, STR, SUB, SUBB, SUBW, SUBL, TEST, TESTB, TESTW, TESTL, VERR, VERW, WAIT, WBINVD,
+        XADD, XADDB, XADDW, XADDL, XCHG, XCHGB, XCHGW, XCHGL, XLAT, XLATB, XOR, XORB, XORW, XORL},
+  keywordstyle=\color{blue}\bfseries,
+  ndkeywordstyle=\color{darkgray}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=false,
+  comment=[l]{\#},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{purple}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+
+\lstset{language=assembler, style=codestyle}
+
+% disponi sezioni
+\usepackage{titlesec}
+
+\titleformat{\section}
+	{\sffamily\Large\bfseries} 
+	{\thesection}{1em}{} 
+\titleformat{\subsection}
+	{\sffamily\large\bfseries}   
+	{\thesubsection}{1em}{} 
+\titleformat{\subsubsection}
+	{\sffamily\normalsize\bfseries} 
+	{\thesubsubsection}{1em}{}
+
+% tikz
+\usepackage{tikz}
+
+% float
+\usepackage{float}
+
+% grafici
+\usepackage{pgfplots}
+\pgfplotsset{width=10cm,compat=1.9}
+
+% disponi alberi
+\usepackage{forest}
+
+\forestset{
+	rectstyle/.style={
+		for tree={rectangle,draw,font=\large\sffamily}
+	},
+	roundstyle/.style={
+		for tree={circle,draw,font=\large}
+	}
+}
+
+% disponi algoritmi
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\makeatletter
+\renewcommand{\ALG@name}{Algoritmo}
+\makeatother
+
+% disponi numeri di pagina
+\usepackage{fancyhdr}
+\fancyhf{} 
+\fancyfoot[L]{\sffamily{\thepage}}
+
+\makeatletter
+\fancyhead[L]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@title \ \@date}}} 
+\fancyhead[R]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@author}}}
+\makeatother
+
+\begin{document}
+% sezione (data)
+\section{Lezione del 23-09-25}
+
+% stili pagina
+\thispagestyle{empty}
+\pagestyle{fancy}
+
+% testo
+\subsection{Introduzione}
+Il corso di sistemi operativi riguarda l'ultima parte dello studio delle "architetture", che è partita con l'implementazione hardware in reti logiche, è continuata con lo studio del kernel in calcolatori elettronici, e termina appunto con lo studio dei sistemi operativi. Nello specifico, si considereranno sistemi operativi derivanti dalla famiglia \textbf{UNIX}.
+
+Argomento del corso è la conoscenza di tecniche di programmazione usate nello sviluppo del sistema operativo \textbf{multiprogrammato} (più \textit{processi} o più \textit{thread}), con riferimento particolare alla programmazione \textbf{concorrente}, lo \textbf{scheduling} e la \textbf{memoria virtuale}. 
+
+Il corso mira a dare informazioni generiche utili allo studio di qualsiasi sistema operativo (anche non direttamente derivante da UNIX), in primis rivolte alla compresione di \textit{come mai} una certa soluzione ad un problema è migliore di altre, e quali sono le tecniche che ci permettono di sviluppare soluzioni miglori.
+
+\subsubsection{Sistemi embedded e in tempo reale}
+
+Ci interesseremo anche ai sistemi \textbf{embedded} e sopratutto sistemi in \textbf{tempo reale}. Questi rappresentano sistemi \textit{special-purpose} (per distinguere dai sistemi a scopo generale, \textit{general-purpose}), dove dobbiamo rispettare coi nostri algoritmi di scheduling date \textbf{scadenze} temporali.
+
+\subsubsection{Programmazione concorrente}
+Con programmazione concorrente ci riferiamo alle tecniche che ci permettono di gestire più processi che si contendono le solite risorse, adottando politiche più o meno \textit{eque} per i processi, o magari privilegiandole alcune. 
+Obiettivo fondamentale sarà comunque quello di evitare \textit{stalli} o \textbf{deadlock} dati da risorse occupate.
+
+\subsubsection{Programma del corso}
+Il corso è strutturato negli argomenti: 
+\begin{itemize}
+	\item \textbf{Concetti introduttivi} su sistemi operativi, architetture hardware e relativi cenni storici, in particolare ci interessano dettagli come la gestione della \textit{pila} e le \textit{interruzioni};
+	\item \textbf{Processi} e la loro gestione, inclusi gli algoritmi di \textit{scheduling} \textit{preemptive} e \textit{non preemptive}, \textit{prioritari} e \textit{non prioritari} (FCFS, SJF, SRTF, RR). Inoltre si tratta la schedulazione nei sistemi \textbf{hard real-time} (RM, RDF);
+	\item \textbf{Sincronizzazione} dei processi, quindi \textit{programmazione concorrente}, \textit{competizone} su risorse, e \textit{scambio di informazioni fra processi} (IPC);
+	\item Gestione della \textbf{memoria}, quindi \textit{memoria virtuale}, \textit{segmentazione} e \textit{paginazione};
+	\item Gestione dei \textbf{dispositivi} di I/O, cioè i \textit{driver};
+	\item \textbf{File system} su disco, cioè i componenti software che permettono la gestione di strutture di \textit{file}, nella loro struttura sia \textit{logica} che \textit{fisica} di implementazione nei driver e nel sistema operativo;
+	\item \textbf{Sicurezza}, quindi meccanismi di \textit{protezione} fra processi, controlli sugli \textit{accessi} sia in memoria che al filesystem, con riferimento al modello della \textit{matrice degli accessi}.
+\end{itemize}
+
+\subsubsection{Meccanismi e politiche}
+Una prima distinzione che possiamo fare è quella fra \textbf{meccanismo} e \textbf{politica}.
+\begin{itemize}
+	\item Si dice \textbf{meccanismo} ciò che effettivamente implementato, in maniera sufficientemente veloce e compatta, nel kernel, per fornire il cosidetto \textit{supporto architetturale} a risorse, dispositivi, ecc...
+	\item Nei sistemi operativi ci interessano invece principalmente le \textbf{politiche}, cioè decisioni (che vanno poi implementate) su come gestire \textit{a priori} date risorse, dispositivi, ecc...
+\end{itemize}
+
+\subsubsection{Sistemi operativi}
+Un \textbf{sistema operativo} è in primo luogo un \textit{programma software} che ha il compito di fare da intermediario fra l'\textit{utente} e l'\textit{hardware} di un calcolatore.
+
+Far fronte ai bisogni dell'utente significa gestire e consentire l'accesso delle risorse ai \textit{processi} di cui l'utente necessita. In questo individuiamo come obiettivi del sistema operativo:
+\begin{itemize}
+	\item Eseguire i \textit{programmi utente};
+	\item Rendere il sistema facile da usare;
+	\item Utilizzare l'hardware in maniera efficiente.
+\end{itemize}
+
+\subsubsection{Programmi}
+I programmi con cui abbiamo a che fare sono per noi \textit{liste di istruzioni} (tralasciando il fatto che queste siano codificate in linguaggio macchina o in un suo linguaggio mnemonico), ordinate ma che possono presentare salti condizionali che cambiano il normale \textit{flusso di esecuzione}.
+
+Il \textbf{comportamento} e quindi i \textbf{risultati} di un programma dipendono sì dal codice, ma anche dai \textbf{dati} in ingresso allo stesso.
+In questo possiamo dire che il programma non esiste mai da solo ed è solo la parte \textbf{statica} di un processo.
+
+\subsubsection{Risorse}
+Iniziamo quindi a vedere quelle che sono le risorse che dobbiamo fornire ai programmi. Il modello che adottiamo è il più diffuso oggigiorno, cioè quello di \textit{Von Neumann}.
+Questo modello comprende, a grandi linee:
+
+\begin{itemize}
+	\item La \textbf{CPU} o \textit{processore}, che ha il solo scopo di prelevare ed eseguire le istruzioni in maniera sequenziale, alterando il suo flusso come già detto solo nel caso di istruzioni condizionali, o come vedremo nel caso di interruzioni o altre situazioni simili;
+	\item La \textbf{memoria principale}, che nell'architettura di Von Neumann contiene sia i dati che il programma in esecuzione, e che deve essere capace di fornire su richiesta alla CPU. 
+
+		Ricordiamo che questa è spesso \textit{volatile}, cioè i suoi contenuti vengono sostanzialmente invalidati allo spengimento della macchina. Potremmo interrogarci sul motivo di tale decisione: principalmente diciamo che le ragioni sono economiche, in quanto mantenere l'informazione per lunghi periodi di tempi è solitamente più costosto e delegato a dispositivi (come i dischi) che offrono risparmi in cambio di grandi tempo di accesso (inusuali sulla memoria principale);
+		
+	\item Altre \textbf{risorse} che si aggiungono a CPU e memoria, comunque indispensabili per eseguire qualsiasi istruzione. Queste sono:
+		\begin{itemize}
+			\item I \textbf{dispositivi}, che comprendono ad esempio la memoria di \textit{archiviazione} (il \textbf{disco}) e le \textit{periferiche} di interfaccia con l'utente;
+			\item Le risorse \textbf{logiche}, cioè determinate strutture dati in memoria che devono essere fornite in maniera più o meno esclusiva ai processi. Anche gli stessi \textit{file} del \textit{file system} sono risorse logiche.
+		\end{itemize}
+\end{itemize}
+
+Risulta chiaro come la gestione delle risorse hardware e logiche è fondamentale anche alla \textbf{portabilità} dei programmi, che magari vogliono avere accesso a funzionalità simili su più sistemi operativi (accesso alla tastiera, ai file, ecc...), senza dover necessariamente conoscere l'implementazione interna di tali sistemi operativi.
+
+Abbiamo quindi l'obiettivo di implementare tutte quelle \textbf{interfacce} di cui il programma bisogna per presentare all'utente le sue funzioni. Questo include le interfacce grafiche, audio, ecc... per la realizzazione di ambienti visuali e interattivi nei sistemi moderni.
+
+Dal nostro lato, quello del \textit{sistema}, vorremo che le soluzioni tecniche che adottiamo non impattino in maniera negativa le prestazioni o comunque il funzionamento dei programmi che mandiamo in esecuzione.
+
+\subsubsection{Struttura stratificata del S/O}
+La struttura di un sistema operativa può dividersi in più livelli, fra cui:
+\begin{itemize}
+	\item Il livello \textbf{hardware}, fornito come già detto da risorse come:
+		\begin{itemize}
+			\item La \textbf{CPU};
+			\item La \textbf{memoria principale};
+			\item Le \textbf{periferiche}, fra cui \textit{video}, \textit{disco}, \textit{interfacce di rete}, ecc...
+		\end{itemize}
+		Il livello hardware offre la cosiddettà \textit{intefaccia hardware}, data dalle specifiche secono cui interagiamo con i dispositivi hardware stessi;
+	\item Il livello \textbf{sistema operativo} (o \textit{S/O}), che implementa la gestione delle risorse che studieremo nel corso, e offre a sua volta altre risorse logiche. In particolare notiamo:
+		\begin{itemize}
+			\item Gestione della \textbf{CPU};
+			\item Gestione della \textbf{memoria};
+			\item Gestione del \textbf{file system} e quindi dei \textit{file};
+			\item Gestione dei \textbf{dispositivi} attraverso i \textit{driver}.
+		\end{itemize}
+		Questo livello offre la sua interfaccia attraverso le \textbf{chiamate di sistema} o \textit{primitive}, che implementano una certa \textbf{API} (\textit{Application Programming Interface}) secondo le quali i programmi utente delegano all'S/O operazioni che non potrebbero normalmente portare avanti da soli (accesso a risorse, schedulazioni temporali, ecc...);
+	\item Il livello delle \textbf{applicazioni}, che comprende i programmi utente.
+\end{itemize}
+
+Questa gerarchia implica chiaramente che ogni livello non conosce nulla riguardo al livello successivo, ma si preoccupa solo di fornire un'\textit{interfaccia} conforme alle specifiche. A questo punto è compito del livello successivo stesso rispettare l'interfaccia e farne uso per i suoi scopi.
+
+Il programmatore di \textbf{sistema} interagisce con i livelli \textit{hardware} e \textit{S/O}, mentre il programmatore di \textbf{applicazioni} interagisce con i livelli \textit{S/O} e \textit{applicazioni}. 
+
+Compito dell'\textit{API} è quello di generare per i programmatori di applicazioni una macchina \textit{astratta} più semplice da usare, più efficiente e più sicura (cioè realizzare gli obiettivi che ci eravamo posti in 1.1.5).
+Ricordiamo che per noi sicurezza significa \textit{modelli} che controllano l'accesso da parte dei processi (altresì \textbf{soggetti}) alla memoria, e più in generale a tutte le risorse sistema (altresì \textbf{oggetti} dei programmi).
+
+\subsubsection{Definizione di S/O}
+Iniziamo a definire più nei dettagli cos'è un S/O.
+\begin{itemize}
+	\item Un S/O è un \textbf{allocatore di risorse}, cioè gestisce \textit{tutte} le risorse, e decide tra richieste conflittuali di accesso a tali risorse (inviate dai vari processi) al fine di garantirne un uso equo ed efficiente.
+	\item Un S/O è però anche un \textbf{programma di controllo}, che controlla l'esecuzione dei programmi e lo stato dele risorse per prevenire usi impropri e stati inconsistenti.
+\end{itemize}
+
+Ricordiamo che in ogni caso l'unico programma effettivamente in esecuzione in ogni momento sulla macchina reale è il \textbf{kernel}, cioè nucleo, mentre il controllo viene temporaneamente passato fra programmi utente.
+
+\end{document}
