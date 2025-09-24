@@ -222,12 +222,80 @@
 \makeatother
 
 \begin{document}
+% sezione (data)
+\section{Lezione del 24-09-25}
 
-\pagestyle{fancy}
+% stili pagina
 \thispagestyle{empty}
-\renewcommand{\thispagestyle}[1]{}
+\pagestyle{fancy}
 
-\maketitle
-\input{../09-23/main.tex}
-\input{../09-24/main.tex}
+% testo
+\subsection{Cenni storici}
+Le prime macchine calcolatrici "moderne" nascono durante la seconda guerra mondiale, principalmente per scopi crittografici.
+
+Fu nel periodo del secondo dopoguerra che diverse industrie, principalmente dal settore delle macchine da scrivere e di apparecchiature simili, decisero di sviluppare queste tecnologie per scopi di ricerca e commerciali.
+
+Di pari passo diverse università iniziarono a loro volta a sviluppare architetture e macchine calcolatrici, in questo caso a puro scopo di ricerca. 
+Un esempio locale è quello della \textbf{CEP} (\textit{Calcolatrice Elettronica Pisana}), sviluppata dai dipartimenti di matematica e fisica di Pisa (sotto indicazione di Enrico Fermi) per aiutare i ricercatori nei loro calcoli. 
+
+Sempre a Pisa fu l'ingegnere Mario Tchou a lanciare, in collaborazione con Olivetti, il progetto che diventò nel 1959 l'\textbf{Elea 9003}, fra i primi calcolatori a transistor commerciali (di contro la CEP funzionava a valvole termoioniche).
+
+\subsubsection{Sistemi Batch}
+In queste prime macchine, anche se la possibilità della multiprogrammazione era disponibile, raramente si parlava di "sistemi operativi" veri e propri.
+I primi sistemi operativi nascono quindi per i mainframe degli anni '60, fra cui notiamo gli \textbf{IBM Sistema 360} (e i successivi Sistema 370).
+
+Inizialmente, queste macchine venivano usate in modalità \textbf{batch} (più programmi di più utenti eseguiti in sequenza): i primi S/O nascono appunto per permettere l'uso simultaneo (\textit{time-sharing}) della macchina da parte di più utenti.
+
+In ogni caso, già nei primi sistemi batch monoprogrammati si necessitava di diversi componenti effettivamente assimilabili ad un rudimentale sistema operativo:
+\begin{itemize}
+	\item Un sistema di programmazione in memoria di massa (all'epoca nastri magnetici);
+	\item Una \textit{Job Control Language} (\textbf{JCL}), che esprimeva direttive interpretate da un \textit{Monitor} (antenato delle moderne \textit{shell});
+	\item Un \textbf{BIOS} (\textit{Basic Input Output System}), cioè un insieme di routine per l'interazione con le periferiche.
+\end{itemize}
+
+L'S/O era quindi composto da Monitor + BIOS, che poteva essere configurato per caricare programmi e mandarli in esecuzione.
+In ogni momento in memoria si trovavano comunque il S/O e al più un programma utente.
+
+\subsubsection{Sistemi di spooling}
+Il prossimo passo è quello dei sistemi di \textbf{spooling} (\textit{Simultaneous Peripheral Operation On-Line}).
+Questi nascono per permettere al programma utente di restare in esecuzione mentre le periferiche (all'epoca molto lente) completano le loro operazioni, bufferrizzando quindi le operazioni di ingresso/uscita.
+
+I sistemi operativi che implementavano lo spooling dovevano quindi arricchirsi per permettere questo tipo di funzionalità.
+
+\subsubsection{Sistemi multiprogrammati}
+Arriviamo quindi ai sistemi \textbf{multiprogrammati}, cioè che permettono la gestione contemporanea di più programmi nella memoria principale: per la prima volta oltre al sistema operativo possiamo caricare in memoria più di un singolo programma utente.
+
+I sistemi operativi di questo tipo si dovranno quindi dotare di diverse funzionalità, fra cui \textit{scheduling} dei processi, possibilità di fare \textbf{DMA} (\textit{Direct Memory Access}) sulle periferiche, \textit{preemption} dei programmi in esecuzione, \textit{memoria virtuale} per permettere mappature in memoria localmente costanti per ogni programma, ecc...
+
+\subsubsection{Sistemi time-sharing}
+Lo sviluppo di sistemi di tipo multiprogammato è stato favorito dal fatto che i programmi utente che venivano sviluppati erano sempre più \textit{interattivi}, quindi caratterizzati da fasi temporali distinte:
+\begin{itemize}
+	\item \textbf{CPU-Burst}, dove il processore lavorava effettivamente sui dati;
+	\item \textbf{I/O-Burst}, dove il processore attendeva operazioni I/O dalle periferiche, magari fornendosi del DMA.
+\end{itemize}
+
+Ci spostiamo quindi da un paradigma di esecuzione \textit{sequenziale} ad un paradigma \textit{multi-tasking}, dove il sistema operativo assegna ciclicamente istanti temporali (\textit{quantum}) ai processi in esecuzione.
+
+Il vantaggio dell'esecuzione multitasking è di poter avvicinare fra di loro i CPU-Burst, spostando il controllo della CPU da un processo all'altro quando si incorre in un I/O-Burst.
+
+Per quanto ci riguarda, quindi, la tecnica del \textbf{time-sharing} non è che un modo per implementare il \textit{multi-tasking}, cioè un caso particolare della \textit{multiprogrammazione}, caratterizzato da processi in memoria che vengono eseguiti (o almeno hanno l'illusione di essere eseguiti) contemporaneamente. 
+Ricordiamo che l'esistenza di più processi in memoria era di per sé caratteristica del sistema multiprogrammato.
+
+L'idea di sviluppare diversi e sofisticati algoritmi di \textit{scheduling} viene proprio dalla necessità di dover mantenere la CPU in piena attività, cioé eseguire più CPU-Burst possibile, scegliendo in maniera intelligente quali processi mandare in esecuzione (equivalentemente, a quali processi assegnare i quantum temporali).
+
+Notiamo che il tempo che la CPU passa a realizzare lo scheduling e i cambi di contesto rappresenta effettivamente \textbf{overhead} per il sistema, cioè tempo non passato ad eseguire programmi utente, ma in qualche modo "sprecato" in altri modi.
+Questo overhead è giustificato solo nel caso in cui le virtualizzazioni che consente permettono una velocizzazione considerevole della macchina.
+
+\subsubsection{Sistemi in tempo reale}
+La storia dei sistemi operativi ha un'interessante tangente nei cosiddetti sistemi \textbf{real-time} (\textit{in tempo reale}).
+Questi sono sistemi dove lo scheduling è \textit{deterministico} e il tempo impiegato ad eseguire un dato processo può quindi essere stabilito prima che questo venga lanciato.
+
+Sistemi di questo tipo sono utili nel caso di calcolatori che interagiscono con \textit{ambienti operativi} reali attraverso \textbf{sensori} ed \textbf{attuatori}, dove la precisione temporale con cui vengono eseguite certe operazioni è effettivamente importante alla funzione della macchina.
+
+In particolare notiamo due paradigmi possibili per i sistemi real-time:
+\begin{itemize}
+	\item \textbf{Soft} real-time, che non assicurano ma si impegnano a mantenere le specifiche sopra descritte;
+	\item \textbf{Hard} real-time, il cui funzionamento ha come priorità imprescindibile le specifiche sopra descritte. 
+\end{itemize}
+
 \end{document}
