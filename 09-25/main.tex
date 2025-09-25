@@ -1,0 +1,367 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[a4paper, margin=8em]{geometry}
+
+% usa i pacchetti per la scrittura in italiano
+\usepackage[french,italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\frenchspacing 
+
+% usa i pacchetti per la formattazione matematica
+\usepackage{amsmath, amssymb, amsthm, amsfonts}
+
+% usa altri pacchetti
+\usepackage{gensymb}
+\usepackage{hyperref}
+\usepackage{standalone}
+
+\usepackage{colortbl}
+
+\usepackage{xstring}
+\usepackage{karnaugh-map}
+
+% imposta il titolo
+\title{Appunti Sistemi Operativi}
+\author{Luca Seggiani}
+\date{2025}
+
+% imposta lo stile
+% usa helvetica
+\usepackage[scaled]{helvet}
+% usa palatino
+\usepackage{palatino}
+% usa un font monospazio guardabile
+\usepackage{lmodern}
+
+\renewcommand{\rmdefault}{ppl}
+\renewcommand{\sfdefault}{phv}
+\renewcommand{\ttdefault}{lmtt}
+
+% circuiti
+\usepackage{circuitikz}
+\usetikzlibrary{babel}
+
+% testo cerchiato
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+            \node[shape=circle,draw,inner sep=2pt] (char) {#1};}}
+
+% disponi il titolo
+\makeatletter
+\renewcommand{\maketitle} {
+	\begin{center} 
+		\begin{minipage}[t]{.8\textwidth}
+			\textsf{\huge\bfseries \@title} 
+		\end{minipage}%
+		\begin{minipage}[t]{.2\textwidth}
+			\raggedleft \vspace{-1.65em}
+			\textsf{\small \@author} \vfill
+			\textsf{\small \@date}
+		\end{minipage}
+		\par
+	\end{center}
+
+	\thispagestyle{empty}
+	\pagestyle{fancy}
+}
+\makeatother
+
+% disponi teoremi
+\usepackage{tcolorbox}
+\newtcolorbox[auto counter, number within=section]{theorem}[2][]{%
+	colback=blue!10, 
+	colframe=blue!40!black, 
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries, 
+	title=Teorema~\thetcbcounter: #2, 
+	#1
+}
+
+% disponi definizioni
+\newtcolorbox[auto counter, number within=section]{definition}[2][]{%
+	colback=red!10,
+	colframe=red!40!black,
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries,
+	title=Definizione~\thetcbcounter: #2,
+	#1
+}
+
+% disponi codice
+\usepackage{listings}
+\usepackage[table]{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{codestyle}{
+		backgroundcolor=\color{black!5}, 
+		commentstyle=\color{codegreen},
+		keywordstyle=\bfseries\color{magenta},
+		numberstyle=\sffamily\tiny\color{black!60},
+		stringstyle=\color{green!50!black},
+		basicstyle=\ttfamily\footnotesize,
+		breakatwhitespace=false,         
+		breaklines=true,                 
+		captionpos=b,                    
+		keepspaces=true,                 
+		numbers=left,                    
+		numbersep=5pt,                  
+		showspaces=false,                
+		showstringspaces=false,
+		showtabs=false,                  
+		tabsize=2
+}
+
+\lstdefinestyle{shellstyle}{
+		backgroundcolor=\color{black!5}, 
+		basicstyle=\ttfamily\footnotesize\color{black}, 
+		commentstyle=\color{black}, 
+		keywordstyle=\color{black},
+		numberstyle=\color{black!5},
+		stringstyle=\color{black}, 
+		showspaces=false,
+		showstringspaces=false, 
+		showtabs=false, 
+		tabsize=2, 
+		numbers=none, 
+		breaklines=true
+}
+
+
+\lstdefinelanguage{assembler}{ 
+  keywords={AAA, AAD, AAM, AAS, ADC, ADCB, ADCW, ADCL, ADD, ADDB, ADDW, ADDL, AND, ANDB, ANDW, ANDL,
+        ARPL, BOUND, BSF, BSFL, BSFW, BSR, BSRL, BSRW, BSWAP, BT, BTC, BTCB, BTCW, BTCL, BTR, 
+        BTRB, BTRW, BTRL, BTS, BTSB, BTSW, BTSL, CALL, CBW, CDQ, CLC, CLD, CLI, CLTS, CMC, CMP,
+        CMPB, CMPW, CMPL, CMPS, CMPSB, CMPSD, CMPSW, CMPXCHG, CMPXCHGB, CMPXCHGW, CMPXCHGL,
+        CMPXCHG8B, CPUID, CWDE, DAA, DAS, DEC, DECB, DECW, DECL, DIV, DIVB, DIVW, DIVL, ENTER,
+        HLT, IDIV, IDIVB, IDIVW, IDIVL, IMUL, IMULB, IMULW, IMULL, IN, INB, INW, INL, INC, INCB,
+        INCW, INCL, INS, INSB, INSD, INSW, INT, INT3, INTO, INVD, INVLPG, IRET, IRETD, JA, JAE,
+        JB, JBE, JC, JCXZ, JE, JECXZ, JG, JGE, JL, JLE, JMP, JNA, JNAE, JNB, JNBE, JNC, JNE, JNG,
+        JNGE, JNL, JNLE, JNO, JNP, JNS, JNZ, JO, JP, JPE, JPO, JS, JZ, LAHF, LAR, LCALL, LDS,
+        LEA, LEAVE, LES, LFS, LGDT, LGS, LIDT, LMSW, LOCK, LODSB, LODSD, LODSW, LOOP, LOOPE,
+        LOOPNE, LSL, LSS, LTR, MOV, MOVB, MOVW, MOVL, MOVSB, MOVSD, MOVSW, MOVSX, MOVSXB,
+        MOVSXW, MOVSXL, MOVZX, MOVZXB, MOVZXW, MOVZXL, MUL, MULB, MULW, MULL, NEG, NEGB, NEGW,
+        NEGL, NOP, NOT, NOTB, NOTW, NOTL, OR, ORB, ORW, ORL, OUT, OUTB, OUTW, OUTL, OUTSB, OUTSD,
+        OUTSW, POP, POPL, POPW, POPB, POPA, POPAD, POPF, POPFD, PUSH, PUSHL, PUSHW, PUSHB, PUSHA, 
+				PUSHAD, PUSHF, PUSHFD, RCL, RCLB, RCLW, MOVSL, MOVSB, MOVSW, STOSL, STOSB, STOSW, LODSB, LODSW,
+				LODSL, INSB, INSW, INSL, OUTSB, OUTSL, OUTSW
+        RCLL, RCR, RCRB, RCRW, RCRL, RDMSR, RDPMC, RDTSC, REP, REPE, REPNE, RET, ROL, ROLB, ROLW,
+        ROLL, ROR, RORB, RORW, RORL, SAHF, SAL, SALB, SALW, SALL, SAR, SARB, SARW, SARL, SBB,
+        SBBB, SBBW, SBBL, SCASB, SCASD, SCASW, SETA, SETAE, SETB, SETBE, SETC, SETE, SETG, SETGE,
+        SETL, SETLE, SETNA, SETNAE, SETNB, SETNBE, SETNC, SETNE, SETNG, SETNGE, SETNL, SETNLE,
+        SETNO, SETNP, SETNS, SETNZ, SETO, SETP, SETPE, SETPO, SETS, SETZ, SGDT, SHL, SHLB, SHLW,
+        SHLL, SHLD, SHR, SHRB, SHRW, SHRL, SHRD, SIDT, SLDT, SMSW, STC, STD, STI, STOSB, STOSD,
+        STOSW, STR, SUB, SUBB, SUBW, SUBL, TEST, TESTB, TESTW, TESTL, VERR, VERW, WAIT, WBINVD,
+        XADD, XADDB, XADDW, XADDL, XCHG, XCHGB, XCHGW, XCHGL, XLAT, XLATB, XOR, XORB, XORW, XORL},
+  keywordstyle=\color{blue}\bfseries,
+  ndkeywordstyle=\color{darkgray}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=false,
+  comment=[l]{\#},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{purple}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+
+\lstset{language=assembler, style=codestyle}
+
+% disponi sezioni
+\usepackage{titlesec}
+
+\titleformat{\section}
+	{\sffamily\Large\bfseries} 
+	{\thesection}{1em}{} 
+\titleformat{\subsection}
+	{\sffamily\large\bfseries}   
+	{\thesubsection}{1em}{} 
+\titleformat{\subsubsection}
+	{\sffamily\normalsize\bfseries} 
+	{\thesubsubsection}{1em}{}
+
+% tikz
+\usepackage{tikz}
+
+% float
+\usepackage{float}
+
+% grafici
+\usepackage{pgfplots}
+\pgfplotsset{width=10cm,compat=1.9}
+
+% disponi alberi
+\usepackage{forest}
+
+\forestset{
+	rectstyle/.style={
+		for tree={rectangle,draw,font=\large\sffamily}
+	},
+	roundstyle/.style={
+		for tree={circle,draw,font=\large}
+	}
+}
+
+% disponi algoritmi
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\makeatletter
+\renewcommand{\ALG@name}{Algoritmo}
+\makeatother
+
+% disponi numeri di pagina
+\usepackage{fancyhdr}
+\fancyhf{} 
+\fancyfoot[L]{\sffamily{\thepage}}
+
+\makeatletter
+\fancyhead[L]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@title \ \@date}}} 
+\fancyhead[R]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@author}}}
+\makeatother
+
+\begin{document}
+% sezione (data)
+\section{Lezione del 25-09-25}
+
+% stili pagina
+\thispagestyle{empty}
+\pagestyle{fancy}
+
+% testo
+\subsection{Richiami architetturali}
+Riprendiamo alcuni aspetti architetturali di un sistema di elaborazione.
+L'architettura che consideriamo è quella di \textit{Von Neumann}, modello ancora oggi in uso e composto da:
+\begin{itemize}
+	\item La \textbf{CPU} (\textit{Central Processing Unit}) o come abbiamo già detto \textit{processore}. Rappresenta un circuito piuttosto complesso che ha però l'unica funzione di \textit{esecutore di istruzioni}.
+
+		Le istruzioni che questa esegue possono essere di tipo \textbf{CISC} (\textit{Complex Instruction Set}), come ad esempio nell'architettura x86, o di tipo \textbf{RISC} (\textit{Reduced Instruction Set}), come ad esempio nell'architettura ARM. Ricordiamo comunque che nelle moderne implementazioni dell'x86 si traduce comunque in un instruction set RISC a livello architetturale per questioni di ottimizzazione.
+
+		Si può infatti dire che è inutile avere molte e complesse istruzioni (CISC) che richiedono molti cicli di clock, quandi si possono avere poche e semplici istruzioni (RISC) che ne richiedono pochi: eventuali istruzioni più complesse potranno essere implementate come \textit{subroutine} che usano più istruzioni semplici.
+
+		Ricordiamo quindi che la CPU si limita ad eseguire istruzioni, e non conosce (non memorizza) il programma.
+		La poca memoria che ha a disposizione (sotto forma di \textit{registri}) viene usata per mantenere i dati che sta elaborando;
+	\item La \textbf{RAM} o \textit{memoria centrale}, o ancora come abbiamo visto \textit{memoria principale}. Questa ha il compito di memorizzare \textit{dati} e \textit{programma} (questo il fulcro dell'architettura di Von Neumann) e di renderli disponibili alla CPU e, come vedremo, anche ad altri dispositivi.
+
+		Abbiamo visto che è una memoria \textit{volatile}, quindi che si mantiene solo finché il calcolatore è acceso, e che è una memoria ad \textit{accesso diretto}, cioè si può accedere a qualsiasi locazione in tempo costante (a differenza di memorie di tipo \textit{sequenziale}, ecc...).
+
+		Le operazioni che possiamo svolgere sulla memoria sono \textit{letture} e \textit{scritture} su locazioni di memoria.
+		Nelle memorie moderne le letture sono \textit{non distruttive}, mentre le scritture (chiaramente) lo sono.
+
+	\item Qualche tipo di complesso di \textbf{I/O}. Questo comprende periferiche come \textit{tastiera}, \textit{porte seriali/parallele}, \textit{interfacce di rete}, ecc...
+
+		Un dispositivo particolare che si trova nello spazio di I/O è il \textbf{disco} o \textit{memoria secondaria}, a differenza della principale \textit{persistente}, e usata per l'archiviazione di dati a lungo termine.
+		Chiaramente, il tradeoff in questo caso è in termini di tempo (i dischi, anche allo stato solido, sono molto più lenti in tempo di accesso della RAM).
+
+	\item Un \textbf{bus}, o \textit{rete di interconnessione}, che permette a questi componenti di comunicare fra di loro.
+
+		Questa comunicazione dovrà essere \textbf{bidirezionale}, in quanto ad esempio la CPU deve sia leggere che scrivere dalla RAM: abbiamo visto come bus di questo tipo possono essere implementati sfruttando la logica a 3 stati.
+
+		Sperabilmente un bus dovrà contenere un numero consistente di linee.
+		Torniamo all'esempio della CPU che legge in memoria: avremo bisogno di specificare l'\textit{indirizzo} della locazione che vogliamo leggere, e vorremo vederci tornare una o più \textit{parole} (cioè i dati che ci interessano) dalla memoria.
+		Il modo più veloce per effettuare questa operazione è fornirsi di abbastanza linee per specificare sia gli indirizzi che i dati in \textbf{parallelo}: un bus \textit{seriale} si dimostrerebbe molto più lento.
+
+		A livello logico dobbiamo dire anche che c'è bisogno di un \textbf{protocollo}, o comunque una qualche \textit{politica} di gestione del bus.
+	\begin{itemize}
+		\item Ad esempio, la politica più semplice è quella dove la CPU è l'unica che può iniziare una transazione sul bus: questa è la classica configurazione \textit{master-slave} dove la CPU rappresenta il \textit{master} e memoria e I/O rappresentano gli \textit{slave};
+		\item Esistono però situazioni dove potremmo volere che i dispositivi (ad esempio il disco) scrivano in memoria, o viceversa sia la memoria a scrivere sui dispositivi. Questo è effettivamente il caso del \textit{DMA}.
+			Avere un bus che supporta più iniziatori di transazioni richiede necessariamente un protocollo che stabilisca chiaramente chi può iniziare in quale momento una data transazione.
+	\end{itemize}
+
+	Le transazioni avvengono chiaramente in fasi, di cui ne individuiamo almeno 3 nel caso più semplice (singolo master, più slave):
+	\begin{enumerate}
+		\item Una prima fase di richiesta della transazione da parte dell'\textit{iniziatore};
+		\item Una fase di attesa da parte dell'iniziatore del responso dell'\textit{obiettivo};
+		\item Una fase dove l'operazione viene effettivamente eseguita, in un determinato lasso di tempo.
+	\end{enumerate}
+
+	Nel caso di più master, abbiamo bisogno di meccanismi più sofisticati che implementino \textbf{mutua esclusione} e \textbf{sincronizzazione} delle risorse a cui i più iniziatori potrebbero voler accedere.
+	Questo è vero sia a livello \textit{logico} (su risorse logiche o comunque gestite dal S/O) che \textit{elettrico} (2 o più componenti non pilotino mai le stesse linee contemporaneamente, pena fili bruciati).
+
+\end{itemize}
+
+Facciamo quindi una considerazione su come organizzare lo spazio di memoria e lo spazio dedicato ai registri delle periferiche.
+Esistono due configurazioni principali:
+\begin{itemize}
+	\item \textbf{Memory-mapped I/O}: disponiamo i registri di I/O direttamente nello spazio di memoria, usando gli stessi indirizzi per indirizzare sia la memoria che i dispositivi;
+	\item \textbf{Port-mapped I/O}: sfruttiamo due spazi, lo \textit{spazio di memoria} e lo \textit{spazio di I/O}, che mantengono separati i due tipi di informazione. Questo può essere fatto agilmente includendo un bit di selezione di spazio nel bus, ed è la soluzione adottata dall'architettura x86. 
+\end{itemize}
+
+\subsection{CPU}
+Vediamo nel dettaglio il primo componente, cioè la CPU. 
+
+\subsubsection{Cicli CPU}
+Il funzionamento della CPU avviene in maniera \textbf{ciclica}: cogliamo più fasi che si ripetono nel tempo da quando questa viene accesa (reset) fino a quando viene spenta.
+\begin{enumerate}
+	\item \textbf{Prelievo} o \textit{fetch}: si legge la prossima istruzione in memoria, puntata dall'\textbf{IP} o \textbf{PC} (\textit{Instruction Pointer} o \textit{Program Counter}), e la si porta in un qualche registro interno al processore, pronta ad essere eseguita;
+	\item \textbf{Decodifica} o \textit{decode}: si interpreta il significato dell'istruzione, cioè si individua qual'è effettivamente l'istruzione che dobbiamo eseguire, e si portano all'interno di registri gli eventuali \textit{operandi sorgente} o gli indirizzi degli \textit{operandi destinazione};
+	\item \textbf{Esecuzione} o \textit{execute}: si esegue effettivamente l'istruzione, direttamente attraverso la rete di controllo della CPU o sfruttando una o più \textbf{ALU} (\textit{Arithmetic and Logic Unit}). 
+
+		Successivamente, il risultato viene (se necessario) riscritto in memoria attraverso un'operazione di \textit{write-back}. Questa fase viene a volte considerata come a sé stante (ad esempio nelle pipeline delle architetture RISC).
+\end{enumerate}
+
+\subsubsection{Registri CPU}
+La CPU è dotata di una sua memoria interna formata da locazioni di memoria dette \textbf{registri}.
+Questi si dividono in registri \textbf{generali}, riservati alle elaborazioni, e \textbf{di stato}, riservati a compiti speciali.
+
+\par\medskip
+\textbf{\textsf{Registri generali}} \\
+Consideriamo un set estremamente generico di registri:
+\begin{itemize}
+	\item \textbf{AX}, \textbf{BX}, \textbf{CX} e \textbf{DX} sono i classici registri programmatore a uso generale;
+	\item \textbf{ESP} è utilizzato per indirizzare la \textbf{pila} o \textbf{stack}, ovvero una parte di memoria con disciplina LIFO che serve a gestire sottoprogrammi.
+\end{itemize}
+
+\par\medskip
+\textbf{\textsf{Registri di stato}} \\
+Ricordiamo due registri di stato:
+\begin{itemize}
+	\item  L'\textbf{IP} o \textbf{PC} (\textit{instruction pointer} o \textit{program counter}).
+Viene usato per contenere l'indirizzo della locazione dalla quale sarà prelevata la prossima istruzione da eseguire.
+Il contenuto dell'EIP è fissato al reset iniziale, e impostato sulla prima istruzione da eseguire.
+
+\item L'\textbf{F} (registro dei \textit{flag}).
+Consiste di una serie di elementi binari detti \textbf{flag}, fra cui ricordiamo:
+\begin{itemize}
+	\item \textbf{OF:} flag di overflow (traboccamento) delle operazioni aritmetiche, si imposta se l'ultima operazioni, presi gli operandi come interi, ha prodotto un risultato non rappresentabile su $n$ bit;
+	\item \textbf{SF:} flag di segno, impostato quando l'ultima operazione restituisce un complemento a 2 con MSB $= 1$ (ergo negativo);
+	\item \textbf{ZF:} flag zero, che viene impostato quando l'ultima operazione restituisce qualcosa di nullo;
+	\item \textbf{CF:} flag di carry (riporto), che viene impostato quando l'ultima operazione richiede un riporto o un prestito, ergo presi gli operandi come naturali il risultato non è rappresentabile su $n$ bit;
+	\item \textbf{IF:} flag di interruzioni attivate, quando è attivo il processore risponde alle interruzioni (che approfondiremo in seguito). 
+\end{itemize}
+\end{itemize}
+
+Al reset i flag visti finora sono impostati a 0.
+
+\subsubsection{Instruction set}
+Consideriamo un set di istruzioni estremamente basilare.
+Innanzitutto, possiamo dividere le istruzioni in \textbf{operative} e \textbf{di controllo}.
+Possiamo quindi fare ulteriori suddivisioni al'interno di queste categorie:
+\begin{itemize}
+	\item \textbf{Operative:}
+		\begin{itemize}
+			\item Di trasferimento;
+			\item Aritmetiche;
+			\item Di traslazione/rotazione:
+			\item Logiche.
+		\end{itemize}
+	\item \textbf{Di controllo:}
+		\begin{itemize}
+			\item Di salto;
+			\item Di gestione di sottoprogrammi.
+		\end{itemize}
+\end{itemize}
+
+# discorso CISC
+
+\par\medskip
+
+Per informazioni più approfondite sulla struttura generale del processore considerato si rimanda ai testi specializzati o agli appunti in \url{https://raw.githubusercontent.com/seggiani-luca/appunti-rl/34228f66db395637bd1824d04f3130b977cc0ce4/master/master.pdf}.
+
+\subsection{RAM}
+Approfondiamo quindi il discorso della RAM.
+Nel sistema considerato inseriremo un elemento di \textbf{cache}, nello specifico fra la CPU e il bus (da cui si accede alla RAM).
+Il funzionamento della cache è dettagliato in \url{https://raw.githubusercontent.com/seggiani-luca/appunti-ce/638d3abf2e1d473632b575401582203c3b113c82/master/master.pdf}, e per quanto ci riguarda possiamo dire che funge da unità di "\textit{memoizzazion}" dei dati (quando vengono richiesti), più veloce della RAM.
+
+\end{document}
