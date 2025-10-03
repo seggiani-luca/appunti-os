@@ -235,7 +235,9 @@ Continuiamo la discussione dei processi:
 \subsubsection{Stato dei processi}
 In un \textbf{S/O monoprogrammato} il processo può trovarsi in uno di due stati:
 
-# grafico attivo - bloccato
+\begin{center}
+	\includegraphics[scale=0.25]{../figures/proc_attivo_bloccato.png}
+\end{center}
 
 \begin{itemize}
 	\item \textbf{Attivo}: il processo stato creato, è in esecuzione ed ha ancora istruzioni da eseguire. 
@@ -261,7 +263,9 @@ Possiamo dire che gli stati \textit{attivo} e \textit{bloccato} sono in qualche 
 
 Se il numero di CPU è minore del numero dei processi, cioè in un sistema \textbf{monoprocessore}, ci dotiamo di più stati:
 
-# grafico esecuzione - pronto - bloccato
+\begin{center}
+	\includegraphics[scale=0.25]{../figures/proc_esecuzione_pronto_bloccato.png}
+\end{center}
 
 \begin{itemize}
 	\item \textbf{Pronto}: in questo caso il processo è in attesa del tempo del processore. Abbiamo che nella maggior parte delle implementazioni questo stato è rappresentato da una \textit{coda} di descrittori di processo, la cosiddetta \textbf{coda pronti} (utile per implementare politiche prioritarie $\leftrightarrow$ code prioritarie);
@@ -282,7 +286,9 @@ Abbiamo poi che la transizioni allo stato bloccato sono le stesse dell'esempio p
 
 C'è inoltre un'altro stato, oltre a quello di \textit{terminazione} prima accennato, di cui dobbiamo tener conto: quello in cui il processo viene \textit{creato}, cioè la transizione di un nuovo processo allo stato di \textit{pronto} (detta \textit{attivazione}):
 
-# grafico creato - esecuzione - pronto - bloccato - terminato 
+\begin{center}
+	\includegraphics[scale=0.25]{../figures/proc_creato_esecuzione_pronto_bloccato_terminato.png}
+\end{center}
 
 In questo caso possiamo anticipare che in S/O che adottano politiche \textit{prioritarie} allo scheduling potrebbe essere necessario eseguire lo scheduler (per mettere in esecuzione un nuovo processo di priorità più alta).
 
