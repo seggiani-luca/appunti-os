@@ -332,9 +332,14 @@ Può per questo motivo eseguire senza innescare cambi di contesto.
 Dovremmo adattare la nostra ipotesi di conoscenza del tempo di CPU ad un'ipotesi di conoscenza del \textbf{tempo rimanente} per ogni processo: in questo caso se il processo appena entrato ha tempo rimanente minore di quello del processo attualmente in esecuzione, conviene sfruttare la preemption.
 Di nuovo, per adesso non facciamo assunzioni su come ricaviamo tale euristica.
 
+L'unica considerazione che ci conviene fare è che aggiornare le previsioni temporali ad ogni evento che cambia le condizioni di scelta chiede allo scheduler di fare più conti, e quindi aumenta leggermente l'overhead $O_v$.
+Ampia letteratura dimostra che l'approccio è comunque conveniente. 
+
 L'SRTF migliora la risposta in tempo reale del SJF, permettendo una riduzione sia dei tempi di turnaround che dei tempi di attesa medi in caso di richieste di esecuzione di processi non ottimali. 
 
 Un problema del SRTF, come avevamo visto nel SJF, e la \textbf{process starvation}: in genere, negli algoritmi in base prioritaria, si rischia che i processi a priorità minore (in questo caso quelli con tempo rimanente maggiore) non vengano mai serviti e rimangano a lungo in coda pronti, rendendo il sistema meno responsivo.
+
+Anche qui la letteratura ci rende noto che la priorità dei processi in SRTF è \textbf{monotona crescente}: man di mano che i processi eseguono, il loro tempo rimanente diminuisce e quindi la priorità aumenta. Questo effetto aiuta a ridurre la process starvation.
 
 \subsubsection{Stima dei tempi in SJF e SRTF}
 Chiariamo la questione di come si possono fare previsioni informate sul \textbf{tempo di esecuzione} (in \textit{SJF}) e il \textbf{tempo rimanente} (in \textit{SRTF}).
