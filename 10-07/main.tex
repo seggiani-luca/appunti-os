@@ -287,7 +287,11 @@ Iniziamo a vedere alcune metriche per la valutazione degli algoritmi di scheduli
 		$$
 			T_t = t - r
 		$$
-	\item Tempo di \textbf{risposta}, valutato dall'istante in cui un processo entra in coda pronti $r$ all'istante in cui risponde per volta, cioè termina un CPU burst. Purtroppo, non tutto il tempo di completamento $T_c$ è dedicato al processo, ma questo viene eseguito, come sappiamo, in più burst (diciamo $B_1$, $B_2$, ...). Il tempo di turnaround $T_t$ sarà allora il tempo trascorso fra $r$ e la fine di un burst $B_i$, cioè:
+	\item \textbf{Produttività} (o frequenza di \textit{througput}), definita come il numero medio di processi completati nell'unità di tempo, cioè l'inverso del tempo medio di completamento:
+		$$
+			P = \frac{1}{T_t}
+		$$
+	\item Tempo di \textbf{risposta}, valutato dall'istante in cui un processo entra in coda pronti $r$ all'istante in cui risponde, cioè termina un CPU burst (solitamente il primo). Purtroppo, non tutto il tempo di completamento $T_c$ è dedicato al processo, ma questo viene eseguito, come sappiamo, in più burst (diciamo $B_1$, $B_2$, ...). Il tempo di turnaround $T_t$ sarà allora il tempo trascorso fra $r$ e la fine di un burst $B_i$, cioè:
 		$$
 			{T_r}_i = \text{end}(B_i) - r
 		$$
@@ -295,12 +299,20 @@ Iniziamo a vedere alcune metriche per la valutazione degli algoritmi di scheduli
 		$$
 		T_a = \sum {t_\alpha}_i
 		$$
-	\item \textbf{Produttività} (o frequenza di \textit{througput}), definita come il numero medio di processi completati nell'unità di tempo, cioè l'inverso del tempo medio di completamento:
+		Con riferimento ai sistemi interattivi, spesso ci interessa il tempo di attesa iniziale, cioè quello fra l'inserimento in coda pronti e l'inizio del primo CPU burst, o in relazione al nostro schema:
 		$$
-			P = \frac{1}{T_t}
+		T_a' = {t_\alpha}_1 = r - \text{begin}(B_1)
 		$$
+
+		Dovrebbe essere chiaro che il tempo di \textit{attesa} si distingue dal tempo di \textit{risposta}, in quanto:
+		\begin{itemize}
+			\item Il tempo di attesa è quello visto dal \textit{processo} prima che questo possa iniziare la computazione;
+			\item Il tempo di risposta è quello visto dall'\textit{utente} prima di vedersi tornare un primo risultato (si presume che alla fine dei CPU burst inizia un I/O burst che porta avanti qualche operazione di lettura o scritture da periferiche, tangibile per l'utente).
+		\end{itemize}
 	\item Rispetto dei \textbf{vincoli temporali}, utile principalmente negli algoritmi di scheduling in \textit{tempo reale}.
 \end{itemize}
+
+Fra queste metriche, tempo di \textbf{risposta} e di \textbf{attesa} sono relativi principalmente ai \textut{sistemi interattivi}, mentre il rispetto dei \textbf{vincoli temporali} è relativo ai sistemi in \textit{tempo reale}.
 
 Chiameremo poi $O_v$ l'\textbf{overhead} associato all'esecuzione dello scheduler. Ricordiamo che in ogni caso in questa fase stiamo parlando di scheduling a breve termine.
 
@@ -311,11 +323,91 @@ Questo lo rende non prioritario e non preemptive.
 Quello che otteniamo è un efficienza teorica pari a $E\sim1$ (c'è un piccolo overhead $O_v \sim 0$ dato dal cambio di contesto), ma generalmente prestazioni piuttosto limitate.
 Questo è dovuto al fatto che i tempi di attesa (e di conseguenza di completamento) dei processi sono completamente aleatori, e non si fa alcuna scelta informata mirata a minimizzarli.
 
+%\par\smallskip
+\newpage
+
+Vediamo ad esempio il comportamento ottenuto con la sequenza di processi:
+\begin{table}[H]
+	\center \rowcolors{2}{white}{black!10}
+	\begin{tabular} { c || c | c }
+		\bfseries Processo & \bfseries $\mathbf{T}$ richiesta & \bfseries $\mathbf{\Delta T}$ esecuzione \\
+		\hline
+		$p_0$ & 0 & 10 \\ 
+		$p_1$ & 2 & 100 \\ 
+		$p_2$ & 4 & 24 \\ 
+		$p_3$ & 6 & 16 
+	\end{tabular}
+\end{table}
+
+Su un grafico con il tempo $t$ alle ascisse, avremo:
+\begin{center}
+	\includegraphics[scale=0.3]{../figures/fcfs_bad.png}
+\end{center}
+
+Questo risulta in un tempo medio di attesa di:
+$$
+\tilde{t}_a = \frac{{t_a}_0 + {t_a}_1 + {t_a}_2 + {t_a}_3}{4} = \frac{0 + 8 + 106 + 128}{4} = 60.5
+$$
+
+Vediamo come questo comportamento può cambiare radicalmente cambiando l'ordine di richiesta dei processi. Poniamo infatti di avere la sequenza:
+\begin{table}[H]
+	\center \rowcolors{2}{white}{black!10}
+	\begin{tabular} { c || c | c }
+		\bfseries Processo & \bfseries $\mathbf{T}$ richiesta & \bfseries $\mathbf{\Delta T}$ esecuzione \\
+		\hline
+		$p_0$ & 0 & 10 \\ 
+		$p_1$ & 6 & 100 \\ 
+		$p_2$ & 4 & 24 \\ 
+		$p_3$ & 2 & 16 
+	\end{tabular}
+\end{table}
+dove semplicemente si è invertito l'ordine degli ultimi 3 processi. 
+
+\newpage
+
+Sul grafico avremo:
+\begin{center}
+	\includegraphics[scale=0.3]{../figures/fcfs_good.png}
+\end{center}
+
+Questo risulta in un tempo medio di attesa di:
+$$
+\tilde{t}_a = \frac{{t_a}_0 + {t_a}_1 + {t_a}_2 + {t_a}_3}{4} = \frac{0 + 44 + 22 + 8}{4} = 18.5
+$$
+Chiaramente molto meglio del caso precedente.
+
+\par\smallskip
+
 Abbiamo quindi che l'algoritmo è utile per sistemi batch, dove l'unica cosa che ci interessa è uso massimo della CPU (che ci assicura), ma largamente da evitare per sistemi interattivi, e sopratutto per sistemi real-time.
-Questo è vouto all'aleatorietà legata al momento della richiesta dei processi, che rende impossibile rispondere celeremente o fare qualsiasi tipo di promessa sul tempo di turnaround. 
+Questo è vouto all'aleatorietà legata al momento della richiesta dei processi, che rende impossibile rispondere celeremente o fare qualsiasi tipo di promessa sul tempo di turnaround.
 
 \subsubsection{Algoritmo SJF}
 L'algoritmo \textbf{SJF} (\textit{Shortest Job First}) implementa una \textbf{priorità statica}: si fa l'ipotesi di conoscere il \textbf{tempo di CPU} utilizzato da ogni processo, e assegnare priorità maggiori a processi con tempo di esecuzione minore. Di contro, non è preemptive, cioè una volta assegnata la CPU non può revocarla. Su come il S/O conosce il tempo di esecuzione non facciamo per adesso ipotesi. 
+
+\par\smallskip
+
+Simuliamo anche questo algoritmo, usando la stessa tabella del primo caso in 6.2.2:
+\begin{table}[H]
+	\center \rowcolors{2}{white}{black!10}
+	\begin{tabular} { c || c | c }
+		\bfseries Processo & \bfseries $\mathbf{T}$ richiesta & \bfseries $\mathbf{\Delta T}$ esecuzione \\
+		\hline
+		$p_0$ & 0 & 10 \\ 
+		$p_1$ & 2 & 100 \\ 
+		$p_2$ & 4 & 24 \\ 
+		$p_3$ & 6 & 16 
+	\end{tabular}
+\end{table}
+
+\newpage
+
+Osserviamo che applicando l'algoritmo si ottiene il flusso di esecuzione:
+\begin{center}
+	\includegraphics[scale=0.3]{../figures/sjf.png}
+\end{center}
+Cioè esattamente quello che avevamo visto come caso ottimo del FCFS (che ricordiamo aveva tempo medio $\tilde{T}_a = 18.5$), senza che i processi siano arrivati necessariamente nell'ordine ottimo.
+
+\par\smallskip
 
 Facciamo una nota sulla priorità statica: ad ogni chiamata dello scheduler questo può sapere solo i tempi di esecuzione dei processi attualmente in esecuzione, cioè si potrebbe mandare in esecuzione un processo con tempo di esecuzione maggiore quando ne entra in coda pronti ne entra uno con tempo minore. 
 In questo caso, per la natura \textit{non preemptive} dell'algoritmo, bisogna lasciare che questo esegua prima di mettere il nuovo arrivato in esecuzione.
@@ -334,6 +426,36 @@ Di nuovo, per adesso non facciamo assunzioni su come ricaviamo tale euristica.
 
 L'unica considerazione che ci conviene fare è che aggiornare le previsioni temporali ad ogni evento che cambia le condizioni di scelta chiede allo scheduler di fare più conti, e quindi aumenta leggermente l'overhead $O_v$.
 Ampia letteratura dimostra che l'approccio è comunque conveniente. 
+
+\par\smallskip
+
+Simuliamo questo algoritmo con la tabella, modificata dalle precedenti mandando per primo in esecuzione il processo $p_1$, con tempo di esecuzione maggiore:
+\begin{table}[H]
+	\center \rowcolors{2}{white}{black!10}
+	\begin{tabular} { c || c | c }
+		\bfseries Processo & \bfseries $\mathbf{T}$ richiesta & \bfseries $\mathbf{\Delta T}$ esecuzione \\
+		\hline
+		$p_0$ & 2 & 10 \\ 
+		$p_1$ & 0 & 100 \\ 
+		$p_2$ & 4 & 24 \\ 
+		$p_3$ & 6 & 16 
+	\end{tabular}
+\end{table}
+
+Osserviamo che applicando l'algoritmo si ottiene il flusso di esecuzione:
+\begin{center}
+	\includegraphics[scale=0.3]{../figures/srtf.png}
+\end{center}
+
+Questo risulta in un tempo medio di attesa di:
+$$
+\tilde{t}_a = \frac{{t_a}_0 + {t_a}_1 + {t_a}_2 + {t_a}_3}{4} = \frac{2 + 0 + 28 + 12}{4} = 10.5
+$$
+prima del primo burst.
+
+Ciò che è importante in questo caso è che il processo $p_1$ viene sospeso con preemption per permettere l'esecuzione dei CPU burst di $p_0$, $p_2$ e $p_3$, molto più veloci. In questo modo il sistema risulta nel complesso molto più responsivo.
+
+\par\smallskip
 
 L'SRTF migliora la risposta in tempo reale del SJF, permettendo una riduzione sia dei tempi di turnaround che dei tempi di attesa medi in caso di richieste di esecuzione di processi non ottimali. 
 

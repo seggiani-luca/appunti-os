@@ -236,14 +236,45 @@ Continuiamo la discussione degli algoritmi di scheduling.
 L'algoritmo \textbf{RR} (\textit{Round Robin}) è preemptive e non prioritario, e si basa su un meccanismo molto semplice: ad ogni processo viene dato un quanto temporale prefissato, e via preemption si passa al processo successivo quando tale quanto viene esaurito.
 
 Questo lo rende molto efficiente: l'overhead $O_v$ è minimo, quasi al pari di FCFS (leggermente più alto in quanto i cambi di contesto sono più frequenti, uno ogni quanto temporale). 
+\par\smallskip
+
+Simuliamo questo algoritmo usando la sequenza di processi richiesti già vista in 6.2.2, e imponendo un quanto temporale di $\Delta T = 20$. La tabella dei tempi di richiesta e esecuzione dei processi sarà:
+\begin{table}[H]
+	\center \rowcolors{2}{white}{black!10}
+	\begin{tabular} { c || c | c }
+		\bfseries Processo & \bfseries $\mathbf{T}$ richiesta & \bfseries $\mathbf{\Delta T}$ esecuzione \\
+		\hline
+		$p_0$ & 0 & 10 \\ 
+		$p_1$ & 2 & 100 \\ 
+		$p_2$ & 4 & 24 \\ 
+		$p_3$ & 6 & 16 
+	\end{tabular}
+\end{table}
+
+\newpage
+
+In questo caso la \textit{timeline} avrà un aspetto del genere:
+\begin{center}
+	\includegraphics[scale=0.3]{../figures/rr.png}
+\end{center}
+
+Vediamo che il tempo medio, calcolato come:
+$$
+\tilde{t}_a = \frac{{t_a}_0 + {t_a}_1 + {t_a}_2 + {t_a}_3}{4} = \frac{0 + 10 + 20 + 40}{4} = 17.5
+$$
+sarà più o meno nella norma rispetto a SJR o STRF.
+
+La cosa importante è, come lo era stato per STRF, la \textit{responsività} che l'algoritmo riesce a realizzare: un processo non resta mai in coda pronti per un tempo maggiore al quanto temporale moltiplicato per i processi in esecuzione meno 1.
+
+\par\smallskip
 
 Dal punto di vista implementativo, organizzaremo i quanti temporali sfruttando una componente hardware detta \textbf{timer}: questo è considerato a tutti gli effetti una periferiche, ed invia (dopo un'opportuna configurazione) interruzioni esterne periodiche.
 Ogni volta che il processore riceve tale interruzione, mette in esecuzione lo scheduler, che provvede a cambiare il contesto al prossimo processo.
 Chiaramente, lo scheduler può comunque essere messo in esecuzione da eventi comuni come la terminazione di processi.
 
-Per realizzare l'esecuzione ciclico si usa una semplice coda pronti dove lo scheduler estreae sempre dalla testa e inserisce sempre in fondo alla coda.
+Per realizzare l'esecuzione ciclica si usa una semplice coda pronti dove lo scheduler estreae sempre dalla testa e inserisce sempre in fondo alla coda.
 
-Il RR rende molto semplice stimare il tempo di attesa: se ci sono $N$ processi in esecuzione, $N - 1$ saranno in coda pronti in qualsiasi momento, quindi un dato processo aspetterà:
+Come abbiamo visto dall'esempio, l'RR rende molto semplice stimare il tempo di attesa: se ci sono $N$ processi in esecuzione, $N - 1$ saranno in coda pronti in qualsiasi momento, quindi un dato processo aspetterà:
 $$
 T_a = (N - 1)q
 $$
@@ -258,5 +289,29 @@ Ognuno di questi ha pro e contro distinti, ed è più adeguato in una o un altra
 Per questo motivo nei sistemi operativi moderni si preferisce implementare lo scheduling attraverso \textbf{più algoritmi} di scheduling, che gestiscono ognuno la situazione che più conviene.
 
 Un modo elegante di realizzare ciò è mantenere \textbf{più code}, una per ogni algoritmo di scheduling. Sistemi di questo tipo vengono detti \textbf{multilevel queue} o \textit{code multilivello}.
+
+\subsubsection{Code di feedback}
+Una variante interessante delle code multilivello è dato dalle \textit{code di feedback}.
+Queste nascono per gestire più gerarchie di processi dai requisiti di esecuzione diversi (I/O bound, più interattivi, e CPU bound, più lenti).
+
+In questo caso si prevede una struttura di code, ad esempio come la seguente:
+\begin{enumerate}
+	\item Coda RR \textit{veloce}, con quanto $\Delta T = 10$;
+	\item Coda RR \textit{più lenta}, con quanto $\Delta T = 20$;
+	\item Coda FCFS, la più \textit{lenta}.
+\end{enumerate}
+Le code vengono ordinate per priorità decrescente.
+
+Un processo richiesto viene messo nella coda RR più veloce: se al momento dell'assegnamento CPU non riesce a terminare il suo primo CPU burst, viene spostato nella coda RR più lenta.
+La procedura si ripete finché il processo non è giudicato come \textit{non interattivo} e spostato nella coda FCFS.
+
+In questo modo si riescono a sviluppare sistemi che si \textit{"adattano"} in qualche modo a diversi tipi di processi, scegliendo per ognuno la coda (e quindi la politica di schedulazione) più adatta.
+
+Facciamo qualche altra considerazione: poniamo che ci sia un processo molto interattivo (magari il processo che si occupa di disegnare l'ambiente grafico) nella prima coda, e un processo CPU bound molto lento (magari un software di calcolo scientifico) in coda FCFS.
+
+Avremo che il processo interattivo farà molti I/O burst (scrittura a video, lettura dati da mouse e tastiera, ecc...) e probabilmente i suoi CPU burst finiranno prima del quanto temporale offerto dalla coda RR.
+Sarà in questi istanti che il processo lento potrà entrare in esecuzione nella coda FCFS: notiamo che questa coda non è strettamente FCFS in quanto è comunque soggetta a preemption da parte dei processi nelle code RR superiori.
+
+Potrebbero verificarsi casi dove il processo in coda FCFS non riesce ad eseguire di fronte a una grande massa di processi veloci che arrivano in coda RR: per questo motivo gli S/O moderni implementano altri meccanismi, come l'\textit{aging}.
 
 \end{document}

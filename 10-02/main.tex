@@ -316,14 +316,15 @@ Una volta definito il descrittore di processo, potremo volerci fornire di:
 \subsubsection{Cambio di contesto}
 Il \textbf{cambio di contesto} è l'operazione attraverso cui l'uso del processore viene commutato da un processo all'altro.
 Questo consiste in:
-\begin{itemize}
+\begin{enumerate}
 	\item Salvataggio del contesto del processo in esecuzione nel suo descrittore (cioè salvataggio di \textit{stato});
 	\item Inserimento del descrittore di processo corrente in coda \textit{bloccati} o \textit{pronti}.
 	\item Selezione di un nuovo processo da mettere in esecuzione e caricamento nel registro del descrittore del processo corrente (\textit{short term schedulilng});
 	\item Caricamento del contesto del nuovo processo e cessione a questi del controllo. 
-\end{itemize}
+\end{enumerate}
 
 Notiamo che per realizzare il cambio di contesto al S/O (che si occupa poi di portare avanti queste operazioni) abbiamo bisogno di funzionalità implementate in hardware: il "processo" S/O è semplicemente il processo in esecuzione al tempo del cambio, che è forzato a passare al contesto sistema nell'istante in cui si mette ad eseguire codice sistema.
+Questo si riassume nella lista di operazioni ai passi (1) e (4).
 
 Questo significa che per realizzare un S/O si necessita di un processore che implementi il cambio di contesto (x86 dal 286, ecc...). 
 
