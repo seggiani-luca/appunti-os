@@ -223,112 +223,105 @@
 
 \begin{document}
 % sezione (data)
-\section{Lezione del 08-10-25}
+\section{Lezione del 14-10-25}
 
 % stili pagina
 \thispagestyle{empty}
 \pagestyle{fancy}
 
 % testo
-Continuiamo la discussione degli algoritmi di scheduling.
+\subsection{Schedulazione real-time}
+Veniamo quindi a come implementare la schedulazione nei sistemi in \textbf{tempo reale}.
+Avevamo detto che questi erano sistemi principalmente di tipo \textit{embedded}, cioè incorporati, non general-purpose ma \textit{special-purpose} atti a governare sistemi esterni (sistemi di controllo per veicoli, macchinari industriali, ecc...).
 
-\subsubsection{Algoritmo RR}
-L'algoritmo \textbf{RR} (\textit{Round Robin}) è preemptive e non prioritario, e si basa su un meccanismo molto semplice: ad ogni processo viene dato un quanto temporale prefissato, e via preemption si passa al processo successivo quando tale quanto viene esaurito.
+\subsubsection{Esecuzione ciclica}
+Abbiamo che la caratteristica principale di sistemi di questo tipo è il tipo di periferiche con cui interagiscono: invece di periferiche multiple e variabili (come nei sistemi general-purpose), avremo un insieme fisso di dispositivi di ingresso (detti \textit{sensori}) e di uscita (detti \textit{attuatori}).
 
-Questo lo rende molto efficiente: l'overhead $O_v$ è minimo, quasi al pari di FCFS (leggermente più alto in quanto i cambi di contesto sono più frequenti, uno ogni quanto temporale). 
+Questo porta ad un paradigma di esecuzione fortemente periodico: si campiona il sistema esterno attraverso i sensori, compie una qualche elaborazione, e aggiornano gli attuatori per rispondere a quanto rilevato.
+
+Ciò significa che i processi messi in esecuzione devono rispettare il periodo dell'esecuzione ciclica, e produrre il loro risultato entro date \textit{scadenze} date dal periodo corrente e il numero di altri processi in esecuzione.
+Occorre allora avere un controllo preciso e granulare sul tempo che impiegano a terminare. 
+
+\subsubsection{Deadline}
+In questo caso prevederemo, dopo l'istante di richiesta $r$ di un processo, una certa deadline $d$, calcolata come:
+$$
+d = r + \Delta d
+$$
+dove $\Delta d$ è il tempo massimo di esecuzione del processo.
+\begin{itemize}
+	\item In un sistema \textit{soft real-time} si cerca di fare il possibile per assicurare che il processo termini prima di $d$;
+	\item In un sistema \textit{hard real-time} la terminazione del processo prima di $d$ è prerogativa dell'integrità dell'intero sistema.
+\end{itemize}
+
+In particolare, riguardo al paradigma di esecuzione ciclica accennato nello scorso paragrafo, avremo che per un processo che deve eseguire ciclicamente con periodo $\Delta t$, per ogni istante di richiesta $r_i$ l'istante di richista successivo sarà calcolato come:
+$$
+r_{i + 1} = r_i + \Delta t
+$$
+In questo caso sarà fondamentale rispettare la diseguaglianza:
+$$
+d_i < r_{i + 1} \ \Leftrightarrow \ \Delta d_i < \Delta t
+$$
+data $d_i$ come deadline dopo la richiesta $r_i$.
+
+Estendo il concetto a sistemi multiprogrammati, avremo che dati $n$ processi il periodo $T$ di aggiornamento simultaneo di ogni processo in esecuzione sarà:
+$$
+T = \text{MCM}\left(\Delta t_i\right)
+$$
+con $t_i$ i periodi di ogni processo: semplicemente si prende il minimo comune multiplo.
+
 \par\smallskip
 
-Simuliamo questo algoritmo usando la sequenza di processi richiesti già vista in 6.2.2, e imponendo un quanto temporale di $\Delta T = 20$. La tabella dei tempi di richiesta e esecuzione dei processi sarà:
+Ritornando all'idea dei CPU burst, se il processo si svolge in più CPU burst $C_1$, $C_2$, ecc... dovrà quindi essere che:
+$$
+T_e = \sum C_i < \Delta d_i
+$$
+cioè che almeno il tempo di esecuzione del processo sia minore del tempo massimo di esecuzione per rispettare la deadline corrente.
+
+\subsubsection{Algoritmo RM}
+Iniziamo quindi a vedere alcuni algoritmi di scheduling per sistemi realtime.
+Il primo che vediamo è l'\textbf{RM} (\textit{Rate Monotonic}).
+Questo consiste semplicemente ad assegnare una priorità statica \textit{monotonica crescente} ai processi in base al \textit{rate}, cioè la frequenza, del loro ciclo di esecuzione.
+Questo equivale ad assegnare una proprietà inversamente proporzionale al periodo $t$ del processo:
+$$
+p \propto \frac{1}{t} = f
+$$
+
+Visto che la proprietà è statica, chiaramente l'algoritmo è non preemptive.
+
+\par\smallskip
+
+Facciamo quindi l'esempio dell'esecuzione dell'algoritmo, ipotizzando due processi $p_a$ e $p_b$:
 \begin{table}[H]
 	\center \rowcolors{2}{white}{black!10}
 	\begin{tabular} { c || c | c }
-		\bfseries Processo & \bfseries $\mathbf{T}$ richiesta & \bfseries $\mathbf{\Delta T}$ esecuzione \\
+		\bfseries Processo & \bfseries $\Delta \mathbf{t}$ periodo & \bfseries $\mathbf{\Delta T}$ esecuzione \\
 		\hline
-		$p_0$ & 0 & 10 \\ 
-		$p_1$ & 2 & 100 \\ 
-		$p_2$ & 4 & 24 \\ 
-		$p_3$ & 6 & 16 
+		$p_a$ & 2 & 1 \\ 
+		$p_b$ & 5 & 1
 	\end{tabular}
 \end{table}
 
+Da questo è fra l'altro immediato che, con $\Delta t_a = 2$ e $\Delta t_b = 5$, il periodo complessivo di sistema $T$ è:
+$$
+T = \text{MCM}(\Delta t_a, \Delta t_b) = \text{MCM}(2, 5) = 10
+$$
+
+Vedremo come questo periodo determina anche il periodo dell'attività dello scheduler.
+
 \newpage
 
-In questo caso la \textit{timeline} avrà un aspetto del genere:
+Simulando l'esecuzione si ha, colorando in rosso le deadline di $p_a$ e in blu quelle di $p_b$:
 \begin{center}
-	\includegraphics[scale=0.3]{../figures/rr.png}
+	\includegraphics[scale=0.3]{../figures/rm.png}
 \end{center}
 
-Vediamo che il tempo medio, calcolato come:
+Vediamo quindi come riusciamo a rispettare tutte le deadline.
+Un problema è che, ad esempio all'istante 10, si sono fatti 3 cicli da un unità temporale a vuoto, cioè l'efficienza $E$ è:
 $$
-\tilde{t}_a = \frac{{t_a}_0 + {t_a}_1 + {t_a}_2 + {t_a}_3}{4} = \frac{0 + 10 + 20 + 40}{4} = 17.5
+E = \frac{10 - 3}{10} = 70 \%
 $$
-sarà più o meno nella norma rispetto a SJR o STRF.
 
-La cosa importante è, come lo era stato per STRF, la \textit{responsività} che l'algoritmo riesce a realizzare: un processo non resta mai in coda pronti per un tempo maggiore al quanto temporale moltiplicato per i processi in esecuzione meno 1.
-
-\par\smallskip
-
-Dal punto di vista implementativo, organizzaremo i quanti temporali sfruttando una componente hardware detta \textbf{timer}: questo è considerato a tutti gli effetti una periferiche, ed invia (dopo un'opportuna configurazione) interruzioni esterne periodiche.
-Ogni volta che il processore riceve tale interruzione, mette in esecuzione lo scheduler, che provvede a cambiare il contesto al prossimo processo.
-Chiaramente, lo scheduler può comunque essere messo in esecuzione da eventi comuni come la terminazione di processi.
-
-Per realizzare l'esecuzione ciclica si usa una semplice coda pronti dove lo scheduler estreae sempre dalla testa e inserisce sempre in fondo alla coda.
-
-Come abbiamo visto dall'esempio, l'RR rende molto semplice stimare il tempo di attesa: se ci sono $N$ processi in esecuzione, $N - 1$ saranno in coda pronti in qualsiasi momento, quindi un dato processo aspetterà:
-$$
-T_a = (N - 1)q
-$$
-dove $q$ è il quanto di tempo.
-
-Chiaramente il $T_a$ diventa troppo grande se ci sono troppi processi.
-
-\subsection{Code multilivello}
-Abbiamo quindi discusso i 4 algoritmi di scheduling fondamentali che avevamo introdotto in 6.2.
-Ognuno di questi ha pro e contro distinti, ed è più adeguato in una o un altra situazione.
-
-Per questo motivo nei sistemi operativi moderni si preferisce implementare lo scheduling attraverso \textbf{più algoritmi} di scheduling, che gestiscono ognuno la situazione che più conviene.
-
-Un modo elegante di realizzare ciò è mantenere \textbf{più code}, una per ogni algoritmo di scheduling. Sistemi di questo tipo vengono detti \textbf{multilevel queue} o \textit{code multilivello}.
-
-\subsubsection{Code di feedback}
-Una variante interessante delle code multilivello è dato dalle \textit{code di feedback}.
-Queste nascono per gestire più gerarchie di processi dai requisiti di esecuzione diversi (I/O bound, più interattivi, e CPU bound, più lenti).
-
-In questo caso si prevede una struttura di code, ad esempio come la seguente:
-\begin{enumerate}
-	\item Coda RR \textit{veloce}, con quanto $\Delta T = 10$;
-	\item Coda RR \textit{più lenta}, con quanto $\Delta T = 20$;
-	\item Coda FCFS, la più \textit{lenta}.
-\end{enumerate}
-Le code vengono ordinate per priorità decrescente.
-
-Un processo richiesto viene messo nella coda RR più veloce: se al momento della prima revoca CPU non è riuscito a terminare il suo primo CPU burst, viene spostato nella coda RR più lenta.
-La procedura si ripete finché il processo non è giudicato come \textit{non interattivo} e spostato nella coda FCFS.
-
-In questo modo si riescono a sviluppare sistemi che si \textit{"adattano"} in qualche modo a diversi tipi di processi, scegliendo per ognuno la coda (e quindi la politica di schedulazione) più adatta.
-
-\par\smallskip
-
-Facciamo qualche altra considerazione: poniamo che ci sia un processo molto interattivo (magari il processo che si occupa di disegnare l'ambiente grafico) nella prima coda, e un processo CPU bound molto lento (magari un software di calcolo scientifico) in coda FCFS.
-
-Avremo che il processo interattivo farà molti I/O burst (scrittura a video, lettura dati da mouse e tastiera, ecc...) e probabilmente i suoi CPU burst finiranno prima del quanto temporale offerto dalla coda RR.
-Sarà in questi istanti che il processo lento potrà entrare in esecuzione nella coda FCFS.
-
-\par\smallskip
-
-L'approccio non è ideale in quanto presenta alcuni difetti:
-\begin{itemize}
-	\item 
-Potrebbero verificarsi casi dove il processo in coda FCFS non riesce ad eseguire di fronte a una grande massa di processi veloci che arrivano in coda RR (\textit{starvation}): per questo motivo gli S/O moderni implementano altri meccanismi, come l'\textit{aging};
-	\item
-Un'altra problematica è data dal fatto che l'ultima coda è non preemptive: quando un processo dal lungo CPU Burst entra in coda FCFS vi resta finche non ha finito di eseguire, bloccando il resto del sistema. 
-
-Possiamo risolvere questo problema rendendo l'FCFS vagamente \textit{preemptive}: visto che ci sono altre due code prima di essa, possiamo cogliere l'occasione del lancio di un nuovo processo per rimettere in esecuzione lo scheduler. Questo meccanismo non è propriamente necessaria per le prime 2 code in quanto il quanto di tempo è limitato (e quindi prima o poi il nuovo processo viene servito), mentre è fondamentale per la coda FCFS che potrebbe bloccare anche per diverso tempo.
-\end{itemize}
-
-Un ultima considerazione che vogliamo fare è se \textit{conviene} riportare i processi dalle code di livello inferiore (più lente) nelle code di livello superiore (più veloci) quando queste si sgombrano: in generale, abbiamo che la letteratura non lo trova particolarmente vantaggioso.
-Questo perché un processo che è finito in una coda meno interattiva è probabilmente \textit{meno interattivo}, per cui può godere di CPU burst più lunghi e deve restare nella coda dove si trova.
-
-In caso di \textit{aging}, di contro, questo processo è necessario e più che naturale: spostiamo i processi che sono da molto tempo in code inferiori verso le code superiori per forzarne l'esecuzione.
+Questo non è immediatamente sbagliato: significa solo che il sistema ha abbastanza risorse da soddisfare ampiamente le richieste in arrivo.
+Potrebbe diventare un problema quando vogliamo \textit{"stringere"} le temporizzazioni in modo da far fronte ad un maggior numero di processi, o processi con CPU burst più consistenti.
 
 \end{document}
