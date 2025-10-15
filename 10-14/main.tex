@@ -278,7 +278,7 @@ $$
 cioè che almeno il tempo di esecuzione del processo sia minore del tempo massimo di esecuzione per rispettare la deadline corrente.
 
 \subsubsection{Algoritmo RM}
-Iniziamo quindi a vedere alcuni algoritmi di scheduling per sistemi realtime.
+Iniziamo quindi a vedere alcuni algoritmi di scheduling per sistemi real-time.
 Il primo che vediamo è l'\textbf{RM} (\textit{Rate Monotonic}).
 Questo consiste semplicemente ad assegnare una priorità statica \textit{monotonica crescente} ai processi in base al \textit{rate}, cioè la frequenza, del loro ciclo di esecuzione.
 Questo equivale ad assegnare una proprietà inversamente proporzionale al periodo $t$ del processo:
@@ -294,7 +294,7 @@ Facciamo quindi l'esempio dell'esecuzione dell'algoritmo, ipotizzando due proces
 \begin{table}[H]
 	\center \rowcolors{2}{white}{black!10}
 	\begin{tabular} { c || c | c }
-		\bfseries Processo & \bfseries $\Delta \mathbf{t}$ periodo & \bfseries $\mathbf{\Delta T}$ esecuzione \\
+		\bfseries Processo & \bfseries $\Delta \mathbf{t}$ periodo & \bfseries $\mathbf{C}$ esecuzione \\
 		\hline
 		$p_a$ & 2 & 1 \\ 
 		$p_b$ & 5 & 1
