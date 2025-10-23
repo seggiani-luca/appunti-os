@@ -374,7 +374,7 @@ epilogo:
 	signal(mutex);
 \end{lstlisting}
 
-Quello che succede è che alla prima \lstinline|wait()| il semaforo si svuota e tutti i processi successivi dovranno aspettarsi nella coda \lstinline|mutex.queue|.
-QUando il processo finisce la sua operazione, esegue la \lstinline|signal()|, liberando la risorsa per il prossimo processo in attesa. 
+Quello che succede è che alla prima \lstinline|wait()| il semaforo si svuota e tutti i processi successivi dovranno aspettare nella coda \lstinline|mutex.queue|.
+Quando il processo finisce la sua operazione, esegue la \lstinline|signal()|, liberando la risorsa per il prossimo processo in attesa. 
 
 \end{document}

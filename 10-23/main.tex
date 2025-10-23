@@ -1,0 +1,533 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[a4paper, margin=8em]{geometry}
+
+% usa i pacchetti per la scrittura in italiano
+\usepackage[french,italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\frenchspacing 
+
+% usa i pacchetti per la formattazione matematica
+\usepackage{amsmath, amssymb, amsthm, amsfonts}
+
+% usa altri pacchetti
+\usepackage{gensymb}
+\usepackage{hyperref}
+\usepackage{standalone}
+
+\usepackage{colortbl}
+
+\usepackage{xstring}
+\usepackage{karnaugh-map}
+
+% imposta il titolo
+\title{Appunti Sistemi Operativi}
+\author{Luca Seggiani}
+\date{2025}
+
+% imposta lo stile
+% usa helvetica
+\usepackage[scaled]{helvet}
+% usa palatino
+\usepackage{palatino}
+% usa un font monospazio guardabile
+\usepackage{lmodern}
+
+\renewcommand{\rmdefault}{ppl}
+\renewcommand{\sfdefault}{phv}
+\renewcommand{\ttdefault}{lmtt}
+
+% circuiti
+\usepackage{circuitikz}
+\usetikzlibrary{babel}
+
+% testo cerchiato
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+            \node[shape=circle,draw,inner sep=2pt] (char) {#1};}}
+
+% disponi il titolo
+\makeatletter
+\renewcommand{\maketitle} {
+	\begin{center} 
+		\begin{minipage}[t]{.8\textwidth}
+			\textsf{\huge\bfseries \@title} 
+		\end{minipage}%
+		\begin{minipage}[t]{.2\textwidth}
+			\raggedleft \vspace{-1.65em}
+			\textsf{\small \@author} \vfill
+			\textsf{\small \@date}
+		\end{minipage}
+		\par
+	\end{center}
+
+	\thispagestyle{empty}
+	\pagestyle{fancy}
+}
+\makeatother
+
+% disponi teoremi
+\usepackage{tcolorbox}
+\newtcolorbox[auto counter, number within=section]{theorem}[2][]{%
+	colback=blue!10, 
+	colframe=blue!40!black, 
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries, 
+	title=Teorema~\thetcbcounter: #2, 
+	#1
+}
+
+% disponi definizioni
+\newtcolorbox[auto counter, number within=section]{definition}[2][]{%
+	colback=red!10,
+	colframe=red!40!black,
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries,
+	title=Definizione~\thetcbcounter: #2,
+	#1
+}
+
+% disponi codice
+\usepackage{listings}
+\usepackage[table]{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{codestyle}{
+		backgroundcolor=\color{black!5}, 
+		commentstyle=\color{codegreen},
+		keywordstyle=\bfseries\color{magenta},
+		numberstyle=\sffamily\tiny\color{black!60},
+		stringstyle=\color{green!50!black},
+		basicstyle=\ttfamily\footnotesize,
+		breakatwhitespace=false,         
+		breaklines=true,                 
+		captionpos=b,                    
+		keepspaces=true,                 
+		numbers=left,                    
+		numbersep=5pt,                  
+		showspaces=false,                
+		showstringspaces=false,
+		showtabs=false,                  
+		tabsize=2
+}
+
+\lstdefinestyle{shellstyle}{
+		backgroundcolor=\color{black!5}, 
+		basicstyle=\ttfamily\footnotesize\color{black}, 
+		commentstyle=\color{black}, 
+		keywordstyle=\color{black},
+		numberstyle=\color{black!5},
+		stringstyle=\color{black}, 
+		showspaces=false,
+		showstringspaces=false, 
+		showtabs=false, 
+		tabsize=2, 
+		numbers=none, 
+		breaklines=true
+}
+
+
+\lstdefinelanguage{assembler}{ 
+  keywords={AAA, AAD, AAM, AAS, ADC, ADCB, ADCW, ADCL, ADD, ADDB, ADDW, ADDL, AND, ANDB, ANDW, ANDL,
+        ARPL, BOUND, BSF, BSFL, BSFW, BSR, BSRL, BSRW, BSWAP, BT, BTC, BTCB, BTCW, BTCL, BTR, 
+        BTRB, BTRW, BTRL, BTS, BTSB, BTSW, BTSL, CALL, CBW, CDQ, CLC, CLD, CLI, CLTS, CMC, CMP,
+        CMPB, CMPW, CMPL, CMPS, CMPSB, CMPSD, CMPSW, CMPXCHG, CMPXCHGB, CMPXCHGW, CMPXCHGL,
+        CMPXCHG8B, CPUID, CWDE, DAA, DAS, DEC, DECB, DECW, DECL, DIV, DIVB, DIVW, DIVL, ENTER,
+        HLT, IDIV, IDIVB, IDIVW, IDIVL, IMUL, IMULB, IMULW, IMULL, IN, INB, INW, INL, INC, INCB,
+        INCW, INCL, INS, INSB, INSD, INSW, INT, INT3, INTO, INVD, INVLPG, IRET, IRETD, JA, JAE,
+        JB, JBE, JC, JCXZ, JE, JECXZ, JG, JGE, JL, JLE, JMP, JNA, JNAE, JNB, JNBE, JNC, JNE, JNG,
+        JNGE, JNL, JNLE, JNO, JNP, JNS, JNZ, JO, JP, JPE, JPO, JS, JZ, LAHF, LAR, LCALL, LDS,
+        LEA, LEAVE, LES, LFS, LGDT, LGS, LIDT, LMSW, LOCK, LODSB, LODSD, LODSW, LOOP, LOOPE,
+        LOOPNE, LSL, LSS, LTR, MOV, MOVB, MOVW, MOVL, MOVSB, MOVSD, MOVSW, MOVSX, MOVSXB,
+        MOVSXW, MOVSXL, MOVZX, MOVZXB, MOVZXW, MOVZXL, MUL, MULB, MULW, MULL, NEG, NEGB, NEGW,
+        NEGL, NOP, NOT, NOTB, NOTW, NOTL, OR, ORB, ORW, ORL, OUT, OUTB, OUTW, OUTL, OUTSB, OUTSD,
+        OUTSW, POP, POPL, POPW, POPB, POPA, POPAD, POPF, POPFD, PUSH, PUSHL, PUSHW, PUSHB, PUSHA, 
+				PUSHAD, PUSHF, PUSHFD, RCL, RCLB, RCLW, MOVSL, MOVSB, MOVSW, STOSL, STOSB, STOSW, LODSB, LODSW,
+				LODSL, INSB, INSW, INSL, OUTSB, OUTSL, OUTSW
+        RCLL, RCR, RCRB, RCRW, RCRL, RDMSR, RDPMC, RDTSC, REP, REPE, REPNE, RET, ROL, ROLB, ROLW,
+        ROLL, ROR, RORB, RORW, RORL, SAHF, SAL, SALB, SALW, SALL, SAR, SARB, SARW, SARL, SBB,
+        SBBB, SBBW, SBBL, SCASB, SCASD, SCASW, SETA, SETAE, SETB, SETBE, SETC, SETE, SETG, SETGE,
+        SETL, SETLE, SETNA, SETNAE, SETNB, SETNBE, SETNC, SETNE, SETNG, SETNGE, SETNL, SETNLE,
+        SETNO, SETNP, SETNS, SETNZ, SETO, SETP, SETPE, SETPO, SETS, SETZ, SGDT, SHL, SHLB, SHLW,
+        SHLL, SHLD, SHR, SHRB, SHRW, SHRL, SHRD, SIDT, SLDT, SMSW, STC, STD, STI, STOSB, STOSD,
+        STOSW, STR, SUB, SUBB, SUBW, SUBL, TEST, TESTB, TESTW, TESTL, VERR, VERW, WAIT, WBINVD,
+        XADD, XADDB, XADDW, XADDL, XCHG, XCHGB, XCHGW, XCHGL, XLAT, XLATB, XOR, XORB, XORW, XORL},
+  keywordstyle=\color{blue}\bfseries,
+  ndkeywordstyle=\color{darkgray}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=false,
+  comment=[l]{\#},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{purple}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+
+\lstset{language=assembler, style=codestyle}
+
+% disponi sezioni
+\usepackage{titlesec}
+
+\titleformat{\section}
+	{\sffamily\Large\bfseries} 
+	{\thesection}{1em}{} 
+\titleformat{\subsection}
+	{\sffamily\large\bfseries}   
+	{\thesubsection}{1em}{} 
+\titleformat{\subsubsection}
+	{\sffamily\normalsize\bfseries} 
+	{\thesubsubsection}{1em}{}
+
+% tikz
+\usepackage{tikz}
+
+% float
+\usepackage{float}
+
+% grafici
+\usepackage{pgfplots}
+\pgfplotsset{width=10cm,compat=1.9}
+
+% disponi alberi
+\usepackage{forest}
+
+\forestset{
+	rectstyle/.style={
+		for tree={rectangle,draw,font=\large\sffamily}
+	},
+	roundstyle/.style={
+		for tree={circle,draw,font=\large}
+	}
+}
+
+% disponi algoritmi
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\makeatletter
+\renewcommand{\ALG@name}{Algoritmo}
+\makeatother
+
+% disponi numeri di pagina
+\usepackage{fancyhdr}
+\fancyhf{} 
+\fancyfoot[L]{\sffamily{\thepage}}
+
+\makeatletter
+\fancyhead[L]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@title \ \@date}}} 
+\fancyhead[R]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@author}}}
+\makeatother
+
+\begin{document}
+% sezione (data)
+\section{Lezione del 23-10-25}
+
+% stili pagina
+\thispagestyle{empty}
+\pagestyle{fancy}
+
+% testo
+\subsubsection{Atomicità delle primitive semaforiche}
+Ora che il problema della mutua esclusione è effettivamente risolto, interroghiamoci su come rendere effettivamente atomiche le \lstinline|wait()| e \lstinline|signal()|. 
+
+\begin{itemize}
+	\item 
+In ambiente monoprocessore, basterà rendere tali funzioni \textit{primitive} di sistema, e quindi eseguirle con le interruzioni disattivate, per assicurarne l'atomicità.
+	\item
+In ambienti multiprocessore, si potrebbero invece avere collisioni fra le \lstinline|wait()| e \lstinline|signal()| chiamate da processi concorrenti in esecuzione parallela.
+
+Approfondiamo il problema: posto un semaforo di mutex, ad esempio, questo si troverà in memoria condivisa.
+Più di un processore potrà accedere alla memoria condivisa attraverso il bus.
+Se ci limitiamo a rendere "atomiche" le primitive \lstinline|wait()| e \lstinline|signal()| disattivando le interruzioni su \textit{un} processore, non risolviamo il caso dove più processori vogliono accedere al semaforo contemporaneamente. 
+
+Possiamo risolvere il problema usando la tecnica introdotte in 11.1.2, cioè dotandoci di un meccanismo hardware di \textit{bloccaggio} del bus, fornito dall'istruzione \lstinline|TSL|.
+Potremo infatti usare le primitive \lstinline|lock()| e \lstinline|unlock()| per bloccarci sulla risorsa semaforo, cioè dicendo: 
+\begin{lstlisting}[language=C++, style=codestyle]	
+prologo:
+	{
+		lock(mutex);
+		wait(mutex);
+		unlock(mutex);
+	}
+	// sezione critica
+epilogo: 
+	{
+		lock(mutex);
+		signal(mutex);
+		unlock(mutex);
+	}
+\end{lstlisting}
+
+Notiamo che questa soluzione non è propriamente corretta: infatti il processo non chiamerà la \lstinline|unlock()| nel prologo finché non verrà svegliato dalla \lstinline|wait()|: questo significa che potrebbe tenersi il lock sul semaforo, impedendo ad altri processi di segnalare sul semaforo e liberarlo! 
+
+La soluzione corretta sarà quindi quella di ridefinire le primitive semaforiche come segue:
+\begin{itemize}
+	\item \lstinline|wait(s)|:
+\begin{lstlisting}[language=C++, style=codestyle]	
+void wait(s) {
+	lock();
+	if(s.value == 0) {
+		// metti il chiamante in attesa
+		insert(s.queue, /* chiamante */);	
+	} else {
+		s.value--;
+	}
+	unlock();
+}
+\end{lstlisting}
+	
+	\item \lstinline|signal(s)|:
+\begin{lstlisting}[language=C++, style=codestyle]	
+void signal(s) {
+	lock();
+	if(!isEmpty(s.queue)) {
+		primo = extract(s.queue); // e' una coda fifo
+		// inserici primo in coda pronti
+	} else {
+		s.value++;
+	}
+	unlock();
+}
+\end{lstlisting}
+\end{itemize}
+
+\end{itemize}
+
+\subsection{Produttori e consumatori}
+Ipotizziamo adesso una situazione dove:
+\begin{itemize}
+	\item Un processo, detto \textbf{produttore}, deposita un messaggio in un \textit{buffer};
+	\item Un'altro processo, detto \textbf{consumatore}, preleva il messaggio dal \textit{buffer}.
+\end{itemize}
+
+La policy sul buffer sarà la seguente:
+\begin{itemize}
+	\item Il produttore non deve inserire un messaggio nel buffer se questo è pieno;
+	\item Il consumatore non deve prelevare un messaggio dal buffer se questo è vuoto.
+\end{itemize}
+
+Possiamo usare 2 semafori per realizzare una prima soluzione:
+\begin{itemize}
+	\item \lstinline|spazio_disponibile|, con $s_0 = 1$, segnalerà quando il buffer è vuoto;
+	\item \lstinline|messaggio_disponibile|, con $s_0 = 0$, segnalerà quando il buffer è pieno.
+\end{itemize}
+
+\begin{itemize}
+	\item 
+A questo punto il processo produttore dovrà controllare che il buffer sia vuoto (e aspettare che lo sia se non lo è), inserire il messaggio e segnalare che un nuovo messaggio è disponibile. In pseudocodice:
+\begin{lstlisting}[language=C++, style=codestyle]	
+// produttore
+do {
+	// produci messaggio
+	wait(spazio_disponibile);
+	buffer.insert(messaggio);
+	signal(messaggio_disponibile);
+} while(!fine);
+\end{lstlisting}
+	\item
+Il consumatore dovrà invece controllare che il buffer abbia un nuovo messaggio (e aspettare che lo abbia se non lo ha), prelevare il messaggio e segnalare che il buffer è nuovamente vuoto. In pseudocodice:
+\begin{lstlisting}[language=C++, style=codestyle]	
+// consumatore
+do {
+	wait(messaggio_disponibile);
+	messaggio = buffer.extract();
+	signal(spazio_disponibile); // prima segnala e poi consuma!
+	// consuma messaggio
+} while(!fine)
+\end{lstlisting}
+\end{itemize}
+
+\subsubsection{Più produttori e consumatori}
+Complichiamo la situazione: introduciamo un buffer ad $n$ elementi, e prevediamo la presenza contemporanea di più produttori e consumatori.
+
+In questo caso dovremmo assicurare, oltre che la sincronizzzazione coi due semafori appena visti, la mutua esclusione attraverso un mutex.
+Inoltre, dovremmo prevedere che il semaforo \lstinline|spazio_disponibile| abbia $s_0 = n$, e non $1$. Possiamo fidarci che il meccanismo dei semafori assicura il corretto ordinamento dei processi (per ogni messaggio che inseriamo, si libera uno e un solo consumatore). 
+
+\begin{itemize}
+	\item 
+Avremo quindi che lo pseudocodice del produttore sarà:
+\begin{lstlisting}[language=C++, style=codestyle]	
+// produttore
+do {
+	// produci messaggio
+	wait(spazio_disponibile);
+	{
+		wait(mutex);
+		buffer.insert(messaggio);
+		signal(mutex);
+	}
+	signal(messaggio_disponibile);
+} while(!fine);
+\end{lstlisting}
+	\item
+Mentre lo pseudocodice del consumatore sarà:
+\begin{lstlisting}[language=C++, style=codestyle]	
+// consumatore
+do {
+	wait(messaggio_disponibile);
+	{
+		wait(mutex);
+		messaggio = buffer.extract();
+		signal(mutex);
+	}
+	signal(spazio_disponibile); // prima segnala e poi consuma!
+	// consuma messaggio
+} while(!fine)
+\end{lstlisting}
+\end{itemize}
+
+\subsubsection{Semafori distinti}
+Accorgiamoci che in questo sistema, i produttori si bloccano su \lstinline|spazio_disponibile|, i consumatori si bloccano su \lstinline|messaggio_disponibile|, ed entrambi si possono bloccare sul \lstinline|mutex|. Questo non è particolarmente elegante e può portare a situazioni di rallentamento.
+
+Possiamo risolvere questo problema usando, anzichè uno, 2 semafori di mutex.
+\begin{itemize}
+	\item 
+In questo caso lo pseudocodice del produttore sarà:
+\begin{lstlisting}[language=C++, style=codestyle]	
+// produttore
+do {
+	// produci messaggio
+	wait(spazio_disponibile);
+	{
+		wait(mutex_produttore);
+		buffer.insert(messaggio);
+		signal(mutex_produttore);
+	}
+	signal(messaggio_disponibile);
+} while(!fine);
+\end{lstlisting}
+	\item
+Mentre lo pseudocodice del consumatore sarà:
+\begin{lstlisting}[language=C++, style=codestyle]	
+// consumatore
+do {
+	wait(messaggio_disponibile);
+	{
+		wait(mutex_consumatore);
+		messaggio = buffer.extract();
+		signal(mutex_consumatore);
+	}
+	signal(spazio_disponibile); // prima segnala e poi consuma!
+	// consuma messaggio
+} while(!fine)
+\end{lstlisting}
+\end{itemize}
+
+\par\smallskip
+
+Questo chiaramente ci porta a dover fare delle considerazioni sulle modalità in cui si implementa il buffer.
+In particolare, vorremo che le operazioni \lstinline|insert()| ed \lstinline|extract()| siano completamente disaccoppiate e non possano collidere: questo perché la configurazione adottata permette a queste di essere eseguite contemporaneamente (l'una dal produttore e l'altra dal consumatore, che si bloccano su semafori diversi).
+
+Se si adotta la classica implementazione ad array, questo problema non si pone. Se si usa una struttura più sofisticata come una lista, la situazione è più complicata. Vediamo nel dettaglio.
+
+La soluzione che possiamo immaginare è di avere una lista con puntatore alla coda, dove le inserzioni (produttore) si fanno in coda, e le estrazioni (consumatore) si fanno in testa.
+
+In questo caso, per liste con più di un elemento, operazioni di estrazione ed inserzione agiranno su oggetti completamente distinti in memoria, e non avremo problemi.
+Il problema sarebbe però quando si vuole avere un inserzione ed un estrazione parallela su una lista con un solo elemento.
+
+\subsection{Primitive di comunicazione}
+Tralasciamo per adesso i sistemi in memoria condivisa, e parliamo dei sistemi distribuiti, composti da nodi con memorie locali. Questo è ad esempio il caso delle reti di calcolatori.
+
+Il problema che ci poniamo è come sfruttare un certo \textbf{canale di comunicazione} orientato per realizzare due primitive, la primitiva \lstinline|send(destinazione, messaggio)|, e la primitiva \lstinline|receive(origine, messaggio)|.
+Notiamo che la \lstinline|send()| è \textit{asincrona} (o ugualmente, non \textit{sincrona} o non \textit{bloccante}): quando si ritorna dalla chiamata, non si può avere la sicurezza che il messaggio sia stato recapitato.
+Una primitiva \textit{bloccante}, di contro, avrebbe sospeso il chiamante fino all'arrivo del messaggio: questo chiaramente implica l'attesa di un ACK da parte del destinatario.
+
+La \lstinline|receive()| è invece necessariamente bloccante: il processo chiamante viene messo in attesa finché un messaggio non è stato effettivamente ricevuto e può essere recapitato. 
+
+Una soluzione più esplicita per il programmatore a cui forniamo le \lstinline|send()| e \lstinline|receive()| potrebbe essere quella di imporre il ricevimento dell'ACK, cioè:
+\begin{lstlisting}[language=C++, style=codestyle]	
+// invia
+send(destinazione, messaggio);
+// aspetta l'ACK, e' bloccante
+ack = receive(destinazione);
+\end{lstlisting}
+Questo sfrutta il fatto che la \lstinline|receive()| è bloccante e effettivamente risolve il nostro problema, permettendoci di mantenere la \lstinline|send()| asincrona. Chiaramente, però, richiede al programmatore di scrivere codice più complicato (e corretto!).
+
+\subsubsection{Formato del messaggio}
+Per dotarci di primitive di comunicazione, abbiamo bisogno di stabilire un \textbf{formato standard} per i messaggi che andiamo ad inviare.
+Questo è solitamente diviso in:
+\begin{itemize}
+	\item \textbf{Intestazione}: contiene informazioni su:
+		\begin{itemize}
+			\item \textbf{Origine} del messaggio;
+			\item \textbf{Destinazione} del messaggio;
+			\item \textbf{Tipo} del messaggio;
+			\item \textbf{Lunghezza} (in byte) del messaggio;
+			\item \textit{Informazioni di controllo} varie sul messaggio.
+		\end{itemize}
+	\item \textbf{Corpo}: contiene il messaggio vero e proprio, o \textit{payload}, che vogliamo trasmettere.
+\end{itemize}
+
+\subsubsection{Produttori e consumatori remoti}
+Vediamo un primo esempio di come le primitive di comunicazione potrebbero essere usate, ad esempio per realizzare un sistema produttore e consumatore.
+
+In particolare, vediamo 2 varianti di comunicazione, \textbf{diretta simmetrica} e \textbf{diretta asimmetrica}: 
+\begin{itemize}
+	\item Comunicazione \textbf{diretta simmetrica}:
+\begin{itemize}
+	\item Lato produttore si avrà:
+\begin{lstlisting}[language=C++, style=codestyle]	
+pid consumatore = /* ... */;
+main() {
+	msg mess;
+	do {
+		produci(&mess);
+		send(consumatore, mess);
+	} while(!fine);
+}
+\end{lstlisting}
+	\item Lato consumatore si avrà:
+\begin{lstlisting}[language=C++, style=codestyle]	
+pid produttore = /* ... */;
+main() {
+	msg mess;
+	do {
+		receive(produttore, &mess);
+		consuma(M);
+	} while(!fine);
+}
+\end{lstlisting}
+\end{itemize}
+
+Vediamo come in questo tipo di comunicazione non è necessario prevedere un \textit{buffer}: si invia un messaggio per volta e si aspetta, lato consumatore, per ogni messaggio.
+
+\item Comunicazione \textbf{diretta asimmetrica}:
+\begin{itemize}
+	\item Lato produttore si avrà:
+\begin{lstlisting}[language=C++, style=codestyle]	
+pid consumatore = /* ... */;
+main() {
+	msg mess;
+	do {
+		produci(&mess);
+		send(consumatore, mess);
+	} while(!fine);
+}
+\end{lstlisting}
+	\item Lato consumatore si avrà:
+\begin{lstlisting}[language=C++, style=codestyle]	
+main() {
+	msg mess;
+	pid produttore;
+	do {
+		receive(&produttore, &mess);
+		consuma(M);
+	} while(!fine);
+}
+\end{lstlisting}
+\end{itemize}
+
+In questo caso il produttore non è già noto al consumatore, che invece si mette in ascolto per il primo messaggio disponibile.
+
+\end{itemize}
+
+\subsubsection{Modello client-server}
+Il discorso fatto finora su produttori e consumatori può essere sviluppato introducendo il paradigma (probabilmente già noto) \textbf{client-server}.
+
+In questo caso prevediamo più processi, detti \textbf{client} (o \textit{clienti}) che richiedono servizi ad un solo processo, detto \textbf{server} (o \textit{servitore}).
+I client accedono al server tramite una determinata \textbf{porta}, che per quanto ci riguarda si occupa anche di \textit{bufferizzazione} delle richieste dei client prima che queste arrivino al processo server vero e proprio.
+
+\end{document}
