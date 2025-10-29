@@ -352,6 +352,8 @@ Sul grafo di allocazione, equivalentemente, significa che abbiamo un \textit{cic
 
 Ricordiamo che ci eravamo posti di implementare appropiate tecniche di deadlock \textbf{detection} (\textit{rilevamento} di deadlock) e deadlock \textbf{avoidance} (\textit{risoluzione} o \textit{prevenzione} di deadlock).
 
+Notiamo adesso che in verità esistono casi dove si possono avere cicli nel grafo di allocazione, ma non avere deadlock: questo è il caso di risorse con \textbf{istanze multiple}. In questocaso, un ciclo in un grafo di allocazione simboleggia la \textit{possibilità} di aver deadlock, ma la situazione potrebbe comunque risolversi (lo si verifica per osservazione del grafo). 
+
 Una soluzione banale al problema del deadlock è obbligare il programmatore a dichiarare subito tutte le risorse di cui il programma ha bisogno: a questo punto, lato S/O, si potrà realizzare via mutex su tali risorse un sistema di bloccaggio che eviterà sempre i deadlock.
 Il problema è chiaramente che tale vincolo è estremamente restrittivo, e renderebbe non solo molto scomodo per il programmatore programmare una data applicazione, ma in generale abbatterebbe l'efficienza dell'intero sistema.
 
@@ -363,5 +365,7 @@ Esistono 4 condizioni necessarie affinché si verifichi un deadlock:
 	\item \textbf{No preemption}: una risorsa può essere rilasciata solo \textit{volontariamente} dai processi che la ottengono, quando questi completano la loro operazione sulla stessa;
 	\item \textbf{Attesa circolare}: esiste un insieme $\{p_0, p_1, ..., p_n \}$ di processi in attesa tali che $p_0$ aspetta una risorsa di $p_1$, $p_1$ aspetta una risorsa di $p_2$, ..., $p_{n - 1}$ aspetta una risorsa di $p_n$.
 \end{enumerate}
+
+Si ha che difficilmente si può lavorare sulle prime 3 condizioni: la muta esclusione deriva dal fatto che ci sono fisicamente risorse limitate nel sistema, e non vogliamo imporre al programmatore vincoli su come e quali risorse vogliono ottenere, o constringerli a programmare meccanismi di recupero dal ritiro di risorse (\textit{preemption} su risorse).
 
 \end{document}
