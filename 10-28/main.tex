@@ -383,7 +383,7 @@ monitor Philosophers {
 	void test(int i) {
 		if(
 			(state[(i - 1) % 5] != EATING) && // sx non sta mangiando?
-			(state[i] != HUNGRY) && 					// hai fame?
+			(state[i] == HUNGRY) && 					// hai fame?
 			(state[(i + 1) % 5] != EATING)		// dx non sta mangiando?
 		) {
 			state[i] = EATING; // mangia
