@@ -1,0 +1,420 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[a4paper, margin=8em]{geometry}
+
+% usa i pacchetti per la scrittura in italiano
+\usepackage[french,italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\frenchspacing 
+
+% usa i pacchetti per la formattazione matematica
+\usepackage{amsmath, amssymb, amsthm, amsfonts}
+
+% usa altri pacchetti
+\usepackage{gensymb}
+\usepackage{hyperref}
+\usepackage{standalone}
+
+\usepackage{colortbl}
+
+\usepackage{xstring}
+\usepackage{karnaugh-map}
+
+% imposta il titolo
+\title{Appunti Sistemi Operativi}
+\author{Luca Seggiani}
+\date{2025}
+
+% imposta lo stile
+% usa helvetica
+\usepackage[scaled]{helvet}
+% usa palatino
+\usepackage{palatino}
+% usa un font monospazio guardabile
+\usepackage{lmodern}
+
+\renewcommand{\rmdefault}{ppl}
+\renewcommand{\sfdefault}{phv}
+\renewcommand{\ttdefault}{lmtt}
+
+% circuiti
+\usepackage{circuitikz}
+\usetikzlibrary{babel}
+
+% testo cerchiato
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+            \node[shape=circle,draw,inner sep=2pt] (char) {#1};}}
+
+% disponi il titolo
+\makeatletter
+\renewcommand{\maketitle} {
+	\begin{center} 
+		\begin{minipage}[t]{.8\textwidth}
+			\textsf{\huge\bfseries \@title} 
+		\end{minipage}%
+		\begin{minipage}[t]{.2\textwidth}
+			\raggedleft \vspace{-1.65em}
+			\textsf{\small \@author} \vfill
+			\textsf{\small \@date}
+		\end{minipage}
+		\par
+	\end{center}
+
+	\thispagestyle{empty}
+	\pagestyle{fancy}
+}
+\makeatother
+
+% disponi teoremi
+\usepackage{tcolorbox}
+\newtcolorbox[auto counter, number within=section]{theorem}[2][]{%
+	colback=blue!10, 
+	colframe=blue!40!black, 
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries, 
+	title=Teorema~\thetcbcounter: #2, 
+	#1
+}
+
+% disponi definizioni
+\newtcolorbox[auto counter, number within=section]{definition}[2][]{%
+	colback=red!10,
+	colframe=red!40!black,
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries,
+	title=Definizione~\thetcbcounter: #2,
+	#1
+}
+
+% disponi codice
+\usepackage{listings}
+\usepackage[table]{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{codestyle}{
+		backgroundcolor=\color{black!5}, 
+		commentstyle=\color{codegreen},
+		keywordstyle=\bfseries\color{magenta},
+		numberstyle=\sffamily\tiny\color{black!60},
+		stringstyle=\color{green!50!black},
+		basicstyle=\ttfamily\footnotesize,
+		breakatwhitespace=false,         
+		breaklines=true,                 
+		captionpos=b,                    
+		keepspaces=true,                 
+		numbers=left,                    
+		numbersep=5pt,                  
+		showspaces=false,                
+		showstringspaces=false,
+		showtabs=false,                  
+		tabsize=2
+}
+
+\lstdefinestyle{shellstyle}{
+		backgroundcolor=\color{black!5}, 
+		basicstyle=\ttfamily\footnotesize\color{black}, 
+		commentstyle=\color{black}, 
+		keywordstyle=\color{black},
+		numberstyle=\color{black!5},
+		stringstyle=\color{black}, 
+		showspaces=false,
+		showstringspaces=false, 
+		showtabs=false, 
+		tabsize=2, 
+		numbers=none, 
+		breaklines=true
+}
+
+
+\lstdefinelanguage{assembler}{ 
+  keywords={AAA, AAD, AAM, AAS, ADC, ADCB, ADCW, ADCL, ADD, ADDB, ADDW, ADDL, AND, ANDB, ANDW, ANDL,
+        ARPL, BOUND, BSF, BSFL, BSFW, BSR, BSRL, BSRW, BSWAP, BT, BTC, BTCB, BTCW, BTCL, BTR, 
+        BTRB, BTRW, BTRL, BTS, BTSB, BTSW, BTSL, CALL, CBW, CDQ, CLC, CLD, CLI, CLTS, CMC, CMP,
+        CMPB, CMPW, CMPL, CMPS, CMPSB, CMPSD, CMPSW, CMPXCHG, CMPXCHGB, CMPXCHGW, CMPXCHGL,
+        CMPXCHG8B, CPUID, CWDE, DAA, DAS, DEC, DECB, DECW, DECL, DIV, DIVB, DIVW, DIVL, ENTER,
+        HLT, IDIV, IDIVB, IDIVW, IDIVL, IMUL, IMULB, IMULW, IMULL, IN, INB, INW, INL, INC, INCB,
+        INCW, INCL, INS, INSB, INSD, INSW, INT, INT3, INTO, INVD, INVLPG, IRET, IRETD, JA, JAE,
+        JB, JBE, JC, JCXZ, JE, JECXZ, JG, JGE, JL, JLE, JMP, JNA, JNAE, JNB, JNBE, JNC, JNE, JNG,
+        JNGE, JNL, JNLE, JNO, JNP, JNS, JNZ, JO, JP, JPE, JPO, JS, JZ, LAHF, LAR, LCALL, LDS,
+        LEA, LEAVE, LES, LFS, LGDT, LGS, LIDT, LMSW, LOCK, LODSB, LODSD, LODSW, LOOP, LOOPE,
+        LOOPNE, LSL, LSS, LTR, MOV, MOVB, MOVW, MOVL, MOVSB, MOVSD, MOVSW, MOVSX, MOVSXB,
+        MOVSXW, MOVSXL, MOVZX, MOVZXB, MOVZXW, MOVZXL, MUL, MULB, MULW, MULL, NEG, NEGB, NEGW,
+        NEGL, NOP, NOT, NOTB, NOTW, NOTL, OR, ORB, ORW, ORL, OUT, OUTB, OUTW, OUTL, OUTSB, OUTSD,
+        OUTSW, POP, POPL, POPW, POPB, POPA, POPAD, POPF, POPFD, PUSH, PUSHL, PUSHW, PUSHB, PUSHA, 
+				PUSHAD, PUSHF, PUSHFD, RCL, RCLB, RCLW, MOVSL, MOVSB, MOVSW, STOSL, STOSB, STOSW, LODSB, LODSW,
+				LODSL, INSB, INSW, INSL, OUTSB, OUTSL, OUTSW
+        RCLL, RCR, RCRB, RCRW, RCRL, RDMSR, RDPMC, RDTSC, REP, REPE, REPNE, RET, ROL, ROLB, ROLW,
+        ROLL, ROR, RORB, RORW, RORL, SAHF, SAL, SALB, SALW, SALL, SAR, SARB, SARW, SARL, SBB,
+        SBBB, SBBW, SBBL, SCASB, SCASD, SCASW, SETA, SETAE, SETB, SETBE, SETC, SETE, SETG, SETGE,
+        SETL, SETLE, SETNA, SETNAE, SETNB, SETNBE, SETNC, SETNE, SETNG, SETNGE, SETNL, SETNLE,
+        SETNO, SETNP, SETNS, SETNZ, SETO, SETP, SETPE, SETPO, SETS, SETZ, SGDT, SHL, SHLB, SHLW,
+        SHLL, SHLD, SHR, SHRB, SHRW, SHRL, SHRD, SIDT, SLDT, SMSW, STC, STD, STI, STOSB, STOSD,
+        STOSW, STR, SUB, SUBB, SUBW, SUBL, TEST, TESTB, TESTW, TESTL, VERR, VERW, WAIT, WBINVD,
+        XADD, XADDB, XADDW, XADDL, XCHG, XCHGB, XCHGW, XCHGL, XLAT, XLATB, XOR, XORB, XORW, XORL},
+  keywordstyle=\color{blue}\bfseries,
+  ndkeywordstyle=\color{darkgray}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=false,
+  comment=[l]{\#},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{purple}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+
+\lstset{language=assembler, style=codestyle}
+
+% disponi sezioni
+\usepackage{titlesec}
+
+\titleformat{\section}
+	{\sffamily\Large\bfseries} 
+	{\thesection}{1em}{} 
+\titleformat{\subsection}
+	{\sffamily\large\bfseries}   
+	{\thesubsection}{1em}{} 
+\titleformat{\subsubsection}
+	{\sffamily\normalsize\bfseries} 
+	{\thesubsubsection}{1em}{}
+
+% tikz
+\usepackage{tikz}
+
+% float
+\usepackage{float}
+
+% grafici
+\usepackage{pgfplots}
+\pgfplotsset{width=10cm,compat=1.9}
+
+% disponi alberi
+\usepackage{forest}
+
+\forestset{
+	rectstyle/.style={
+		for tree={rectangle,draw,font=\large\sffamily}
+	},
+	roundstyle/.style={
+		for tree={circle,draw,font=\large}
+	}
+}
+
+% disponi algoritmi
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\makeatletter
+\renewcommand{\ALG@name}{Algoritmo}
+\makeatother
+
+% disponi numeri di pagina
+\usepackage{fancyhdr}
+\fancyhf{} 
+\fancyfoot[L]{\sffamily{\thepage}}
+
+\makeatletter
+\fancyhead[L]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@title \ \@date}}} 
+\fancyhead[R]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@author}}}
+\makeatother
+
+\begin{document}
+% sezione (data)
+\section{Lezione del 06-11-25}
+
+% stili pagina
+\thispagestyle{empty}
+\pagestyle{fancy}
+
+% testo
+\subsubsection{Cicli su grafi di allocazione}
+Ricordiamo i fatti di base sul rilevamento di deadlock attraverso l'ispezione dei \textbf{grafi di allocazione}.
+
+\begin{itemize}
+	\item Se il grafo non contiene cicli, abbiamo detto non c'è possibilità di deadlock;
+	\item Se il grafo contiene cicli, dobbiamo discriminare sulla presenza di \textit{istanze multiple} di risorsa:
+		\begin{itemize}
+			\item Se si ha una sola istanza per tipo di risorsa, allora si ha deadlock;
+			\item Se si hanno più istanze per tipo di risorsa, allora c'è la possibilità, ma non la sicurezza, di avere deadlock.
+		\end{itemize}
+\end{itemize}
+
+\subsubsection{Metodi di gestione dei deadlock}
+Ricordiamo quindi i metodi che avevamo previsto per gestire i deadlock:
+\begin{itemize}
+	\item Potremmo assicurarci che il sistema non entri mai in uno stato di deadlock: questo è il modello di \textbf{deadlock prevention} (\textit{prevenzione statica}). 
+
+		Questo è l'approccio usato dalla maggior parte dei sistemi operativi, che preferiscono lasciar eseguire i processi senza attivarsi in maniera dinamica per gestire eventuali deadlock. Di contro, si spera (e si progettano sistemi in maniera tale) che tali situazioni non si verifichino;
+	\item Potremmo permettere al sistema in normale operazione di trovarsi in stato di deadlock, rilevare tale deadlock e iniziare delle procedure di recupero: questo è il modello di \textbf{deadlock prevention} e \textbf{avoidance} (\textit{prevenzione dinamica}).
+
+		Questo modello è più usato nei sistemi embedded, dove si possono fare ipotesi più stringenti sui processi in esecuzione.
+\end{itemize}
+
+\subsubsection{Prevenzione dinamica}
+Vediamo quindi nel dettaglio la prevenzione dinamica di deadlock.
+In questo caso dobiamo permettere al sistema di avere a disposizione alcune informazioni a priori:
+\begin{itemize}
+	\item Nel caso più semplice vogliamo che ogni processo dichiari il numero massimo di risorse di ogni tipo di cui ha bisogno;
+	\item Un \textbf{algoritmo} di prevenzione statica deve essere messo in piedi, e deve eseguire in maniera dinamica per prevenire situazioni di attese circolari. Il più celebre di questi algoritmi è l'\textit{algoritmo del banchiere};
+	\item Lo \textbf{stato} dell'allocazione di risorse è definito dal numero di risorse disponibili ed allocate, e dal numero massimo di risorse che i processi possono richiedere (che abbiamo detto il S/O deve sapere). 
+\end{itemize}
+
+\subsubsection{Stato sicuro}
+Definiamo cosa intendiamo per \textbf{safe state} (o \textit{stato sicuro}) del sistema.
+
+Ogni volta che un processo richiede una risorsa disponibile, il S/O deve decidere se l'allocazione immediata di tale risorsa lascia il sistema in uno stato sicuro.
+
+Il sistema si dice in stato sicuro se esiste una sequenza $\{p_0, p_1, ..., p_n\}$ di tutti processi tale che per ogni $p_i$, le risorse che $p_i$ può richiedere possono essere allocate con le risorse correntemente disponibili più le risorse allocate ai $p_j$ con $j < i$. 
+
+Questo significa che:
+\begin{itemize}
+	\item Se $p_i$ ha bisogno di risorse e queste sono disponibili, non c'è problema;
+	\item Se $p_i$ ha bisogno di risorse e queste non sono disponibili, può:
+		\begin{enumerate}
+			\item Aspettare che tutti i $p_j$ terminino, liberando le risorse di cui ha bisogno;
+			\item Eseguire quando i $p_j$ terminano e le risorse sono libere, allocando e quindi liberando nuovamente le sue risorse;
+			\item Quando $p_i$ termina liberando le sue risorse, $p_{i + 1}$ può eseguire, e così via.
+		\end{enumerate}
+\end{itemize}
+
+Possiamo corredare i fatti di base di 15.0.1 con alcuni altri fatti, riguardanti lo stato safe:
+\begin{itemize}
+	\item Se il sistema è in stato safe, non c'è possibilità di deadlock;
+	\item Se il sistema non è in stato safe, c'è possibilità, ma non la sicurezza, di avere deadlock.
+\end{itemize}
+
+La deadlock \textit{avoidance} corrisponde esattamente a evitare che il sistema arrivi a stati unsafe. 
+
+\par\smallskip
+
+Vediamo un caso di esempio tipico secondo il modello dello stato sicuro.
+Poniamo di avere 2 processi ($p_0$ e $p_1$), interessati ad ottenere in maniera concorrente 2 risorse ($r_0$ e $r_1$):
+\begin{itemize}
+	\item Processo $p_0$:
+\begin{lstlisting}[language=C++, style=codestyle]
+// p0, p1
+wait(m0);
+wait(m1);
+
+// elaborazione su r0 e r1
+
+signal(m1);
+signal(m0);
+\end{lstlisting}
+
+	\item Processo $p_1$:
+\begin{lstlisting}[language=C++, style=codestyle]
+// p0, p1
+wait(m1);
+wait(m0);
+
+// elaborazione su r0 e r1
+
+signal(m0);
+signal(m1);
+\end{lstlisting}
+\end{itemize}
+Notiamo che i processi accedono ai mutex delle risorse in ordine inverso.
+
+Il grafo di allocazione è il solito che abbiamo già visto:
+\begin{center}
+	\includegraphics[scale=0.3]{../figures/alloc_p0p1.png}
+\end{center}
+
+Possiamo modellizzare la stessa situazione, in evoluzione nel tempo, attraverso un grafico di questo tipo:
+\begin{center}
+	\includegraphics[scale=0.3]{../figures/time_p0p1.png}
+\end{center}
+
+Dove notiamo l'evoluzione temporale (sui 2 assi) dei 2 processi, in funzione delle risorse acquisite, e gli stati corrispondenti che incontriamo.
+Vediamo come appena i 2 processi acquisiscono rispettivamente la risorsa $r_0$ e $r_1$, andiamo a trovarci nello stato insicuro, a cui segue un deadlock appena provano ad accedere alla risorsa seguente.
+
+Nel grafo di allocazione questo è il deadlock:
+\begin{center}
+	\includegraphics[scale=0.3]{../figures/dead_p0p1.png}
+\end{center}
+
+\subsubsection{Grafici di allocazione estesi}
+Estendiamo i grafi di allocazione, che abbiamo finora trattato in maniera abbastanza informale.
+
+Avevamo che i cerchi rappresentano processi, e i quadrati risorse.
+Riguardo agli archi che li collegano, abbiamo:
+\begin{itemize}
+	\item Un arco di \textit{claim} da un processo a una risorsa simboleggia che la risorsa è desiderata dal processo, e potrebbe essere richiesta. Lo rappresentiamo come una freccia tratteggiata;
+	\item Un arco di \textit{claim} si trasforma in arco di \textit{request} quando il processo effettivamente richiede la risorsa. Lo rappresentiamo come una freccia piena;
+	\item Un arco di \textit{assignment} (o allocazione) è diretto da una risorsa a un processo (il contrario degli archi di claim e request), e simboleggia che la risorsa è effettivamente posseduta dal processo. Lo rappresentiamo sempre come una freccia piena.
+\end{itemize}
+
+A questo punto il significato di un algoritmo di deadlock avoidance dovrebbe essere chiaro: se le transizioni in fase di allocazione di risorse consistono nella trasformazione di arco di request a un arco di assignment, allora dobbiamo assicurarci che le richieste vengano soddisfatte solo quando l'arco di assignment formato non porta alla formazione di cicli nel grafo di allocazione. 
+
+\subsection{Algoritmo del banchiere}
+Vediamo quindi l'algoritmo più celebre di deadlock avoidance: il cosiddetto \textbf{algoritmo del banchiere}.
+
+Le ipotesi dell'algoritmo sono:
+\begin{itemize}
+	\item Esistono istanze multiple di risorse (nel caso banale, una sola istanza);
+	\item Ogni processo deve fare \textit{claim} a priori delle risorse massime che potrebbe usare;
+	\item Ogni processo deve essere disposto ad aspettare per le sue risorse;
+	\item Quando un processo ottiene tutte le risorse necessarie alla sua esecuzione, deve eseguire e restituirle in un lasso finito di tempo. 
+\end{itemize}
+
+Definiamo le condizioni di stato dell'algoritmo.
+Sia $n$ il numero di processi e $m$ il numero di tipi di risorse.
+\begin{itemize}
+	\item Le risorse \textbf{disponibili} saranno un vettore di interi di lunghezza $m$. Se la risorsa all'indice $j$ vale $k$, significa che ci sono $k$ istanze della risorsa corrispondente disponibili;
+	\item Per ogni processo dobbiamo sapere la quantità \textbf{massima} di risorse che vorrà allocare. Rappresentiamo questo con una matrice bidimensionale $n \times m$. Se questa all'indice $(i, j)$ vale $k$, allora il processo $i$ potrà richiedere al massimo $k$ risorse di tipo $j$;
+	\item Manteniamo una matrice simile, di risorse \textbf{allocate}. Se questa all'indice $(i, j)$ vale $k$, allora il processo $i$ avrà allocato $k$ risorse di tipo $j$;
+	\item Infine, manteniamo un'altra matrice simile, di risorse \textbf{desiderate}. Se questa all'indice $(i, j)$ vale $k$, allora il processo $i$ avrà bisogno (oltre a quelle che già ha), di $k$ risorse di tipo $j$;
+\end{itemize}
+
+Definiamo quindi le matrici e i vettori come \textit{Avail}, \textit{Max}, \textit{Alloc} e \textit{Need}. Viene da sé che:
+$$
+\text{\textit{Need}}[i, j] = \text{\textit{Max}}[i, j] - \text{\textit{Alloc}}[i, j]
+$$
+
+Vediamo allora un primo algoritmo, di \textit{sicurezza}, che controlla se il sistema si trova in uno stato sicuro.
+\begin{enumerate}
+	\item Siano \textit{Work} e \textit{Finish} vettori di lunghezza rispettivamente $m$ e $n$.
+		Inizializza:
+		\begin{itemize}
+			\item $\text{\textit{Work}} = \text{\textit{Avail}}$
+			\item $\text{\textit{Finish}}[i] = $ \lstinline|false| per $i = 0, 1, ..., n - 1$
+		\end{itemize}
+	\item Trova un $i$ tale che:
+		\begin{itemize}
+			\item $\text{\textit{Finish}}[i] = $ \lstinline|false|
+			\item $\text{\textit{Need}}[i] \leq $ \textit{Work} 
+		\end{itemize}
+		se non esiste nessun $i$ che soddisfa le condizioni, vai al passo 4;
+	\item Poni:
+		\begin{itemize}
+			\item $\text{\textit{Work}} = \text{\textit{Work}} + \text{\textit{Alloc}}$
+			\item $\text{\textit{Finish}}[i] = $ \lstinline|true|
+		\end{itemize}
+		quindi vai al passo 2;
+	\item Se $\text{\textit{Finish}} == $ \lstinline|true| per ogni $i$, allora il sistema è in stato sicuro.
+\end{enumerate}
+
+Vediamo allora l'algoritmo del banchiere vero e proprio. 
+Sia \textit{Request} il vettore richiesta per il processo all'indice $i$. Se $\text{\textit{Request}}[j] = k$ allora il processo $i$ vuole $k$ istanze della risorsa di tipo $j$.
+\begin{enumerate}
+	\item Controlla che $\text{\textit{Request}}[i] \leq \text{Need}[i]$. Se il controllo passa, vai al passo 2. Altrimenti solleva un errore, in quanto il processo ha richiesto più risorse di quante ha dichiarato di volere;
+	\item Se $\text{\textit{Request}}[i] \leq \text{\textit{Avail}}$, vai al passo 3. Altrimenti aspetta, in quanto alcune risorse non sono disponibili e devono essere liberate dai processi precedenti;
+	\item Simula l'allocazione delle risorse al processo $i$ modificando lo stato come segue:
+		\begin{itemize}
+			\item $\text{\textit{Avail}} = \text{\textit{Avail}} - \text{\textit{Request}}$
+			\item $\text{\textit{Alloc}}[i] = \text{\textit{Alloc}}[i] + \text{\textit{Request}}$
+			\item $\text{\textit{Need}}[i] = \text{\textit{Need}}[i] - \text{\textit{Request}}$
+		\end{itemize}
+
+		A questo punto esegui l'algoritmo di sicurezza.
+		\begin{itemize}
+			\item Se lo stato è sicuro, non cambiare nulla ed alloca le risorse al processo $i$;
+			\item Se lo stato non è sicuro, riporta lo stato a prima della simulazione e aspetta. 
+		\end{itemize}
+\end{enumerate}
+
+\end{document}
