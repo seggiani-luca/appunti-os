@@ -363,7 +363,7 @@ Esistono 4 condizioni necessarie affinché si verifichi un deadlock:
 	\item \textbf{Mutua esclusione}: solo un processo per volta può usare una data risorsa;
 	\item \textbf{Hold and wait}: un processo che ha ottenuto almeno una risorsa si mette in attesa di altre risorse ottenute da altri processi;
 	\item \textbf{No preemption}: una risorsa può essere rilasciata solo \textit{volontariamente} dai processi che la ottengono, quando questi completano la loro operazione sulla stessa;
-	\item \textbf{Attesa circolare}: esiste un insieme $\{p_0, p_1, ..., p_n \}$ di processi in attesa tali che $p_0$ aspetta una risorsa di $p_1$, $p_1$ aspetta una risorsa di $p_2$, ..., $p_{n - 1}$ aspetta una risorsa di $p_n$.
+	\item \textbf{Attesa circolare}: esiste un insieme $\{p_0, p_1, ..., p_n \}$ di processi in attesa tali che $p_0$ aspetta una risorsa di $p_1$, $p_1$ aspetta una risorsa di $p_2$, ..., $p_{n - 1}$ aspetta una risorsa di $p_n$ e $p_n$ aspetta una risorsa di $p_1$.
 \end{enumerate}
 
 Si ha che difficilmente si può lavorare sulle prime 3 condizioni: la muta esclusione deriva dal fatto che ci sono fisicamente risorse limitate nel sistema, e non vogliamo imporre al programmatore vincoli su come e quali risorse vogliono ottenere, o constringerli a programmare meccanismi di recupero dal ritiro di risorse (\textit{preemption} su risorse).
