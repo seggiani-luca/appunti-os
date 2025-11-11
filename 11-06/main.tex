@@ -248,12 +248,12 @@ Ricordiamo quindi i metodi che avevamo previsto per gestire i deadlock:
 	\item Potremmo assicurarci che il sistema non entri mai in uno stato di deadlock: questo è il modello di \textbf{deadlock prevention} (\textit{prevenzione statica}). 
 
 		Questo è l'approccio usato dalla maggior parte dei sistemi operativi, che preferiscono lasciar eseguire i processi senza attivarsi in maniera dinamica per gestire eventuali deadlock. Di contro, si spera (e si progettano sistemi in maniera tale) che tali situazioni non si verifichino;
-	\item Potremmo permettere al sistema in normale operazione di trovarsi in stato di deadlock, rilevare tale deadlock e iniziare delle procedure di recupero: questo è il modello di \textbf{deadlock prevention} e \textbf{avoidance} (\textit{prevenzione dinamica}).
+	\item Potremmo permettere al sistema in normale operazione di trovarsi in stato di deadlock, rilevare tale deadlock e iniziare delle procedure di recupero: questo è il modello di \textbf{deadlock detection} e \textbf{avoidance} (\textit{prevenzione dinamica}).
 
 		Questo modello è più usato nei sistemi embedded, dove si possono fare ipotesi più stringenti sui processi in esecuzione.
 \end{itemize}
 
-\subsubsection{Prevenzione dinamica}
+\subsection{Prevenzione dinamica, deadlock avoidance}
 Vediamo quindi nel dettaglio la prevenzione dinamica di deadlock.
 In questo caso dobiamo permettere al sistema di avere a disposizione alcune informazioni a priori:
 \begin{itemize}
@@ -324,6 +324,8 @@ Il grafo di allocazione è il solito che abbiamo già visto:
 	\includegraphics[scale=0.3]{../figures/alloc_p0p1.png}
 \end{center}
 
+\newpage
+
 Possiamo modellizzare la stessa situazione, in evoluzione nel tempo, attraverso un grafico di questo tipo:
 \begin{center}
 	\includegraphics[scale=0.3]{../figures/time_p0p1.png}
@@ -367,7 +369,7 @@ Sia $n$ il numero di processi e $m$ il numero di tipi di risorse.
 	\item Le risorse \textbf{disponibili} saranno un vettore di interi di lunghezza $m$. Se la risorsa all'indice $j$ vale $k$, significa che ci sono $k$ istanze della risorsa corrispondente disponibili;
 	\item Per ogni processo dobbiamo sapere la quantità \textbf{massima} di risorse che vorrà allocare. Rappresentiamo questo con una matrice bidimensionale $n \times m$. Se questa all'indice $(i, j)$ vale $k$, allora il processo $i$ potrà richiedere al massimo $k$ risorse di tipo $j$;
 	\item Manteniamo una matrice simile, di risorse \textbf{allocate}. Se questa all'indice $(i, j)$ vale $k$, allora il processo $i$ avrà allocato $k$ risorse di tipo $j$;
-	\item Infine, manteniamo un'altra matrice simile, di risorse \textbf{desiderate}. Se questa all'indice $(i, j)$ vale $k$, allora il processo $i$ avrà bisogno (oltre a quelle che già ha), di $k$ risorse di tipo $j$;
+	\item Infine, manteniamo un'altra matrice simile, di risorse \textbf{desiderate}. Se questa all'indice $(i, j)$ vale $k$, allora il processo $i$ avrà bisogno (oltre a quelle che già ha), di $k$ risorse di tipo $j$.
 \end{itemize}
 
 Definiamo quindi le matrici e i vettori come \textit{Avail}, \textit{Max}, \textit{Alloc} e \textit{Need}. Viene da sé che:

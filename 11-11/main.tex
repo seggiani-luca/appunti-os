@@ -1,0 +1,445 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[a4paper, margin=8em]{geometry}
+
+% usa i pacchetti per la scrittura in italiano
+\usepackage[french,italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\frenchspacing 
+
+% usa i pacchetti per la formattazione matematica
+\usepackage{amsmath, amssymb, amsthm, amsfonts}
+
+% usa altri pacchetti
+\usepackage{gensymb}
+\usepackage{hyperref}
+\usepackage{standalone}
+
+\usepackage{colortbl}
+
+\usepackage{xstring}
+\usepackage{karnaugh-map}
+
+% imposta il titolo
+\title{Appunti Sistemi Operativi}
+\author{Luca Seggiani}
+\date{2025}
+
+% imposta lo stile
+% usa helvetica
+\usepackage[scaled]{helvet}
+% usa palatino
+\usepackage{palatino}
+% usa un font monospazio guardabile
+\usepackage{lmodern}
+
+\renewcommand{\rmdefault}{ppl}
+\renewcommand{\sfdefault}{phv}
+\renewcommand{\ttdefault}{lmtt}
+
+% circuiti
+\usepackage{circuitikz}
+\usetikzlibrary{babel}
+
+% testo cerchiato
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+            \node[shape=circle,draw,inner sep=2pt] (char) {#1};}}
+
+% disponi il titolo
+\makeatletter
+\renewcommand{\maketitle} {
+	\begin{center} 
+		\begin{minipage}[t]{.8\textwidth}
+			\textsf{\huge\bfseries \@title} 
+		\end{minipage}%
+		\begin{minipage}[t]{.2\textwidth}
+			\raggedleft \vspace{-1.65em}
+			\textsf{\small \@author} \vfill
+			\textsf{\small \@date}
+		\end{minipage}
+		\par
+	\end{center}
+
+	\thispagestyle{empty}
+	\pagestyle{fancy}
+}
+\makeatother
+
+% disponi teoremi
+\usepackage{tcolorbox}
+\newtcolorbox[auto counter, number within=section]{theorem}[2][]{%
+	colback=blue!10, 
+	colframe=blue!40!black, 
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries, 
+	title=Teorema~\thetcbcounter: #2, 
+	#1
+}
+
+% disponi definizioni
+\newtcolorbox[auto counter, number within=section]{definition}[2][]{%
+	colback=red!10,
+	colframe=red!40!black,
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries,
+	title=Definizione~\thetcbcounter: #2,
+	#1
+}
+
+% disponi codice
+\usepackage{listings}
+\usepackage[table]{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{codestyle}{
+		backgroundcolor=\color{black!5}, 
+		commentstyle=\color{codegreen},
+		keywordstyle=\bfseries\color{magenta},
+		numberstyle=\sffamily\tiny\color{black!60},
+		stringstyle=\color{green!50!black},
+		basicstyle=\ttfamily\footnotesize,
+		breakatwhitespace=false,         
+		breaklines=true,                 
+		captionpos=b,                    
+		keepspaces=true,                 
+		numbers=left,                    
+		numbersep=5pt,                  
+		showspaces=false,                
+		showstringspaces=false,
+		showtabs=false,                  
+		tabsize=2
+}
+
+\lstdefinestyle{shellstyle}{
+		backgroundcolor=\color{black!5}, 
+		basicstyle=\ttfamily\footnotesize\color{black}, 
+		commentstyle=\color{black}, 
+		keywordstyle=\color{black},
+		numberstyle=\color{black!5},
+		stringstyle=\color{black}, 
+		showspaces=false,
+		showstringspaces=false, 
+		showtabs=false, 
+		tabsize=2, 
+		numbers=none, 
+		breaklines=true
+}
+
+
+\lstdefinelanguage{assembler}{ 
+  keywords={AAA, AAD, AAM, AAS, ADC, ADCB, ADCW, ADCL, ADD, ADDB, ADDW, ADDL, AND, ANDB, ANDW, ANDL,
+        ARPL, BOUND, BSF, BSFL, BSFW, BSR, BSRL, BSRW, BSWAP, BT, BTC, BTCB, BTCW, BTCL, BTR, 
+        BTRB, BTRW, BTRL, BTS, BTSB, BTSW, BTSL, CALL, CBW, CDQ, CLC, CLD, CLI, CLTS, CMC, CMP,
+        CMPB, CMPW, CMPL, CMPS, CMPSB, CMPSD, CMPSW, CMPXCHG, CMPXCHGB, CMPXCHGW, CMPXCHGL,
+        CMPXCHG8B, CPUID, CWDE, DAA, DAS, DEC, DECB, DECW, DECL, DIV, DIVB, DIVW, DIVL, ENTER,
+        HLT, IDIV, IDIVB, IDIVW, IDIVL, IMUL, IMULB, IMULW, IMULL, IN, INB, INW, INL, INC, INCB,
+        INCW, INCL, INS, INSB, INSD, INSW, INT, INT3, INTO, INVD, INVLPG, IRET, IRETD, JA, JAE,
+        JB, JBE, JC, JCXZ, JE, JECXZ, JG, JGE, JL, JLE, JMP, JNA, JNAE, JNB, JNBE, JNC, JNE, JNG,
+        JNGE, JNL, JNLE, JNO, JNP, JNS, JNZ, JO, JP, JPE, JPO, JS, JZ, LAHF, LAR, LCALL, LDS,
+        LEA, LEAVE, LES, LFS, LGDT, LGS, LIDT, LMSW, LOCK, LODSB, LODSD, LODSW, LOOP, LOOPE,
+        LOOPNE, LSL, LSS, LTR, MOV, MOVB, MOVW, MOVL, MOVSB, MOVSD, MOVSW, MOVSX, MOVSXB,
+        MOVSXW, MOVSXL, MOVZX, MOVZXB, MOVZXW, MOVZXL, MUL, MULB, MULW, MULL, NEG, NEGB, NEGW,
+        NEGL, NOP, NOT, NOTB, NOTW, NOTL, OR, ORB, ORW, ORL, OUT, OUTB, OUTW, OUTL, OUTSB, OUTSD,
+        OUTSW, POP, POPL, POPW, POPB, POPA, POPAD, POPF, POPFD, PUSH, PUSHL, PUSHW, PUSHB, PUSHA, 
+				PUSHAD, PUSHF, PUSHFD, RCL, RCLB, RCLW, MOVSL, MOVSB, MOVSW, STOSL, STOSB, STOSW, LODSB, LODSW,
+				LODSL, INSB, INSW, INSL, OUTSB, OUTSL, OUTSW
+        RCLL, RCR, RCRB, RCRW, RCRL, RDMSR, RDPMC, RDTSC, REP, REPE, REPNE, RET, ROL, ROLB, ROLW,
+        ROLL, ROR, RORB, RORW, RORL, SAHF, SAL, SALB, SALW, SALL, SAR, SARB, SARW, SARL, SBB,
+        SBBB, SBBW, SBBL, SCASB, SCASD, SCASW, SETA, SETAE, SETB, SETBE, SETC, SETE, SETG, SETGE,
+        SETL, SETLE, SETNA, SETNAE, SETNB, SETNBE, SETNC, SETNE, SETNG, SETNGE, SETNL, SETNLE,
+        SETNO, SETNP, SETNS, SETNZ, SETO, SETP, SETPE, SETPO, SETS, SETZ, SGDT, SHL, SHLB, SHLW,
+        SHLL, SHLD, SHR, SHRB, SHRW, SHRL, SHRD, SIDT, SLDT, SMSW, STC, STD, STI, STOSB, STOSD,
+        STOSW, STR, SUB, SUBB, SUBW, SUBL, TEST, TESTB, TESTW, TESTL, VERR, VERW, WAIT, WBINVD,
+        XADD, XADDB, XADDW, XADDL, XCHG, XCHGB, XCHGW, XCHGL, XLAT, XLATB, XOR, XORB, XORW, XORL},
+  keywordstyle=\color{blue}\bfseries,
+  ndkeywordstyle=\color{darkgray}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=false,
+  comment=[l]{\#},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{purple}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+
+\lstset{language=assembler, style=codestyle}
+
+% disponi sezioni
+\usepackage{titlesec}
+
+\titleformat{\section}
+	{\sffamily\Large\bfseries} 
+	{\thesection}{1em}{} 
+\titleformat{\subsection}
+	{\sffamily\large\bfseries}   
+	{\thesubsection}{1em}{} 
+\titleformat{\subsubsection}
+	{\sffamily\normalsize\bfseries} 
+	{\thesubsubsection}{1em}{}
+
+% tikz
+\usepackage{tikz}
+
+% float
+\usepackage{float}
+
+% grafici
+\usepackage{pgfplots}
+\pgfplotsset{width=10cm,compat=1.9}
+
+% disponi alberi
+\usepackage{forest}
+
+\forestset{
+	rectstyle/.style={
+		for tree={rectangle,draw,font=\large\sffamily}
+	},
+	roundstyle/.style={
+		for tree={circle,draw,font=\large}
+	}
+}
+
+% disponi algoritmi
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\makeatletter
+\renewcommand{\ALG@name}{Algoritmo}
+\makeatother
+
+% disponi numeri di pagina
+\usepackage{fancyhdr}
+\fancyhf{} 
+\fancyfoot[L]{\sffamily{\thepage}}
+
+\makeatletter
+\fancyhead[L]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@title \ \@date}}} 
+\fancyhead[R]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@author}}}
+\makeatother
+
+\begin{document}
+% sezione (data)
+\section{Lezione del 11-11-25}
+
+% stili pagina
+\thispagestyle{empty}
+\pagestyle{fancy}
+
+% testo
+\subsection{Prevenzione dinamica, deadlock detection}
+Visto l'algoritmo del banchiere, celebre algoritmo di deadlock \textit{avoidance}, veniamo allo studio della deadlock detection.
+
+Nell'esempio più semplice di deadlock \textit{detection}, dove esiste una singola istanza di ogni tipo di risorsa, vogliamo mantenere un grafo di allocazione delle risorse.
+Periodicamente, invocheremo un algoritmo che analizza il grafo per trovare un ciclo. Se esiste un ciclo, esiste un deadlock (dai fatti in 15.0.1). Ricordiamo adesso che trovare cicli in un grafo di $n$ nodi richiede un'algoritmo $O(n^2)$.
+
+In ogni caso, quando si rileva un deadlock sarà opportuno invocare un qualche altro algoritmo, detto di deadlock \textit{recovery}, per risolvere il deadlock.
+
+\subsubsection{Grafo di attesa}
+Il grafo che manteniamo in un algoritmo di deadlock detection non è propriamente un grafo di allocazione, ma un cosiddetto grafo di \textbf{attesa} (o grafo \textit{wait-for}).
+
+In questo caso l'informazione che vogliamo allocare non è l'attesa sulle \textit{risorse}, ma sui processi che competono per risorse.
+La conversione da grafo di allocazione a grafo di attesa è banale: basta sostituire le triple freccia-risorsa-freccia con singole frecce dirette nello stesso senso.
+
+Questo è meglio spiegato dal seguente grafico, che mostra un grafo di allocazione a sinistra, e a destra il corrispondente grafo di attesa:
+\begin{center}
+	\includegraphics[scale=0.2]{../figures/alloc_wait.png}
+\end{center}
+
+Il grafo di attesa è meno espressivo del grafo di allocazione, ma contiene comunque tutte le informazioni necessarie a fare deadlock detection.
+Infatti, se il grafo di allocazione contiene cicli, il grafo di attesa conserva tali cicli.
+
+\subsubsection{Algoritmo di deadlock detection}
+Potremmo interrogarci su quando è conveniente invocare un determinato algoritmo di deadlock detection.
+
+Abbiamo introdotto in 16.1 che questo avrà necessariamente complessità $O(n^2)$ (in quanto deve scansionare un grafo per cicli).
+
+\begin{itemize}
+	\item Chiaramente, eseguirlo troppo spesso (come ad esempio ad ogni allocazione di risorsa, cioè nei momenti in cui il grafo di attesa cambia e si verifica la possibilità di deadlock) porterebbe ad un'overhead troppo consistente;
+	\item Un approccio simile al precedente è quello di effettuare deadlock detection ogni volta che non si riesce a soddisfare una richiesta di allocazione di risorse. Notiamo però che questo causa esecuzioni inutili quando il sistema ha, effettivamente, finito le risorse;
+	\item Un buon approccio è quello di valutare l'utilizzo dellla CPU, cioè quanto tempo della CPU viene effettivamente utilizzato, e quanto sprecato in attesa di risorse.
+A questo punto, decidiamo di mettere in esecuzione l'algoritmo di deadlock detection quando il tempo di utilizzo è minore di una certa soglia (magari il $40-60\%$).
+	\item Infine, l'approccio meno drastico e con minore overhead è quello di eseguire l'algoritmo periodicamente, a prescindere dall'utilizzo CPU o dalle risorse allocate.
+\end{itemize}
+
+\subsubsection{Detection in più istanze}
+Abbiamo fatto, in 16.1, una semplificazione per il nostro algoritmo di deadlock detection: quella di assumere che tutte le risorse esistano in singola istanza. Avevamo visto da 15.0.1 che questo significa che un ciclo è causa sufficiente per un deadlock.
+Vediamo come si possono implementare algoritmi di deadlock che funzionano in presenza di istanze multiple di risorsa, cioè quando questa è solo causa necessaria.
+
+Vogliamo comportarci come nell'algoritmo del banchiere, e quindi mantenere, sia $n$ il numero di processi e $m$ il numero di tipi di risorse:
+\begin{itemize}
+	\item Le risorse \textbf{disponibili} saranno un vettore di interi di lunghezza $m$. Se la risorsa all'indice $j$ vale $k$, significa che ci sono $k$ istanze della risorsa corrispondente disponibili;
+	\item Manteniamo una matrice di risorse \textbf{allocate}. Se questa all'indice $(i, j)$ vale $k$, allora il processo $i$ avrà allocato $k$ risorse di tipo $j$;
+	\item Infine, manteniamo un'altra matrice simile, di risorse \textbf{richieste}. Se questa all'indice $(i, j)$ vale $k$, allora il processo $i$ sta richiedendo (oltre a quelle che già ha), $k$ risorse di tipo $j$.
+\end{itemize}
+
+Definiamo quindi le matrici e i vettori come \textit{Avail}, \textit{Alloc} e \textit{Request}.
+
+Notiamo che queste sono in qualche modo corrispondenti alle variabili di stato viste in 15.2 (dove si è discusso l'algoritmo del banchiere), se non per il fatto che l'equazione  che legava \textit{Need} a \textit{Max} e \textit{Alloc} non è più presente.
+Questo è chiaro dal fatto che non abiamo nessuna indicazione delle risorse massime richieste da un processo, e che questo potrebbe richiederne ancora, teoreticamente all'infinito.
+
+In verità, la matrice \textit{Need} non è propriamente duale alla \textit{Request}: se la \textit{Need} mantiene uno stato noto a priori e che varia in fase di allocazione di risorse da parte di un processo, la \textit{Request} varia nel tempo sulla base del comportamento del processo (varia sostanzialmente in fase di chiamata di primitive di allocazione).
+
+L'algoritmo a questo punto è molto simile all'algoritmo di sicurezza del banchiere:
+\begin{enumerate}
+	\item Siano \textit{Work} e \textit{Finish} vettori di lunghezza rispettivamente $m$ e $n$.
+		Inizializza:
+		\begin{itemize}
+			\item $\text{\textit{Work}} = \text{\textit{Avail}}$
+			\item $\text{\textit{Finish}}[i] = $ \lstinline|false| se $\text{\textit{Alloc}}[i] \neq 0$, altrimenti \lstinline|true|, per $i = 0, 1, ..., n - 1$.
+				Questa condizione non equivale strettamente al fatto che il processo è terminato. Piuttosto, significa che il processo non ha risorse allocate, per cui non può in nessun modo essere parte di un ciclo di deadlock. 
+		\end{itemize}
+	\item Trova un $i$ tale che:
+		\begin{itemize}
+			\item $\text{\textit{Finish}}[i] = $ \lstinline|false|
+			\item $\text{\textit{Request}}[i] \leq $ \textit{Work} 
+		\end{itemize}
+		se non esiste nessun $i$ che soddisfa le condizioni, vai al passo 4;
+	\item Poni:
+		\begin{itemize}
+			\item $\text{\textit{Work}} = \text{\textit{Work}} + \text{\textit{Alloc}}$
+			\item $\text{\textit{Finish}}[i] = $ \lstinline|true|
+		\end{itemize}
+		quindi vai al passo 2;
+	\item Se $\text{\textit{Finish}} == $ \lstinline|false| per qualche $i$, allora il processo $i$ è in deadlock.
+\end{enumerate}
+
+\subsection{Prevenzione dinamica, deadlock recovery}
+Interroghiamoci quindi su cosa fare in fase di rilevamento di deadlock.
+
+Se l'algoritmo di detection è invocato su base arbitaria, potrebbero esserci molti cicli nel grafo di attesa, e quindi potremmo non essere in grado di capire quali dei processi in deadlock hanno in qualche modo \textit{"provocato"} il deadlock.
+
+L'operazione fondamentale di recupero dal deadlock è quella di \textbf{rollback} del processo, cioè riportare il processo ad uno stato precedente a quando il deadlock si è verificato.
+Un'altra opzione, molto più brutale, è quella di abortire il processo coinvolto.
+
+Possiamo comunque interrogarci su \textit{quale} processo (o processi) fare rollback o abort.
+\begin{itemize}
+	\item La soluzione drastica è quella di influenzare tutti i processi coinvolti nel deadlock. Questo chiaramente risolve i problemi ma è distruttivo per il sistema;
+	\item Una soluzione più intelligente potrebbe essere quella di influenzare un processo per ogni ciclo disgiunto trovato nel grafo di attea.
+
+		In questo caso dobbiamo però simulare lo stato ottenuto facendo rollback (o abort) di ogni processo, in modo da assicurarci che la \textit{vittima} selezionata sia effettivamente quella che causa il deadlock.
+
+		Un buon approccio a questo metodo è quello di definire una certa \textit{metrica} per la scelta dei processi vittima.
+		Ad esempio, potremmo iniziare a selezionare vittime classificando per:
+		\begin{itemize}
+			\item La priorità del processo;
+			\item Il tempo per cui il processo ha eseguito, e il tempo rimanente fino alla terminazione (vedere 6.2.5);
+			\item Le risorse che il processo ha già allocato;
+			\item Le risorse che servono al processo per terminare;
+			\item Il numero di processi da terminare (preferire di terminare meno processi possibile);
+			\item Se il processo è interattivo o batch. 
+		\end{itemize}
+\end{itemize}
+
+Notiamo tutte queste metodologie rischiano sempre la \textit{starvation}: un processo potrebbe essere sempre vittima di abort o rollback, e quindi non riuscire mai a terminare.
+
+\subsection{Gestione della memoria}
+Veniamo quindi alla gestione della seconda risorsa più importante dopo la CPU, cioè la \textbf{memoria} principale a disposizione del calcolatore.
+
+L'idea è di offrire a tutti i processi il loro spazio di indirizzamento locale, quindi organizzare una risorsa fisica in più risorse logiche.
+Vedremo poi come potrebbe essere opportuno definire meccanismi più sofisticati, come divisione di memoria fra S/O e processi, e condivisione di memoria (appunto, \textit{memoria condivisa}) fra più processi.
+
+Gestione della memoria e gestione della CPU hanno dei parallelismi:
+\begin{itemize}
+	\item Nella CPU offrivamo più CPU virtuali mantenendo il contesto dei processi nel \textbf{PCB} (\textit{Process Control Block}). 
+
+		Nella memoria vorremo offrire più memorie virtuali, allocando altre apposite strutture dati (\textit{descrittori}) che mantengano il contesto relativo al singolo processo;
+
+	\item In particolare, potremmo voler implementare meccanismi di \textit{swap-in} e \textit{swap-out} che permettono di spostare i contenuti della memoria principale nella memoria secondare (disco rigido o simili), quando la prima risulta satura. Questo processo è effettivamente parallelo al cambio di contesto CPU. 
+\end{itemize}
+
+Esistono però anche differenze fra gestione della memoria e gestione della CPU:
+\begin{itemize}
+	\item La gestione della CPU è atomica, cioè tutta la CPU viene allocata ad un singolo processo (a meno di approcci multiprocessore, per cui abbiamo ampiamente discusso meccanismi di sincronizzazione).
+
+		Nella gestione della memoria, però, è fondamentale che più parti della memoria vengano allocate a processi diversi, per cui è necessario fin da subito prevedere meccanismi di \textit{protezione} della memoria di processi dall'accesso di altri processi.
+\end{itemize}
+
+\subsubsection{Immagine di un processo}
+Abbiamo detto che ogni processo vorrà vedere il suo \textit{spazio di indirizzamento} privato e locale.
+Vediamo nel dettaglio come questo spazio potrebbe essere organizzato:
+\begin{center}
+	\includegraphics[scale=0.1]{../figures/proc_img.png}
+\end{center}
+\begin{itemize}
+	\item Vogliamo mantenere un primo segmento dedicato al \textbf{codice}, cioè al programma vero e proprio in esecuzione nel processo. Si assume che questa si troverà all'inizio dello spazio di indirizzamento, e conterrà l'entry point del programma. Questa sezione conterrà inoltre i \textbf{dati in sola lettura} del programma (in quanto si assume che sia il codice che questi dovranno essere in sola lettura, come poi vedremo);
+	\item Vogliamo quindi mantenere un segmento per i \textbf{dati} statici del programma, incluse le variabili inizializzate (\textbf{dati in lettura/scrittura}) e inizializate a 0 (\textbf{BSS}, \textit{Block Started by Symbol});
+	\item Vorremo poi mantenere un segmento per l'\textbf{heap}, cioè la regione di memoria allocata in memoria dinamica;
+	\item Infine vorremo un segmento per lo \textbf{stack}, che come sappiamo si sviluppa dall'alto verso il basso (e quindi si sviluppa a partire dal fondo allo spazio di indirizzamento).
+\end{itemize}
+
+Potrebbe essere utile ripercorrere i passaggi che la nostra toolchain compie in fase di compilazione di un programma, per generare appunto un'immagine di queste sezioni da poi caricare in memoria.
+\begin{itemize}
+	\item Il \textit{compilatore} si occupa di prendere il codice sorgente del programma e tradurlo in \textit{oggetti}. Dobbiamo ricordare che gli oggetti non contengono indirizzi veri e propri nello spazio di indirizzamento processo, ma indirizzi \textit{simbolici}, cioò non ancora risolti e che puntano a segmenti magari adesso nemmeno definiti;
+	\item Il \textit{linker} (\textit{collegatore}) si occupa di prendere gli oggetti da noi generati, e quelli già presenti nel sistema sotto forma di \textit{librerie}, e appunto collegarli in un file eseguibile. Solo in questo passaggio i segmenti vengono preparati, e gli indirizzi simbolici vengono tradotti in indirizzi reali nello spazio di indirizzamento di processo;
+	\item Infine, un \textit{loader} (\textit{caricatore}) si occuperà di prendere i segmenti preparati dal linker e caricarli in memoria (magari impostando come lettura/scrittura gli opportuni segmenti, e azzerando i segmenti di bss, ecc...). A questo punto basterà spostare il PC all'entry point del programma ed eseguire. 
+\end{itemize}
+
+\subsection{Rilocazione statica/dinamica}
+Vediamo quindi a come si può svolgere la gestione della memoria vera e propria, cioò come il caricatore può comportarsi quando gli viene fornita l'immagine di un processo.
+
+\begin{itemize}
+	\item L'approccio più semplice è quello della rilocazione \textbf{statica}. In questo caso si prevede un caricatore \textit{rilocante}, cioè che si occupa di prendere l'immagine del programma e allocarla in memoria a partire da un certo indirizzo, detto \textbf{base}. Chiaramente dovrà preoccuparsi di calcolare il contenuto del program counter (aggiungendo all'entry point la base), e degli indirizzi fisici del programma (ancora, aggiungendo a tali indirizzi la base). 
+
+		Il problema di tale approccio è che è limitante per quanto riguarda la rilocazione successiva dell'immagine di processo (magari a causa di uno swap-out e successivo swap-in): in questo caso saremo costretti a fare qualcosa di indicibile come ricalcolare gli indirizzi in memoria a tempo di esecuzione (praticamente impossibile), o ricaricare il processo esattamente nello stesso posto di prima (cosa che rende abbastanza inutile prevedere lo swap-out in primo luogo);
+
+	\item Decidiamo quindi usare un approccio a rilocazione \textbf{dinamica}. In questo caso dobbiamo prevedere un nuovo componente hardware, detto \textbf{MMU} (\textit{Memory Management Unit}).
+		La MMU ha il compito di implementare una qualche funzione di traduzione da indirizzo \textit{virtuale} a indirizzo \textit{fisico}:
+$$
+\text{\lstinline|MMU_translate|}(\text{virt}) = \text{phys}
+$$
+
+In questo modo il processore può continuare a pensare ai suoi indirizzi virtuali (che sono ad esso locali), e il compito di traduzione effettiva da questi a indirizzi fisici in memoria è delegato alla MMU, così che i processi non debbano preoccuparsi di dove si trovano effettivamente i loro dati, ma possono specificare indirizzi relativi al loro spazio di indirizzamento locale.
+
+L'implementazione più semplice della MMU è quella parallela all'esempio della rilocazione statica appena fatta.
+Prevediamo infatti la presenza di un registro \textbf{base} e un registro \textbf{limite}: quello che la MMU farà sarà controllare che i registri (virtuali) forniti dal processore non cadano fuori dal limite, e quindi sommarvi il registro base.
+Il S/O avrà il compito di impostare tali registri per ogni processo (in fase di cambio contesto), e così avremo il comportamento della rilocazione statica senza mai dover agire sugli indirizzi fisici nel codice del programma.
+
+Tralasciamo per adesso le complicazioni date dal fatto che il sistema operativo stesso deve accedere alla memoria attraverso la MMU, e quindi subendo traduzioni di indirizzi (solitamente si prevede una finestra, la finestra \textbf{FM}, che permette l'accesso diretto a tutta o una parte rilocabile della memoria fisica con traduzioni identità o identità con offset). 
+\end{itemize}
+
+\subsubsection{Memoria unica/segmentata}
+Un'altra distinzione ortogonale nella gestione della memoria è data da come si gestisce lo spazio di memoria fisico.
+\begin{itemize}
+	\item La memoria è gestita come \textbf{unica} (o \textit{flat}) quando si fornisce ad ogni processo una sezione contigua (o non contigua, ma comunque vista come uno o più blocchi contigui) di memoria, poi suddivisa nei vari segmenti (codice, dati, ecc...). Questo è l'approccio usato ad esempio dai sistemi a \textit{paginazione};
+	\item Un approccio una volta diffuso e oggi caduto in disuso (in particolare, introdotto nell'Intel 286 e sostanzialmente rimosso a partire nell'architettura x86\_64 di AMD) è quello della memoria \textbf{segmentata}. In questo caso ogni segmento viene gestito a livello hardware, per cui gli indirizzi diventano composti da due interi: il \textit{segmento} e l'\textit{offset} all'interno del segmento. Chiamiamo sistemi che usano questo approccio a \textit{segmentazione}. 
+\end{itemize}
+
+In quanto a pro e contro di questi approcci, abbiamo che:
+\begin{itemize}
+	\item La memoria \textbf{unica} elimina i problemi di frammentazione \textit{esterna} (ad ogni processo si alloca la memoria di cui necessita), ma introduce problemi di frammentazione \textit{interna} (visto che solitamente la memoria si richiede in blocchi, potrebbe essere un problema riempire tali blocchi);
+	\item La memoria \textbf{segmentata}, di contro, elimina i problemi di frammentazione \textbf{interna} (ogni segmento viene richiesto esattamente della dimensione necessaria), ma introduce problemi di frammentazione \textbf{esterna} (bisogna capire come usare lo spazio disponibile per allocare i segmenti).
+
+		Un'approccio da usare in questi casi è quello del \textit{compattamento} (o \textbf{deframmentazione}): periodicamente, si può analizzare la memoria in modo da spostare in un unico blocco contiguo i segmenti, in modo da massimizzare lo spazio disponibile per le immagini di nuovi processi. 
+\end{itemize}
+
+\subsubsection{Memoria contigua/non contigua}
+Vediamo un'altra distinzione ortogonale sulla gestione della memoria, in particolare relativa all'allocazione della memoria \textit{fisica}:
+\begin{itemize}
+	\item L'approccio più semplice che possiamo immaginare è quello di allocare la memoria in maniera \textbf{contigua}, cioè assicurare che ogni processo ottenga, nel suo spazio virtuale, un blocco contiguo (e opportunamente spostato di un certo offset) in memoria fisica;
+	\item Risulta però molto più comodo concedere l'allocazione \textbf{non contigua} della memoria fisica, agendo sulla funzione di traduzione dell'MMU. Questo permette di ridurre a zero la frammentazione esterna, in quanto non c'è mai la necessità di mantenere, in primo luogo, separate e contigue le regioni allocate ai processi. 
+
+		Questo, però, introduce spesso un quanto minimo di spazio che possiamo allocare (come avevamo già introdotto), ed è l'approccio usato nella \textit{paginazione}.
+		Vediamo che la paginazione ha un overhead non indifferente: la realizzazione di una funzione di traduzione indirizzi che permetta l'allocazione flat e non contigua in memoria fisica richiede infatti tabelle anche consistenti in memoria, che possono essere allocate efficientemente solo usando schemi di allocazione particolari. 
+\end{itemize}
+
+\subsubsection{Dimensioni della memoria}
+Infine, vorremo distinguere sulla \textbf{dimensione} della memoria virtuale che vogliamo fornire al processo rispetto alla memoria fisica disponibile al sistema:
+\begin{itemize}
+	\item Se la memoria virtuale è \textbf{minore o uguale} alla memoria fisica, saremo in condizioni di \textit{caricamento unico}: potremo caricare l'intera immagine di processo in memoria fisica ed andare avanti;
+	\item Altrimenti, se la memoria virtuale è \textbf{maggiore} della memoria fisica, dovremmo implementare meccanismi di \textit{paginazione su domanda}, cioè allocare e deallocare regioni di memoria al processo su base dinamica, cioè quando questo le richiede.
+\end{itemize}
+
+\subsubsection{Riassunto sulla gestione della memoria}
+Riassumiamo quindi i tipi di approcci possibili alla gestione della memoria, sulla base delle caratteristiche ortogonali viste finora:
+\begin{itemize}
+	\item # lista carattersistiche ortogonali
+\end{itemize}
+
+Vediamo quindi gli approcci possibili sulla base di tali caratteristiche: 
+# albero approcci gestione della memoria
+
+\end{document}
