@@ -436,10 +436,58 @@ Infine, vorremo distinguere sulla \textbf{dimensione} della memoria virtuale che
 \subsubsection{Riassunto sulla gestione della memoria}
 Riassumiamo quindi i tipi di approcci possibili alla gestione della memoria, sulla base delle caratteristiche ortogonali viste finora:
 \begin{itemize}
-	\item # lista carattersistiche ortogonali
+	\item Rilocazione statica/dinamica;
+	\item Allocazione contigua/non contigua;
+	\item Spazio virtuale unico/segmentato;
+	\item Caricamento completo/su domanda (abbiamo detto corrispondono a \textit{dimensione della memoria virtuale} minore o uguale/maggiore della memoria fisica.)
 \end{itemize}
 
+\newpage
+
 Vediamo quindi gli approcci possibili sulla base di tali caratteristiche: 
-# albero approcci gestione della memoria
+\begin{adjustwidth}{-3cm}{-3cm} 
+	\begin{center}
+		\begin{forest}
+			for tree={
+				grow'=east,
+				delay={
+					edge label/.wrap value={node[midway, font=\sffamily\scriptsize, auto]{#1}},
+				},
+				font=\sffamily\footnotesize,
+				s sep = 3.5em,
+				l sep = 3.5em
+			}
+			[Rilocazione
+				[Allocazione, edge label=statica
+					[Spazio virtuale, edge label=contigua
+						[Caricamento, edge label=unico
+							[Partizioni fisse o variabili, edge label=completo]	
+						]
+						[Caricamento, edge label=segmentato
+							[Partizioni multiple, edge label=completo]	
+						]
+					]
+				]
+				[Allocazione, edge label=dinamica
+					[Spazio virtuale, edge label=contigua
+						[Caricamento, edge label=segmentato
+							[Segmentazione, edge label=completo]	
+							[Segmentazione su domanda, edge label=su domanda]	
+						]
+					]
+					[Spazio virtuale, edge label=non contigua
+						[Caricamento, edge label=unico
+							[Paginazione, edge label=completo]	
+							[Paginazione su domanda, edge label=su domanda]	
+						]
+						[Caricamento, edge label=segmentato
+							[Segmentazione con paginazione, edge label=su domanda]	
+						]
+					]
+				]
+			]	
+		\end{forest}
+	\end{center}
+\end{adjustwidth}
 
 \end{document}
