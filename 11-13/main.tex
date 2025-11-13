@@ -1,0 +1,448 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[a4paper, margin=8em]{geometry}
+
+% usa i pacchetti per la scrittura in italiano
+\usepackage[french,italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\frenchspacing 
+
+% usa i pacchetti per la formattazione matematica
+\usepackage{amsmath, amssymb, amsthm, amsfonts}
+
+% usa altri pacchetti
+\usepackage{gensymb}
+\usepackage{hyperref}
+\usepackage{standalone}
+
+\usepackage{colortbl}
+
+\usepackage{xstring}
+\usepackage{karnaugh-map}
+
+% imposta il titolo
+\title{Appunti Sistemi Operativi}
+\author{Luca Seggiani}
+\date{2025}
+
+% imposta lo stile
+% usa helvetica
+\usepackage[scaled]{helvet}
+% usa palatino
+\usepackage{palatino}
+% usa un font monospazio guardabile
+\usepackage{lmodern}
+
+\renewcommand{\rmdefault}{ppl}
+\renewcommand{\sfdefault}{phv}
+\renewcommand{\ttdefault}{lmtt}
+
+% circuiti
+\usepackage{circuitikz}
+\usetikzlibrary{babel}
+
+% testo cerchiato
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+            \node[shape=circle,draw,inner sep=2pt] (char) {#1};}}
+
+% disponi il titolo
+\makeatletter
+\renewcommand{\maketitle} {
+	\begin{center} 
+		\begin{minipage}[t]{.8\textwidth}
+			\textsf{\huge\bfseries \@title} 
+		\end{minipage}%
+		\begin{minipage}[t]{.2\textwidth}
+			\raggedleft \vspace{-1.65em}
+			\textsf{\small \@author} \vfill
+			\textsf{\small \@date}
+		\end{minipage}
+		\par
+	\end{center}
+
+	\thispagestyle{empty}
+	\pagestyle{fancy}
+}
+\makeatother
+
+% disponi teoremi
+\usepackage{tcolorbox}
+\newtcolorbox[auto counter, number within=section]{theorem}[2][]{%
+	colback=blue!10, 
+	colframe=blue!40!black, 
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries, 
+	title=Teorema~\thetcbcounter: #2, 
+	#1
+}
+
+% disponi definizioni
+\newtcolorbox[auto counter, number within=section]{definition}[2][]{%
+	colback=red!10,
+	colframe=red!40!black,
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries,
+	title=Definizione~\thetcbcounter: #2,
+	#1
+}
+
+% disponi codice
+\usepackage{listings}
+\usepackage[table]{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{codestyle}{
+		backgroundcolor=\color{black!5}, 
+		commentstyle=\color{codegreen},
+		keywordstyle=\bfseries\color{magenta},
+		numberstyle=\sffamily\tiny\color{black!60},
+		stringstyle=\color{green!50!black},
+		basicstyle=\ttfamily\footnotesize,
+		breakatwhitespace=false,         
+		breaklines=true,                 
+		captionpos=b,                    
+		keepspaces=true,                 
+		numbers=left,                    
+		numbersep=5pt,                  
+		showspaces=false,                
+		showstringspaces=false,
+		showtabs=false,                  
+		tabsize=2
+}
+
+\lstdefinestyle{shellstyle}{
+		backgroundcolor=\color{black!5}, 
+		basicstyle=\ttfamily\footnotesize\color{black}, 
+		commentstyle=\color{black}, 
+		keywordstyle=\color{black},
+		numberstyle=\color{black!5},
+		stringstyle=\color{black}, 
+		showspaces=false,
+		showstringspaces=false, 
+		showtabs=false, 
+		tabsize=2, 
+		numbers=none, 
+		breaklines=true
+}
+
+
+\lstdefinelanguage{assembler}{ 
+  keywords={AAA, AAD, AAM, AAS, ADC, ADCB, ADCW, ADCL, ADD, ADDB, ADDW, ADDL, AND, ANDB, ANDW, ANDL,
+        ARPL, BOUND, BSF, BSFL, BSFW, BSR, BSRL, BSRW, BSWAP, BT, BTC, BTCB, BTCW, BTCL, BTR, 
+        BTRB, BTRW, BTRL, BTS, BTSB, BTSW, BTSL, CALL, CBW, CDQ, CLC, CLD, CLI, CLTS, CMC, CMP,
+        CMPB, CMPW, CMPL, CMPS, CMPSB, CMPSD, CMPSW, CMPXCHG, CMPXCHGB, CMPXCHGW, CMPXCHGL,
+        CMPXCHG8B, CPUID, CWDE, DAA, DAS, DEC, DECB, DECW, DECL, DIV, DIVB, DIVW, DIVL, ENTER,
+        HLT, IDIV, IDIVB, IDIVW, IDIVL, IMUL, IMULB, IMULW, IMULL, IN, INB, INW, INL, INC, INCB,
+        INCW, INCL, INS, INSB, INSD, INSW, INT, INT3, INTO, INVD, INVLPG, IRET, IRETD, JA, JAE,
+        JB, JBE, JC, JCXZ, JE, JECXZ, JG, JGE, JL, JLE, JMP, JNA, JNAE, JNB, JNBE, JNC, JNE, JNG,
+        JNGE, JNL, JNLE, JNO, JNP, JNS, JNZ, JO, JP, JPE, JPO, JS, JZ, LAHF, LAR, LCALL, LDS,
+        LEA, LEAVE, LES, LFS, LGDT, LGS, LIDT, LMSW, LOCK, LODSB, LODSD, LODSW, LOOP, LOOPE,
+        LOOPNE, LSL, LSS, LTR, MOV, MOVB, MOVW, MOVL, MOVSB, MOVSD, MOVSW, MOVSX, MOVSXB,
+        MOVSXW, MOVSXL, MOVZX, MOVZXB, MOVZXW, MOVZXL, MUL, MULB, MULW, MULL, NEG, NEGB, NEGW,
+        NEGL, NOP, NOT, NOTB, NOTW, NOTL, OR, ORB, ORW, ORL, OUT, OUTB, OUTW, OUTL, OUTSB, OUTSD,
+        OUTSW, POP, POPL, POPW, POPB, POPA, POPAD, POPF, POPFD, PUSH, PUSHL, PUSHW, PUSHB, PUSHA, 
+				PUSHAD, PUSHF, PUSHFD, RCL, RCLB, RCLW, MOVSL, MOVSB, MOVSW, STOSL, STOSB, STOSW, LODSB, LODSW,
+				LODSL, INSB, INSW, INSL, OUTSB, OUTSL, OUTSW
+        RCLL, RCR, RCRB, RCRW, RCRL, RDMSR, RDPMC, RDTSC, REP, REPE, REPNE, RET, ROL, ROLB, ROLW,
+        ROLL, ROR, RORB, RORW, RORL, SAHF, SAL, SALB, SALW, SALL, SAR, SARB, SARW, SARL, SBB,
+        SBBB, SBBW, SBBL, SCASB, SCASD, SCASW, SETA, SETAE, SETB, SETBE, SETC, SETE, SETG, SETGE,
+        SETL, SETLE, SETNA, SETNAE, SETNB, SETNBE, SETNC, SETNE, SETNG, SETNGE, SETNL, SETNLE,
+        SETNO, SETNP, SETNS, SETNZ, SETO, SETP, SETPE, SETPO, SETS, SETZ, SGDT, SHL, SHLB, SHLW,
+        SHLL, SHLD, SHR, SHRB, SHRW, SHRL, SHRD, SIDT, SLDT, SMSW, STC, STD, STI, STOSB, STOSD,
+        STOSW, STR, SUB, SUBB, SUBW, SUBL, TEST, TESTB, TESTW, TESTL, VERR, VERW, WAIT, WBINVD,
+        XADD, XADDB, XADDW, XADDL, XCHG, XCHGB, XCHGW, XCHGL, XLAT, XLATB, XOR, XORB, XORW, XORL},
+  keywordstyle=\color{blue}\bfseries,
+  ndkeywordstyle=\color{darkgray}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=false,
+  comment=[l]{\#},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{purple}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+
+\lstset{language=assembler, style=codestyle}
+
+% disponi sezioni
+\usepackage{titlesec}
+
+\titleformat{\section}
+	{\sffamily\Large\bfseries} 
+	{\thesection}{1em}{} 
+\titleformat{\subsection}
+	{\sffamily\large\bfseries}   
+	{\thesubsection}{1em}{} 
+\titleformat{\subsubsection}
+	{\sffamily\normalsize\bfseries} 
+	{\thesubsubsection}{1em}{}
+
+% tikz
+\usepackage{tikz}
+
+% float
+\usepackage{float}
+
+% grafici
+\usepackage{pgfplots}
+\pgfplotsset{width=10cm,compat=1.9}
+
+% disponi alberi
+\usepackage{forest}
+
+\forestset{
+	rectstyle/.style={
+		for tree={rectangle,draw,font=\large\sffamily}
+	},
+	roundstyle/.style={
+		for tree={circle,draw,font=\large}
+	}
+}
+
+% disponi algoritmi
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\makeatletter
+\renewcommand{\ALG@name}{Algoritmo}
+\makeatother
+
+% disponi numeri di pagina
+\usepackage{fancyhdr}
+\fancyhf{} 
+\fancyfoot[L]{\sffamily{\thepage}}
+
+\makeatletter
+\fancyhead[L]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@title \ \@date}}} 
+\fancyhead[R]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@author}}}
+\makeatother
+
+\begin{document}
+% sezione (data)
+\section{Lezione del 13-11-25}
+
+% stili pagina
+\thispagestyle{empty}
+\pagestyle{fancy}
+
+% testo
+Cominciamo a vedere le tecniche di gestione della memoria viste nella scorsa lezione, in ordine.
+
+\subsection{Partizioni fisse}
+Questo è un approccio a rilocazione \textit{statica}, allocazione \textit{contigua}, spazio virtuale \textit{unico} e caricamento \textit{completo}.
+
+Ciò che facciamo è suddividere lo spazio di indirizzamento in \textbf{partizioni fisse}, dedicate ciascuna ad un processo (una specifica partizione andrà dedicata al S/O).
+Diciamo, quindi, di allocare $D_0$ Mbyte al sistema operativo, e poi secondo la dimensione della memoria $D_1 \, ... \, D_n$ partizioni di memoria ai processi $1 \, ... \, n$.
+
+Il problema in cui incorreremo sarà la \textbf{frammentazione interna}: all'interno della partizione di ogni processo non è detto che il processo utilizzerà sempre la totalità della partizione. 
+Diciamo infatti che il processo $i$ usi $N_i$ Mbyte all'interno della sua partizione: avremo che $D_i - N_i$ sarà spazio sprecato (frammentazione interna) all'interno della partizione.
+
+Tenendo conto di tutti i processi, si avrà che:
+$$
+F_i = \sum_1^n \left( D_i - N_i \right)
+$$
+con $F_i$ appunto la frammentazione interna, quindi la memoria sprecata, complessivamente nel sistema.
+
+Dal punto di vista pratico, il modo più ragionevole per implementare tale soluzione è sfruttare una struttura dati a lista di descrittori di partizione.
+\begin{itemize}
+	\item A questo punto si possono effettuare ricerche su tale liste secondo un approccio \textbf{first-fit}, cioè caricare il processo nella prima partizione capace di contenere la sua immagine (assumiamo infatti che le partizioni abbiano dimensione variabile). Nel caso in cui tale partizione non esista, chiaramente, siamo in overflow di memoria e il processo non può essere caricato.
+
+		Per questo approccio, va bene che la partizioni in lista siano ordinate per indirizzo (cioè appaiano nella lista nell'ordine in cui vengono disposte in memoria);
+	\item Un approccio più conservativo è quello del \textbf{best-fit}: in questo caso si cerca di usare la partizione più piccola possibile che può contenere il processo.
+
+		In questo caso usare l'ordinamento per indirizzo può risultare inefficiente: bisogna controllare per ogni processo ogni partizione.
+		Può essere quindi più ragionevole ordinare le partizioni per dimensione, a partire dalla più piccola: in questo caso il semplice inserimento first-fit sarà automaticamente di tipo best-fit (la prima partizione che contiene è automaticamente la più piccola che contiene).
+\end{itemize}
+
+Avevamo introdotto in 6.1.1 lo scheduling di \textbf{medio termine}.
+Nell'approccio a partizione fisse questo consiste ad adottare più code di processi, una per ogni partizione, e decidere a quale processo dedicare una determinata partizione.
+
+\subsection{Partizioni variabili}
+Evolviamo l'approccio a partizioni fisse.
+Nelle \textbf{partizioni variabili}, infatti, vogliamo permettere alle partizioni non solo di avere memoria diversa, ma di poter variare la loro dimensione nel tempo.
+Questo singifica che l'approccio è comunque a rilocazione \textit{statica}, allocazione \textit{contigua}, spazio virtuale \textit{unico} e caricamento \textit{completo}.
+
+Diciamo quindi che inizalmente il sistema contiene due partizioni:
+\begin{itemize}
+	\item $D_0$, dedicata come prima al sistema operativo;
+	\item $D_1$, dedicata a qualsiasi processo.
+\end{itemize}
+
+Quando un processo, diciamo $P_1$, entra in esecuzione, dividiamo $D_1$ in due partizioni: una resta $D_1$, e viene ridimensionata esattamente alla memoria $N_1$ richiesta dal processo, mentre l'altra viene denominata $D_2$ e lasciata libera.
+Questo processo chiaramente si può ripetere per ogni nuovo processo in arrivo, eliminando sostanzialmente il problema della frammentazione interna.
+
+Quello che chiaramente andiamo ad introdurre è pero la \textbf{frammentazione esterna}: quando un processo $i$ termina, e libera la sua partizione $D_i$, ciò che accade è che nello spazio di indirizzamento rimane un \textit{"buco"} di dimensione $N_i$.
+Dopo un certo tempo, all'interno del sistema si vano quindi a formare buchi, che impediscono a successivi processi di essere caricati in maniera contigua in memoria.
+
+Potrebbero infatti verificarsi dove la memoria ha complessivamente abbastanza spazio per contenere un nuovo processo, ma la dimensione di nessuno dei singoli buchi e tale da consentirlo nella pratica.
+
+Anche nelle partizioni variabili è utile discutere sull'approccio alla scelta della partizione dove allocare nuovi processi.
+\begin{itemize}
+	\item L'approccio \textbf{first-fit} resta il più veloce, in quanto non abbiamo bisogno di riordinare la lista quando si alloca memoria (e quindi si dividono le partizioni).
+	\item Nel caso si scelga di usare un approccio \textbf{best-fit}, si riduce chiaramente la frammentazione, a costo di dover riordinare la lista in fase di divisione di partizioni.
+
+		L'approccio alternativo è quello di scansionare l'intera lista di partizioni per ogni nuova inserzione, che però avevamo detto parlando delle partizioni fisse è meno efficiente.
+\end{itemize}
+
+Notiamo inoltre che un vantaggio non indifferente che possiamo avere è la possibilità di fare \textbf{fusione} delle partizioni al momento di liberazione di spazio dedicato a un processo.
+Infatti, se la partizione liberata è adiacente ad una partizione libera, si possono combinare le due partizioni in un'unica partizione di dimensione maggiore.
+
+\subsubsection{Riassunto sui criteri di allocazione}
+Possiamo quindi riassumere velocemente le tecniche di allocazione viste nel partizionamento fisso e variabile:
+\begin{itemize}
+	\item \textbf{First-fit}: è il più veloce, non ha pretese particolari sulle modalità di scansione della lista di partizioni o sul suo ordinamento;
+	\item \textbf{Best-fit}: permette di ridurre la frammentazione (\textit{interna} per partizioni fisse ed \textit{esterna} per partizioni multiple), ma è più costoso in fase di creazione di nuovi processi in quanto ha delle pretese sulle modalità di inserzione. 
+\end{itemize}
+
+\subsection{Segmentazione}
+L'approccio a \textbf{segmentazione} è a rilocazione \textit{dinamica}, allocazione \textit{contigua}, spazio virtuale \textit{segmentato} e caricamento \textit{completo}.
+
+Ciò che vogliamo fare è dividere lo spazio virtuale stesso in più \textit{segmenti}.
+Ciò significherà che lo spazio di indirizzamento, visto dai processi, diverrà \textit{bidimensionale}: gli indirizzi saranno infatti formati da coppie:
+$$
+x = < \text{segmento}, \text{offset} >
+$$
+dove si specifica il \text{segmento} di riferimento e l'\textit{offset} all'interno  di tale segmento.
+
+Dal punto di vista implementativo, avremmo bisogno di una \textbf{tabella dei segmenti}.
+Ogni segmento sarà composto da 2 valori:
+\begin{itemize}
+	\item L'indirizzo al partire dal quale il segmento è allocato in memoria (detto \textbf{base});
+	\item La dimensione del segmento, detta \textbf{limite}.
+\end{itemize}
+Ogni segmento sarà quindi individuato nella regione di memoria $[\text{base}, \text{base} + \text{limite}]$.
+
+Dotare la macchina di una tale tabella richiede l'introduzione di 2 nuovi registri di controllo, il registro \textbf{STBR} (\textit{Segment Table Base Register}), ed il registro \textbf{STLR} (\textit{Segment Table Length Register}), contenenti rispettivamente l'indirizzo a partire dal cui si memorizza la tabella dei segmenti e la sua dimensione.
+
+Il supporto hardware alla segmentazione sarà quindi quello di una \textbf{MMU} (\textit{Memory Management Unit}), introdotto in 16.4, che ha accesso ai registri STBR e STLR e alla memoria.
+
+\newpage
+
+Il suo funzionamento può grossomodo essere schematizzato come segue:
+\begin{center}
+	\includegraphics[scale=0.3]{../figures/seg_mmu.png}
+\end{center}
+dove l'eccezione di \textit{Segmentation fault} viene introdotta appositamente per rilevare accessi al di fuori dello spazio dedicato ai segmenti a tempo di esecuzione.
+Di base, avremo bisogno di alcuni segmenti di default per ogni programma, fra cui individuiamo:
+\begin{itemize}
+	\item Segmento \textbf{codice}, che contiene il programma stesso (e magari dati in sola lettura);
+	\item Segmento \textbf{dati}, che contiene i dati su cui il programma fa elaborazione;
+	\item Segmento \textbf{pila}, che ormai sappiamo è fondamentale all'esecuzione di codice scritto in linguaggio di alto livello.
+\end{itemize}
+Questi segmenti corrispondono essenzialmente con i segmenti di immagine di processo che abbiamo introdotto 16.3.1.
+
+Notiamo però che l'uso di un approccio a segmentazione richiede che il processore sia al corrente di quali segmenti riferire in diverse fasi di operazione.
+Ad esempio:
+\begin{itemize}
+	\item Nella fase di \textbf{fetch}, vogliamo riferirci al segmento \textit{codice} per la lettura di istruzioni;
+	\item Nella fase di \textbf{esecuzione}, vogliamo riferirci al segmento \textit{dati} per le operazioni in memoria;
+	\item Nel caso di esecuzione di operazioni in \textbf{pila} (ad esempio le \lstinline|PUSH| e \lstinline|POP|), vogliamo riferirci al segmento \textbf{pila} (per ovvi motivi).
+\end{itemize}
+
+Abbiano quindi che la segmentazione necessita di una modifica del programma: bisogna scrivere programmi che siano a conosecnza di questa funzionalità, e si riferiscano quindi ad indirizzi ben formati (da coppie segmento/offset).
+L'unica eccezione è chiaramente quella di programmi che richiedono solo un segmento.
+
+Questo perché abbiamo effettivamente fatto una semplificazione non indifferente rispetto ai sistemi reali. Questi infatti:
+\begin{itemize}
+	\item Riferiscono la tabella dei segmenti attraverso i registri STLR e STBR: non dobbiamo dimenticarci che la tabella dei segmenti stessa è in memoria fisica;
+	\item Permettono un numero arbitrario di segmenti: si richiede infatti alla CPU di offrire due costanti per indirizzo, cioè come avevamo detto \textit{segmento} e \textit{offset}. 
+\end{itemize}
+
+\newpage
+
+L'MMU aggiornata si può quindi schematizzare come segue:
+\begin{center}
+	\includegraphics[scale=0.3]{../figures/seg_mmu_bett.png}
+\end{center}
+dove si introduce una nuova eccezione, la \textit{Segment fault}, che non si riferisce ad accessi invalidi all'interno di segmenti ma accesso a segmenti in primo luogo inesistenti.
+
+\subsubsection{Descrittori di segmento}
+Un vantaggio della segmentazione è che possiamo definire nella tabella dei segmenti, oltre ai semplici valori \textit{base} e \textit{limite} di segmento, anche alte informazioni (dette di \textbf{controllo}), all'interno del relativo \textbf{descrittore di segmento}.
+
+Potremmo infatti prevedere più informazioni in formato tabulare:
+\begin{table}[h!]
+	\center \rowcolors{2}{white}{black!10}
+	\begin{tabular} { c | c | c }
+		\bfseries Base & \bfseries Limite & \bfseries Controllo \\
+		\hline
+		Indirizzo del segmento & Dimensione del segmento & Accesso in lettura? scrittura? ecc...
+	\end{tabular}
+\end{table}
+Dal punto di vista implementativo, queste informazioni verrano rappresentate attraverso apposite maschere di bit.
+
+Un esempio tipico è quello di prevedere bit di accesso in lettura (R) o scrittura (W) per segmento.
+Questo torna utile, prendendo in esame i segmenti visti nella scorsa sezione, come segue:
+\begin{itemize}
+	\item Vogliamo che il segmento \textbf{codice} sia in sola lettura (quindi R alto e W basso), in quanto come abbiamo introdotto in 5.0.2 il codice può essere condiviso fra processi e non vogliamo che un processo modifichi il codice condiviso con altri processi;
+	\item Vogliamo invece che i segmenti \textbf{dati} e \textbf{pila} siano in lettura e scrittura (quindi sia R che W alti), per ovvi motivi (il nostro progamma dovrà lavorare su qualcosa, anche scrivendo). 
+\end{itemize}
+
+\subsubsection{Swap di segmenti}
+La memoria segmentata supporta un altro meccanismo, che è quello dello \textbf{swapping} di segmenti dalla memoria centrale alla memoria secondaria.
+
+\newpage
+
+Aggiorniamo quindi il grafico introdotto in 5.0.1 relativo allo stato dei processi come segue:
+\begin{center}
+	\includegraphics[scale=0.25]{../figures/proc_swap.png}
+\end{center}
+
+Prevediamo quindi due nuovi stati, \textit{Pronto swapped} e \textit{Bloccato swapped}, su cui si transisce rispettivamente dagli stati pronto e bloccato attraverso le primitive \lstinline|swap_in()| e \lstinline|swap_out()|.
+
+Facciamo alcune note su queste transizioni:
+\begin{itemize}
+	\item Dallo stato \textit{pronto swapped} vogliamo transire allo stato \textit{pronto}, attraverso la \lstinline|swap_in()|. 
+
+		Potremmo prevedere anche la \lstinline|swap_out()| da \textit{pronto} a \textit{pronto swapped}, ma questo non è particolarmente utile: quando un processo è pronto, ci aspettiamo di aver fatto del lavoro per renderlo tale. A questo punto, fare swap out invaliderebbe tale lavoro, richiedendo una successiva \lstinline|swap_in()| prima di poter mettere il processo in esecuzione;
+
+	\item Dallo stato \textit{bloccato}, invece, è più che ragionevole fare \lstinline|swap_out()| nello stato \textit{bloccato swapped}. Non si prevede il contrario (prima si diventa pronti e poi si viene swappati in memoria principale).
+\end{itemize}
+
+\subsection{Segmentazione su domanda}
+Veniamo quindi all'evoluzione naturale della segmentazione, la \textbf{segmentazione su domanda}.
+Questa rappresenta un'approccio a rilocazione \textit{dinamica}, allocazione \textit{contigua}, spazio virtuale \textit{segmentato} e caricamento \textit{su domanda}.
+
+Quello che vogliamo effettivamente fare è fornire lo swap out dei segmenti, e fare il successivo swap in solo quando quei segmenti ci vengono effettivamente richiesti.
+
+Per fare ciò ci dotiamo di nuovi bit all'interno del campo di controllo del descrittore di segmento:
+\begin{itemize}
+	\item Bit \textbf{U}, detto di \textit{uso}, aggiornato quando si usa (legge o scrive) il segmento; 
+	\item Bit \textbf{M}, detto di \textit{modifica}, aggiornato quando si fa un operazione di scrittura sul segmento;
+	\item Bit \textbf{P}, detto di \textit{presenza}, indica se il segmento è effettivamente caricato in memoria o se ne é fatto swap out. 
+\end{itemize}
+
+L'operazione che vogliamo effettuare è quindi quello di sfruttare il bit P, in fase di accesso al segmento, per lanciare un eccezione di \textit{segment fault} nel caso tale segmento non sia caricato.
+In tal caso si cattura l'eccezione e si procede a chiamare la \lstinline|swap_in()|.
+
+I bit U e M, ricordiamo, forniscono invece delle euristiche utili al S/O per effettuare lo swap out e lo swap in in maniera più efficiente (non copiare segmenti che non sono stati modificati, non deallocare segmenti che vengono usati spesso, ecc...).
+
+\subsection{Paginazione}
+Veniamo quindi alla \textbf{paginazione}.
+Questa rappresenta un'approccio a rilocazione \textit{dinamica}, allocazione \textit{non contigua}, spazio virtuale \textit{unico} e caricamento \textit{completo} (nella versione senza caricamento su domanda).
+
+Abbiamo quindi che lo spazio virtuale viene suddiviso in blocchi di indirizzi virtuali di dimensione fissa (le cosiddette \textbf{pagine}).
+Lo spazio fisico viene suddiviso in blocchi della stessa dimensione delle pagina, detti \textbf{frame}.
+
+Ogni pagina corrisponde ad un frame, e pagine consecutive possono essere allocate in frame non necessariamente consecutivi: questo significa che offriamo ai processi spazi di indirizzamento virtuali effettivamente contigui.
+Vediamo ad esempio come un sistema può avere una divisone delle pagine apparentemente contigua, quando i numeri dei rispettivi frame sono invece non contigui:
+\begin{center}
+	\includegraphics[scale=0.15]{../figures/assoc_pag.png}
+\end{center}
+dove nell'esempio si è iniziato a dare qualche informazione semantica su \textit{cosa} contengono le varie pagine.
+
+L'implementazione di un tale sistema richiede di effetuare la traduzione da indirizzo virtuale a corrispondente indirizzo fisico attraverso \textbf{tabelle delle pagine} che rappresentano l'associazione fra pagine e frame.
+
+In linea di principio, anche l'MMU in paginazione dovrebbe richiedere dalla CPU una coppia per ogni indirizzo, composta come:
+$$
+x = < \text{pagina}, \text{offset} >
+$$
+dove si specifica la \text{pagina} di riferimento e l'\textit{offset} all'interno  di tale pagina.
+La differenza sostanziale dalla segmentazione è però che tutte le pagine sono uguali, per cui le operazioni che dobbiamo fare per passare da indirizzi virtuali a indirizzi fisici sono molto più semplici.
+
+# bestemmia
+
+\end{document}
