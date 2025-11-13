@@ -457,4 +457,10 @@ dove si riportano direttamente 2 eccezioni:
 	\item L'eccezione di \textit{Page fault} viene introdotta per segnalare accessi a pagine inesistenti (non presenti nella tabella delle pagine, vedremo poi con bit P di presenza basso).
 \end{itemize}
 
+Vediamo quindi come il fatto che le pagine hanno dimensione fissa ci semplifica il modo in cui:
+\begin{enumerate}
+	\item Controlliamo le \textit{segmentation fault}, in quanto ci basterà stabilire se l'offset di pagina è superiore alla dimensione di pagina (solitamente nell'ordine di 1, 2 o 4 KiB);
+	\item Calcoliamo gli indirizzi fisici, in quanto ci basterà moltiplicare il numero di frame per la dimensione della pagina, e sommare l'offset.
+\end{enumerate}
+
 \end{document}
