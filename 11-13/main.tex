@@ -443,6 +443,18 @@ $$
 dove si specifica la \text{pagina} di riferimento e l'\textit{offset} all'interno  di tale pagina.
 La differenza sostanziale dalla segmentazione è però che tutte le pagine sono uguali, per cui le operazioni che dobbiamo fare per passare da indirizzi virtuali a indirizzi fisici sono molto più semplici.
 
-# bestemmia
+Dettagliamo quindi il funzionamento di tale MMU in paginazione.
+Come per la segmentazione, necessitiamo dell'introduzione di 2 nuovi registri di controllo, il registro \textbf{PTBR} (\textit{Page Table Base Register}), ed il registro \textbf{PTLR} (\textit{Page Table Length Register}), contenenti rispettivamente l'indirizzo a partire dal cui si memorizza la tabella delle pagine e la sua dimensione.
+Viene da sé che la MMU avrà accesso ai registri PTBR e PTLR e alla memoria.
+
+Il suo funzionamento potrà quindi essere schematizzato, senza particolari semplificazioni, come segue:
+\begin{center}
+	\includegraphics[scale=0.3]{../figures/pag_mmu.png}
+\end{center}
+dove si riportano direttamente 2 eccezioni:
+\begin{itemize}
+	\item L'eccezione di \textit{Segmentation fault} viene conservata dalla segmentazione, e usata per rilevare accessi al di fuori dello spazio dedicato alla singola pagina a tempo di esecuzione;
+	\item L'eccezione di \textit{Page fault} viene introdotta per segnalare accessi a pagine inesistenti (non presenti nella tabella delle pagine, vedremo poi con bit P di presenza basso).
+\end{itemize}
 
 \end{document}
