@@ -1,0 +1,499 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[a4paper, margin=8em]{geometry}
+
+% usa i pacchetti per la scrittura in italiano
+\usepackage[french,italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\frenchspacing 
+
+% usa i pacchetti per la formattazione matematica
+\usepackage{amsmath, amssymb, amsthm, amsfonts}
+
+% usa altri pacchetti
+\usepackage{gensymb}
+\usepackage{hyperref}
+\usepackage{standalone}
+
+\usepackage{colortbl}
+
+\usepackage{xstring}
+\usepackage{karnaugh-map}
+
+% imposta il titolo
+\title{Appunti Sistemi Operativi}
+\author{Luca Seggiani}
+\date{2025}
+
+% imposta lo stile
+% usa helvetica
+\usepackage[scaled]{helvet}
+% usa palatino
+\usepackage{palatino}
+% usa un font monospazio guardabile
+\usepackage{lmodern}
+
+\renewcommand{\rmdefault}{ppl}
+\renewcommand{\sfdefault}{phv}
+\renewcommand{\ttdefault}{lmtt}
+
+% circuiti
+\usepackage{circuitikz}
+\usetikzlibrary{babel}
+
+% testo cerchiato
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+            \node[shape=circle,draw,inner sep=2pt] (char) {#1};}}
+
+% disponi il titolo
+\makeatletter
+\renewcommand{\maketitle} {
+	\begin{center} 
+		\begin{minipage}[t]{.8\textwidth}
+			\textsf{\huge\bfseries \@title} 
+		\end{minipage}%
+		\begin{minipage}[t]{.2\textwidth}
+			\raggedleft \vspace{-1.65em}
+			\textsf{\small \@author} \vfill
+			\textsf{\small \@date}
+		\end{minipage}
+		\par
+	\end{center}
+
+	\thispagestyle{empty}
+	\pagestyle{fancy}
+}
+\makeatother
+
+% disponi teoremi
+\usepackage{tcolorbox}
+\newtcolorbox[auto counter, number within=section]{theorem}[2][]{%
+	colback=blue!10, 
+	colframe=blue!40!black, 
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries, 
+	title=Teorema~\thetcbcounter: #2, 
+	#1
+}
+
+% disponi definizioni
+\newtcolorbox[auto counter, number within=section]{definition}[2][]{%
+	colback=red!10,
+	colframe=red!40!black,
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries,
+	title=Definizione~\thetcbcounter: #2,
+	#1
+}
+
+% disponi codice
+\usepackage{listings}
+\usepackage[table]{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{codestyle}{
+		backgroundcolor=\color{black!5}, 
+		commentstyle=\color{codegreen},
+		keywordstyle=\bfseries\color{magenta},
+		numberstyle=\sffamily\tiny\color{black!60},
+		stringstyle=\color{green!50!black},
+		basicstyle=\ttfamily\footnotesize,
+		breakatwhitespace=false,         
+		breaklines=true,                 
+		captionpos=b,                    
+		keepspaces=true,                 
+		numbers=left,                    
+		numbersep=5pt,                  
+		showspaces=false,                
+		showstringspaces=false,
+		showtabs=false,                  
+		tabsize=2
+}
+
+\lstdefinestyle{shellstyle}{
+		backgroundcolor=\color{black!5}, 
+		basicstyle=\ttfamily\footnotesize\color{black}, 
+		commentstyle=\color{black}, 
+		keywordstyle=\color{black},
+		numberstyle=\color{black!5},
+		stringstyle=\color{black}, 
+		showspaces=false,
+		showstringspaces=false, 
+		showtabs=false, 
+		tabsize=2, 
+		numbers=none, 
+		breaklines=true
+}
+
+
+\lstdefinelanguage{assembler}{ 
+  keywords={AAA, AAD, AAM, AAS, ADC, ADCB, ADCW, ADCL, ADD, ADDB, ADDW, ADDL, AND, ANDB, ANDW, ANDL,
+        ARPL, BOUND, BSF, BSFL, BSFW, BSR, BSRL, BSRW, BSWAP, BT, BTC, BTCB, BTCW, BTCL, BTR, 
+        BTRB, BTRW, BTRL, BTS, BTSB, BTSW, BTSL, CALL, CBW, CDQ, CLC, CLD, CLI, CLTS, CMC, CMP,
+        CMPB, CMPW, CMPL, CMPS, CMPSB, CMPSD, CMPSW, CMPXCHG, CMPXCHGB, CMPXCHGW, CMPXCHGL,
+        CMPXCHG8B, CPUID, CWDE, DAA, DAS, DEC, DECB, DECW, DECL, DIV, DIVB, DIVW, DIVL, ENTER,
+        HLT, IDIV, IDIVB, IDIVW, IDIVL, IMUL, IMULB, IMULW, IMULL, IN, INB, INW, INL, INC, INCB,
+        INCW, INCL, INS, INSB, INSD, INSW, INT, INT3, INTO, INVD, INVLPG, IRET, IRETD, JA, JAE,
+        JB, JBE, JC, JCXZ, JE, JECXZ, JG, JGE, JL, JLE, JMP, JNA, JNAE, JNB, JNBE, JNC, JNE, JNG,
+        JNGE, JNL, JNLE, JNO, JNP, JNS, JNZ, JO, JP, JPE, JPO, JS, JZ, LAHF, LAR, LCALL, LDS,
+        LEA, LEAVE, LES, LFS, LGDT, LGS, LIDT, LMSW, LOCK, LODSB, LODSD, LODSW, LOOP, LOOPE,
+        LOOPNE, LSL, LSS, LTR, MOV, MOVB, MOVW, MOVL, MOVSB, MOVSD, MOVSW, MOVSX, MOVSXB,
+        MOVSXW, MOVSXL, MOVZX, MOVZXB, MOVZXW, MOVZXL, MUL, MULB, MULW, MULL, NEG, NEGB, NEGW,
+        NEGL, NOP, NOT, NOTB, NOTW, NOTL, OR, ORB, ORW, ORL, OUT, OUTB, OUTW, OUTL, OUTSB, OUTSD,
+        OUTSW, POP, POPL, POPW, POPB, POPA, POPAD, POPF, POPFD, PUSH, PUSHL, PUSHW, PUSHB, PUSHA, 
+				PUSHAD, PUSHF, PUSHFD, RCL, RCLB, RCLW, MOVSL, MOVSB, MOVSW, STOSL, STOSB, STOSW, LODSB, LODSW,
+				LODSL, INSB, INSW, INSL, OUTSB, OUTSL, OUTSW
+        RCLL, RCR, RCRB, RCRW, RCRL, RDMSR, RDPMC, RDTSC, REP, REPE, REPNE, RET, ROL, ROLB, ROLW,
+        ROLL, ROR, RORB, RORW, RORL, SAHF, SAL, SALB, SALW, SALL, SAR, SARB, SARW, SARL, SBB,
+        SBBB, SBBW, SBBL, SCASB, SCASD, SCASW, SETA, SETAE, SETB, SETBE, SETC, SETE, SETG, SETGE,
+        SETL, SETLE, SETNA, SETNAE, SETNB, SETNBE, SETNC, SETNE, SETNG, SETNGE, SETNL, SETNLE,
+        SETNO, SETNP, SETNS, SETNZ, SETO, SETP, SETPE, SETPO, SETS, SETZ, SGDT, SHL, SHLB, SHLW,
+        SHLL, SHLD, SHR, SHRB, SHRW, SHRL, SHRD, SIDT, SLDT, SMSW, STC, STD, STI, STOSB, STOSD,
+        STOSW, STR, SUB, SUBB, SUBW, SUBL, TEST, TESTB, TESTW, TESTL, VERR, VERW, WAIT, WBINVD,
+        XADD, XADDB, XADDW, XADDL, XCHG, XCHGB, XCHGW, XCHGL, XLAT, XLATB, XOR, XORB, XORW, XORL},
+  keywordstyle=\color{blue}\bfseries,
+  ndkeywordstyle=\color{darkgray}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=false,
+  comment=[l]{\#},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{purple}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+
+\lstset{language=assembler, style=codestyle}
+
+% disponi sezioni
+\usepackage{titlesec}
+
+\titleformat{\section}
+	{\sffamily\Large\bfseries} 
+	{\thesection}{1em}{} 
+\titleformat{\subsection}
+	{\sffamily\large\bfseries}   
+	{\thesubsection}{1em}{} 
+\titleformat{\subsubsection}
+	{\sffamily\normalsize\bfseries} 
+	{\thesubsubsection}{1em}{}
+
+% tikz
+\usepackage{tikz}
+
+% float
+\usepackage{float}
+
+% grafici
+\usepackage{pgfplots}
+\pgfplotsset{width=10cm,compat=1.9}
+
+% disponi alberi
+\usepackage{forest}
+
+\forestset{
+	rectstyle/.style={
+		for tree={rectangle,draw,font=\large\sffamily}
+	},
+	roundstyle/.style={
+		for tree={circle,draw,font=\large}
+	}
+}
+
+% disponi algoritmi
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\makeatletter
+\renewcommand{\ALG@name}{Algoritmo}
+\makeatother
+
+% disponi numeri di pagina
+\usepackage{fancyhdr}
+\fancyhf{} 
+\fancyfoot[L]{\sffamily{\thepage}}
+
+\makeatletter
+\fancyhead[L]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@title \ \@date}}} 
+\fancyhead[R]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@author}}}
+\makeatother
+
+\begin{document}
+% sezione (data)
+\section{Lezione del 18-11-25}
+
+% stili pagina
+\thispagestyle{empty}
+\pagestyle{fancy}
+
+% testo
+Continuiamo a parlare della paginazione.
+
+\subsubsection{Descrittori di pagina}
+Come per i segmenti, possiamo associare alle pagine \textbf{descrittori di pagina} che contengono informazioni riguardo all'accesso alla pagina. 
+
+Le informazioni tipiche sono, ancora una volta, i bit di accesso in lettura (R) o scrittura (W).
+
+\subsection{Paginazione su domanda}
+Altre informazioni contenute nei descrittori di pagina sono quelle legate alla \textbf{paginazione su domanda}, praticamente analoghe a quanto discusson in 17.4:
+\begin{itemize}
+	\item Bit \textbf{U}, detto di \textit{uso}, aggiornato quando si usa (legge o scrive) la pagina; 
+	\item Bit \textbf{M}, detto di \textit{modifica}, aggiornato quando si fa un operazione di scrittura sulla pagina;
+	\item Bit \textbf{P}, detto di \textit{presenza}, indica se la pagina è effettivamente caricata in memoria o se ne é fatto swap out. 
+\end{itemize}
+
+Come per la segmentazione, il bit P associerà alla pagina un certo significato:
+\begin{itemize}
+	\item Bit \textit{P} a 1: la pagina è valida e caricata in memoria;
+	\item Bit \textit{P} a 0: la pagina può non essere valida, oppure può essere valida ma non caricata in memoria. 
+\end{itemize}
+In questo caso utilizziamo il bit P per lanciare condizionalmente un'eccezione di \textit{page fault} in caso di accesso a pagine con bit P a 0.
+Capire se la pagina va caricata o l'accesso è effettivamente invalido è quindi compito dell'handler predisposto dal S/O a tale eccezione.
+
+Ricordiamo che la paginazione su domanda è un'approccio a rilocazione \textit{dinamica}, allocazione \textit{non contigua}, spazio virtuale \textit{unico} e caricamento \textit{su domanda}.
+
+\subsubsection{Gestione del page fault}
+Abbiamo detto che il page fault è un'eccezione, generata dal sistema, e completamente incodizionata dal programma. 
+
+In altre parole, il processo è ignaro dell'esistenza dei page fault e qualsiasi problema si verifichi deve essere risolto dal S/O.
+Tutto ciò che potremmo osservare dal lato processo è un aumento del tempo di \textit{turnaround}, cioè dell'intervallo dal tempo di revoca al successivo assegnamento CPU, impiegato chiaramente a caricare la pagina richiesta.
+
+Andiamo quindi a dettagliare come si gestisce effettivamente il page fault:
+\begin{enumerate}
+	\item Eseguendo il codice del processo ($p_0$) in esecuzione, la CPU genera un indirizzo virtuale che corrisponde ad una pagina non caricata in memoria;
+	\item La MMU riceve tale indirizzo, esplora la \textit{tabella delle pagine del processo} fino all'indirizzo, controlla il bit P è lo trova uguale a 0. Viene lanciata un'eccezione di page fault;
+	\item Il supporto hardware alle eccezioni (cioè lo stesso a supporto delle interruzioni) carica il puntatore alla routine di gestione del page fault e la mette in esecuzione.
+
+		Ora, in memoria assumiamo esista una tabella, detta \textit{tabella delle pagine fisiche}, che associa alle pagine fisiche un informazione riguardante se quella pagina è libera o meno;
+	\item Nel caso una pagina fisica (\lstinline|pf|) sia trovata libera, si fa una copia (con DMA o altri metodi) dalla \textit{memoria di swap} alla \textit{memoria centrale} della pagina richiesta. 
+	L'indirizzo della pagina in memoria di swap può essere, ad esempio, memorizzato nella sezione dedicata all'indirizzo fisico del descrittore di pagina non caricta.
+
+		Quindi si aggiorna l'indirizzo fisico del descrittore di pagina con quello di \lstinline|pf|, e si mette il bit di presenza a 1;
+	\item A questo punto i primi 2 passaggi si ripetono, con la differenza che la MMu trova la pagina desiderata con bit P uguale a 1, la tabella delle pagine fisiche contiene la pagina effettivamente richiesta, e il processo può proseguire. 
+\end{enumerate}
+
+\subsubsection{Rimpiazzamento di pagine}
+La paginazione su domanda richiede spesso che, per liberare spazio in memoria centrale per la nuova pagina, si deallochi una vecchia pagina.
+Questa viene detta \textit{vittima}, e l'intero processo viene detto \textbf{rimpiazzamento}.
+
+Dettagliamo anche questo processo, immaginando di avere un'altro processo ($p_1$) in esecuzione in parallelo a quello del primo esempio:
+\begin{enumerate}
+	\item Quando diventa necessario caricare la pagina del processo $p_0$, supponiamo che $p_1$ sia in possesso dell'indirizzo fisico \lstinline|pf| (cioè che \lstinline|pf| sia indirizzo fisico in uno dei descrittori di pagina di $p_1$);
+	\item In questo caso si mette in esecuzione un dato algoritmo di \textit{rimpiazzamento}, e si dealloca la pagina di $p_1$ nella memoria di swap. 
+
+		Come abbiamo detto, per ricordare dove abbiamo messo la pagina memorizziamo nella sezione dedicata all'indirizzo fisico, l'indirizzo in memoria di swap dove abbiamo memorizzato la pagina;
+	\item Alla fine di questo processo, il processo $p_1$ si trova nella stessa situazione in cui si trovava $p_0$ prima di accedere alla pagina: questa esiste nella tabelle delle pagine di processo, ma non punta ad un entrata valida della tabella delle pagine fisiche (bensì ad una pagina di cui si è fatto swap).
+\end{enumerate}
+
+L'andamento del rimpiazzamento delle pagine porta naturalmente alla formazione di un \textit{working set} associato ad ogni processo, cioè l'insieme di pagine su cui quel processo fa accesso con frequenza.
+Il working set inizialmente si espande, ma poi tende a rallentare la sua crescita.
+
+Gli algoritmi di rimpiazzamento che consideriamo saranno quindi:
+\begin{itemize}
+	\item L'algoritmo \textit{ottimo} sarebbe quello che rimpiazza le pagine che non verranno più riferite, o almeno, che verranno riferite più tardi nel tempo. Questo però è impossibile da ottenere, in quanto implicherebbe di conoscere il futuro;
+	\item Possiamo quindi adottare un algoritmo \textbf{FIFO} (\textit{First In First Out}): la vittima scelta è la pagina che è da più tempo in memoria. Questo è probabilmente l'algoritmo più semplice che potremmo usare.
+
+		Un problema dell'approccio FIFO è che esiste un sottoinsieme del working set che probabilmente resterà quasi sempre rilevante all'esecuzione del programma, e che quindi non converrà caricare. Questo sottoinsieme sarà ad esempio quello che contiene le strutture dati di base del programma, le costanti e le variabili statiche; 
+	\item Un'altro algoritmo, che risolve quest'ultimo problema, è il \textbf{LRU} (\textit{Least Recently Used}): la vittima è la pagina meno recentemente utilizzata.
+
+		Questo chiaramente richiede un qualche tipo di statistica sull'uso delle pagine (a questo tornano utili i bit U e M che avevamo predisposto).
+		Un'alternativa è quella di memorizzare, anziché il bit U, un \textit{timestamp} nel descrittore di pagina. A questo pusto basterà semplicemente aggiornare la pagina con timestamp più remoto. Questo però ha chiaramente delle problematiche in termini di overhead (non solo lo spazio che va allocato nel descrittore per il timestamp, ma il tempo impiegato ad aggiornare il timestamp ad ogni operazione sulla pagina).
+\end{itemize}
+
+Può essere utile parlare di \textit{rimpiazzamenti locali}: quando un processo provoca un page fault, si sceglie come vittima una pagina presente nel working set di tale processo.
+Questo impedisce le interferenze con altri processi, e assegna la penalità associata al page fault al processo stesso che ha generato il page fault. 
+
+Se l'algoritmo di scelta delle vittime non è ottimale il sistema può andare in \textit{trashing}. Si dice che il sistema è in trashing quando la percentuale di page fault sugli accessi in memoria supera una certa soglia.
+La condizione (ideale, fortunatamente non reale) di \textit{trashing completo} è quella in cui ogni accesso in memoria provoca un page fault.
+
+\subsubsection{Rimpiazzamento second-chance}
+Un'altro algoritmo di selezione delle vittime è il cosiddetto algoritmo di rimpiazzamento \textit{second-chance}, o algoritmo dell'\textit{orologio}.
+
+Supponiamo di fare rimpiazzamento locale, e cioè di considerare come possibili vittime solo le pagine nel working set del processo che ha provocato il page fault.
+Prevediamo quindi un puntatore alla vittima, che inizialmente corrisponde al puntatore alla pagina da più tempo in memoria dell'approccio FIFO.
+La differenza col FIFO è però data dal fatto che, prima di deallocare la pagina, si controlla il suo bit U. Nel caso questo sia impostato, si annulla e si procede con le pagine successive: questo processo si ripete finché non si trova una pagina con bit U a 0 (e questa verrà deallocata).
+
+Il comportamento ottenuto è quindi che si cerca di evitare di deallocare pagine che sono state usate: si torna sulla prima pagina considerata solo nel caso in cui anche tutte le altre pagine sono già state usate.
+
+\subsection{Segmentazione paginata}
+Concludiamo l'argomento della gestione di memoria parlando della \textbf{segmentazione paginata} (o \textit{segmentazione con paginazione}): questo è un approccio a rilocazione \textit{dinamica}, allocazione \textit{non contigua}, spazio virtuale \textit{segmentato} e caricamento \textit{su domanda}. 
+
+L'idea della segmentazione paginata è che la CPU produce sempre indirizzi:
+$$
+x = < \text{segmento}, \text{scostamento} >
+$$
+La differenza è però che lo \textit{scostamento} (non ancora offset) viene diviso in due sezioni:
+$$
+\text{offset} = \text{pag} \, | \, \text{offset}
+$$
+cioè viene usato per indicizzare una pagina e l'offset all'interno di tale pagina.
+Quello a cui punterà il segmento sarà quindi un \textit{descrittore di segmento}, contenente a sua volta un puntatore alla \textit{tabella delle pagine} associata a tale segmento.
+Lo scostamento verrà poi usato, come nei normali approcci a paginazione, per indicizzare su tale tabella di pagine.
+
+Questo può essere meglio schematizzato come segue:
+\par\smallskip
+\begin{adjustwidth}{-3cm}{-3cm} 
+	\begin{center}
+		\includegraphics[scale=0.25]{../figures/seg_pag.png}
+	\end{center}
+\end{adjustwidth}
+\par
+dove l'eccezione di \textit{page fault}, che può evidentemente essere lanciata, è stata riportata ma non dettagliata nel funzionamento: chiaramente bisognerà mantenere da qualche parte (nella tabella dei segmenti o come costante del S/O) un numero massimo di pagine per segmento, e controllare la pagina richiesta dallo scostamento con tale numero.
+La stessa cosa vale per la \textit{segmentation fault} causata dalla paginazione: qui sappiamo, come già visto in 17.5, di avere dimensione di pagina fissa.
+
+Notiamo quindi come questo approccio può portare a 3 tipi di eccezione diversi:
+\begin{itemize}
+	\item \textit{Segment fault}: lanciata quando si richiedono segmenti inesistenti (fuori dai bound o non presenti);
+	\item \textit{Segmentation fault}: lanciata quando si effettuano accessi invalidi all'interno del segmento o della pagina;
+	\item \textit{Page fault}: lanciata quando si accede ad una pagina di segmento inesistente (fuori dai bound o non presente).
+\end{itemize}
+
+Questo è l'approccio tipicamente usato da UNIX in segmentazione.
+Nelle prossime sezioni, infatti, approfondiremo l'approccio che questo S/O usa alla gestione della memoria.
+
+\subsection{Gestione della memoria in UNIX}
+In UNIX la tabella delle pagine fisiche viene detta \textbf{core map}.
+Questa ha quindi il compito di mantenere i frame fisici di pagina, e informazioni riguardo a quale pagina contengono, o se questi sono liberi.
+
+Vengono quindi stabilite 3 variabili per i limiti delle pagine libere:
+\begin{itemize}
+	\item \textit{lotsfree}: numero minimo di frame liberi per evitare sostituzione;
+	\item \textit{minfree}: numero minimo di frame liberi necessari per evitare lo swapping dei processi;
+	\item \textit{desfree}: numero minimo di frame desiderabile per un buon funzionamento del sistema.
+\end{itemize}
+
+Chiaramente vale la diseguaglianza:
+$$
+\textit{minfree} < \textit{desfree} < \textit{lotsfree}
+$$
+
+La sostituzione delle pagine viene quindi effettuata come segue:
+\begin{itemize}
+	\item Un processo di sostituzione di pagine, detto \textbf{pagedaemon}, esegue periodicamente e sostituisce le pagine solo se:
+		$$
+		\textit{num-frame-liberi} < \textit{lotsfree}
+		$$
+	\item Il processo \textbf{swapper}, che si occupa invece di effettuare swap in e swap out di processi, fa lo swap out di interi processi se sono soddisfatte le seguenti condizoni:
+		$$
+		\textit{num-frame-liberi} < \textit{min-free} \land \textit{num-medio-frame-liberi} < \textit{des-free}
+		$$
+
+		La seconda condizione si basa su una statistica fatta sul numero medio di frame liberi. Questo ci permette di effettuare swapping solamente nel caso in cui si hanno picchi di occupazione dei frame fisici che si prolungano per un certo periodo di tempo, mantenendo il numero di pagine libere sotto la media desiderata.
+\end{itemize}
+
+\subsection{Gestione delle periferiche}
+Veniamo allora ad un altro concetto fondamentale dei S/O: la \textbf{gestione delle periferiche}.
+Viene da sé che l'ambiente delle periferiche hardware è estremamente variegato, e l'obiettivo sarà quindi quello di fornire alle applicazioni la possibilità di accedervi in maniera unificata.
+
+Di base, prevediamo un \textit{controllore} per ogni \textit{periferica}: i controllori sono quelli che vengono effettivamente montati sul bus, e vengono visti dal processore come \textit{interfacce}, a cui si accede secondo una modalità \textit{a porte} ben definita (con la differenza di alcune interfacce che potrebbero essere montate \textit{in memoria}).
+
+Come primo esempio dell'eterogeneità delle periferiche disponibili ai moderni calcolatori, anche prima delle differenze tecniche nel modo in cui vi si accede, possiamo notare la grande differenza in termini di \textit{velocità di trasferimento}: passiamo da dispositivi come tastiere e mouse vecchio stile (velocità nell'ordine del Kb/sec) a moderni dispositivi di rete Ethernet (125 Mb/sec).
+
+\subsubsection{Sottosistemo di I/O}
+In particolare, prevederemo un \textbf{sottosistema di I/O}, che avra il compito di nascondere i dettagli hardware dei controllori dei dispositivi.
+
+Dal sottosistema di I/O ci aspettiamo il compimento dei seguenti compiti:
+\begin{itemize}
+	\item Definizione di uno \textit{spazio dei nomi} con cui identificare in maniera univoca i dispositivi (spazi di indirizizzamento PCI, ecc... non verranno visti nel dettaglio in questo corso);
+	\item Gestione dei \textit{malfunzionamenti} dei dispositivi, senza che debbano occuparsene le applicazioni;
+	\item Garanzia della \textit{sincronizzazione} tra l'attività di un dispositivo e del processo che lo ha attivato: il programmatore dovrà essere libero di realizzare la logica del programma senza preoccuparsi della sincronizzazione esplicita con i dispositivi;
+	\item \textit{Bufferizzazione}, cioè disaccopiamento temporale e spaziale tra processi e periferiche (i processi forniscono \textit{buffer} in memoria condivisa o privata, che vengono quindi riempiti dalla periferica, attraverso il S/O, in differita).
+\end{itemize}
+
+\subsubsection{Organizzazione logica dell'I/O}
+Dal punto di vista \textbf{logico} il sottosistema di I/O è estremamente stratificato.
+\begin{itemize}
+	\item A livello \textit{utente}, avremo che i \textbf{processi applicativi} (cioè le applicazioni) si interfacciano con \textbf{librerie} che espongono funzionalità offerte da \textit{interfacce applicative} fornite dal S/O;
+	\item A livello \textit{S/O}, si offre l'\textbf{interfaccia applicativa} (\textbf{I/O API}) vera e propria per la gestione delle periferiche.
+
+		\begin{itemize}
+			\item 
+		Questa si interfaccia con una certa quantità di strutture e ruotine gestite dal S/O che esistono a priori dalle periferiche. Tali strutture formano la cosiddetta interfaccia \textbf{device independent} del sottosistema di I/O.
+		Per tornare all'esempio di Unix, si ha che l'associazione periferica $\leftrightarrow$ file è parte dell'interfaccia device independent.
+		Sono dello stesso tipo anche tutte le varie primitive \lstinline|open()|, \lstinline|close()|, \lstinline|read()|, \lstinline|write()|, ecc...
+
+			\item
+		Al di sotto dell'interfaccia device independent si trova chiaramente una parte di interfaccia \textbf{device dependent}. Questa è composta da strutture e routine gestite dal S/O che esistono direttamente in funzione delle periferiche montate nel sistema.
+
+		Parte dell'interfaccia device dependent sono i \textit{driver}, cioè sostanzialmente dai gestori delle \textit{interruzioni} lanciate dai dispositivi.
+		Chiaramente i driver sono strettamente legati ai dispositivi che gestiscono, in quanto devono conoscere i loro dettagli di funzionamento.
+
+		Sempre riconducendosi all'esempio di Unix, abbiamo che anche questo livello implementa le sue \lstinline|read()|, \lstinline|write()|, con la particolarità che queste si preoccupano del funzionamento effettivo della periferica.
+	In questo, la chiamata della \lstinline|read()| di livello indipendent si tradurrà in una chiamata alla \lstinline|read()| di livello dependent, e lo stesso per la \lstinline|write()|, ecc... 
+		\end{itemize}
+
+		\item 
+			Alla fine della gerarchia c'è il livello \textit{hardware}, formato dall'\textbf{interfaccia di accesso ai controllori}, e quindi coi \textbf{controllori} veri e propri.
+
+\end{itemize}
+
+\subsubsection{Bufferizzazione}
+Vediamo nel dettaglio l'attività di \textbf{bufferizzazione} svolta dal sottosistema di I/O.
+
+Quello che vogliamo fare è, ad esempio per un operazione di lettura, permettere ai processi che chiamano primitive di ingresso di fornire un \textit{buffer}. Questi verranno quindi bloccati per la durata del trasferimento, e il S/O si impegnerà a riempire tale buffer con quanto ottenuto dalla periferica.
+
+Il disaccoppiamento che cerchiamo è sia \textit{spaziale} che \textit{temporale}:
+\begin{itemize}
+	\item \textbf{Spaziale}, in quanto non chiediamo al programmatore di conoscere le dimensioni di buffer ideali per la periferica, ma ci prendiamo la briga di gestire eventuali buffer intermedi e di riempire il buffer da egli fornito;
+	\item \textbf{Temporale}, in quanto il buffer viene riempito in differita, dopo che viene fornito dal programmatore.
+\end{itemize}
+
+Questo approccio richiede la presenza di 2 buffer:
+\begin{center}
+	\includegraphics[scale=0.4]{../figures/io_buf.png}
+\end{center}
+\begin{itemize}
+	\item Un buffer di \textbf{S/O}, la cui dimensione è effettivamente dettata dal dispositivo stesso, e che il sistema operativo usa per gestire immediatamente le operazioni di scrittura dalla periferica verso il bus;
+	\item Un buffer di \textbf{processo applicativo}, dichiarato dal programmatore, all'interno del quale ci aspettiamo di trovare i dati (nel nostro esempio dopo una \lstinline|read()|). Questo viene riempito attaverso operazioni di \textit{copia} dal buffer di S/O.
+\end{itemize}
+
+\subsubsection{Funzioni indipendenti}
+Vediamo quindi le funzioni predisposte \textit{a priori} dei dispositivi, cioè quelle presenti al cosiddetto livello \textbf{device indipendent}:
+\begin{itemize}
+	\item \textbf{Spazio dei nomi} dedicato ai dispositivi: questo deve permettere un qualche tipo di associazione:
+$$
+< \text{nome simbolico} > \, \implies \text{\lstinline|&id_desc|} 
+$$
+dove \lstinline|&id_desc| è un puntatore a una qualche struttura dati \lstinline|id_desc|, detta \textit{descrittore di dispositivo}, che rappresenta informazioni riguardo a tale dispositivo.
+
+Ricordiamo che questo in Unix è effettuato attraverso la metafora dispositivo $\leftrightarrow$ file, e quindi le funzionalità di \textit{naming} dei dispositivi sono implementate direttamente all'interno del file system.
+Possiamo infatti anticipare che il file system Unix è gestito attraverso descrittori di file detti \textit{inode}, e che alcuni \textit{inode} particolari hanno il compito di rappresentare proprio i dispositivi.
+
+\item Gestione dei \textbf{malfunzionamenti};
+\item Gestione degli accessi \textbf{concorrenti} allo stesso dispositivo (questa si realizza lato S/O usando le primitive di sincronizzazione già ampiamente studiate).
+\end{itemize}
+
+\subsubsection{Funzioni dipendenti}
+Vediamo quindi le funzioni \textit{dipendenti} dai dispositivi, cioè quelle del cosiddetto livello \textbf{device dependent}.
+
+Qui il nostro compito è quello di definire primitive come la \lstinline|read()| 
+\begin{lstlisting}[language=C++, style=codestyle]	
+read(descrittore, buffer, dim_buffer);
+\end{lstlisting}
+che offrano un'interfaccia univoca all'accesso ai dispositivi.
+
+Il supporto S/O delle funzioni dipendenti è dato, come abbiamo anticipato, dai \textbf{driver}.
+Il driver è infatti quella collezione di strutture e routine (principalmente gestori di interruzione) predisposti all'interoperazione fra S/O e dispositivo, ed è l'unico componente software che si preoccupa effettivamente delle modalità di funzionamento dell'hardware del dispositivo.
+
+Abbiamo già detto che il driver si interfaccia in particolare con il \textit{controllore} di dispositivo, e non con il dispositivo stesso.
+Un controllore generico è formato dalle seguenti componenti:
+\begin{itemize}
+	\item Registri di \textbf{controllo}, su cui la CPU può scrivere, che dettano al dispositivo quali operazioni compiere;
+	\item Registri di \textbf{stato}, da cui la CPU può leggere, che forniscono informazioni riguardo allo stato del dispositivo;
+	\item Registri di \textbf{buffer} (o \textit{dati}), su cui la CPU può leggere, scrivere o entrambi a seconda del tipo di dispositivo. Questi si occupano della lettura e scrittura effettiva di dati da e sul dispositivo.
+\end{itemize}
+
+Il funzionamento è quindi il seguente:
+\begin{enumerate}
+	\item La CPU scrive comandi sui registri di controllo del controllore, legge lo stato dai registri di stato del controllore, e scambia informazioni attraverso i registri dati del controllore;
+	\item Il controllore invia \textit{segnali} al dispositivo, e legge \textit{dati} dal dispositivo. Segnali e dati scambiati col dispositivo sono direttamente influenzati da quanto il controllore ha ricevuto comunicando con la CPU.
+\end{enumerate}
+In questo, il controllore si comporta effettivamente da \textit{buffer} fra CPU e dispositivo.
+
+I controllori hanno poi quasi sempre la possibilità di generare \textbf{interruzioni} per la CPU (attraverso un componente intermedio detto \textit{controllore di interruzioni}, che si occupa di organizzare gerarchicamente e bufferizzare le interruzioni per la CPU).
+Le interruzioni sono ormai fondamentali alla gestione dei dispositivi: l'esempio tipico è quello di generare un'interruzione quando si ha un aggiornamento dei bit di stato (ad esempio per segnalare nuovi dati da leggere o la terminazione di un'operazione in scrittura).
+
+\end{document}
