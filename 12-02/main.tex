@@ -1,0 +1,479 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[a4paper, margin=8em]{geometry}
+
+% usa i pacchetti per la scrittura in italiano
+\usepackage[french,italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\frenchspacing 
+
+% usa i pacchetti per la formattazione matematica
+\usepackage{amsmath, amssymb, amsthm, amsfonts}
+
+% usa altri pacchetti
+\usepackage{gensymb}
+\usepackage{hyperref}
+\usepackage{standalone}
+
+\usepackage{colortbl}
+
+\usepackage{xstring}
+\usepackage{karnaugh-map}
+
+% imposta il titolo
+\title{Appunti Sistemi Operativi}
+\author{Luca Seggiani}
+\date{2025}
+
+% imposta lo stile
+% usa helvetica
+\usepackage[scaled]{helvet}
+% usa palatino
+\usepackage{palatino}
+% usa un font monospazio guardabile
+\usepackage{lmodern}
+
+\renewcommand{\rmdefault}{ppl}
+\renewcommand{\sfdefault}{phv}
+\renewcommand{\ttdefault}{lmtt}
+
+% circuiti
+\usepackage{circuitikz}
+\usetikzlibrary{babel}
+
+% testo cerchiato
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+            \node[shape=circle,draw,inner sep=2pt] (char) {#1};}}
+
+% disponi il titolo
+\makeatletter
+\renewcommand{\maketitle} {
+	\begin{center} 
+		\begin{minipage}[t]{.8\textwidth}
+			\textsf{\huge\bfseries \@title} 
+		\end{minipage}%
+		\begin{minipage}[t]{.2\textwidth}
+			\raggedleft \vspace{-1.65em}
+			\textsf{\small \@author} \vfill
+			\textsf{\small \@date}
+		\end{minipage}
+		\par
+	\end{center}
+
+	\thispagestyle{empty}
+	\pagestyle{fancy}
+}
+\makeatother
+
+% disponi teoremi
+\usepackage{tcolorbox}
+\newtcolorbox[auto counter, number within=section]{theorem}[2][]{%
+	colback=blue!10, 
+	colframe=blue!40!black, 
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries, 
+	title=Teorema~\thetcbcounter: #2, 
+	#1
+}
+
+% disponi definizioni
+\newtcolorbox[auto counter, number within=section]{definition}[2][]{%
+	colback=red!10,
+	colframe=red!40!black,
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries,
+	title=Definizione~\thetcbcounter: #2,
+	#1
+}
+
+% disponi codice
+\usepackage{listings}
+\usepackage[table]{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{codestyle}{
+		backgroundcolor=\color{black!5}, 
+		commentstyle=\color{codegreen},
+		keywordstyle=\bfseries\color{magenta},
+		numberstyle=\sffamily\tiny\color{black!60},
+		stringstyle=\color{green!50!black},
+		basicstyle=\ttfamily\footnotesize,
+		breakatwhitespace=false,         
+		breaklines=true,                 
+		captionpos=b,                    
+		keepspaces=true,                 
+		numbers=left,                    
+		numbersep=5pt,                  
+		showspaces=false,                
+		showstringspaces=false,
+		showtabs=false,                  
+		tabsize=2
+}
+
+\lstdefinestyle{shellstyle}{
+		backgroundcolor=\color{black!5}, 
+		basicstyle=\ttfamily\footnotesize\color{black}, 
+		commentstyle=\color{black}, 
+		keywordstyle=\color{black},
+		numberstyle=\color{black!5},
+		stringstyle=\color{black}, 
+		showspaces=false,
+		showstringspaces=false, 
+		showtabs=false, 
+		tabsize=2, 
+		numbers=none, 
+		breaklines=true
+}
+
+
+\lstdefinelanguage{assembler}{ 
+  keywords={AAA, AAD, AAM, AAS, ADC, ADCB, ADCW, ADCL, ADD, ADDB, ADDW, ADDL, AND, ANDB, ANDW, ANDL,
+        ARPL, BOUND, BSF, BSFL, BSFW, BSR, BSRL, BSRW, BSWAP, BT, BTC, BTCB, BTCW, BTCL, BTR, 
+        BTRB, BTRW, BTRL, BTS, BTSB, BTSW, BTSL, CALL, CBW, CDQ, CLC, CLD, CLI, CLTS, CMC, CMP,
+        CMPB, CMPW, CMPL, CMPS, CMPSB, CMPSD, CMPSW, CMPXCHG, CMPXCHGB, CMPXCHGW, CMPXCHGL,
+        CMPXCHG8B, CPUID, CWDE, DAA, DAS, DEC, DECB, DECW, DECL, DIV, DIVB, DIVW, DIVL, ENTER,
+        HLT, IDIV, IDIVB, IDIVW, IDIVL, IMUL, IMULB, IMULW, IMULL, IN, INB, INW, INL, INC, INCB,
+        INCW, INCL, INS, INSB, INSD, INSW, INT, INT3, INTO, INVD, INVLPG, IRET, IRETD, JA, JAE,
+        JB, JBE, JC, JCXZ, JE, JECXZ, JG, JGE, JL, JLE, JMP, JNA, JNAE, JNB, JNBE, JNC, JNE, JNG,
+        JNGE, JNL, JNLE, JNO, JNP, JNS, JNZ, JO, JP, JPE, JPO, JS, JZ, LAHF, LAR, LCALL, LDS,
+        LEA, LEAVE, LES, LFS, LGDT, LGS, LIDT, LMSW, LOCK, LODSB, LODSD, LODSW, LOOP, LOOPE,
+        LOOPNE, LSL, LSS, LTR, MOV, MOVB, MOVW, MOVL, MOVSB, MOVSD, MOVSW, MOVSX, MOVSXB,
+        MOVSXW, MOVSXL, MOVZX, MOVZXB, MOVZXW, MOVZXL, MUL, MULB, MULW, MULL, NEG, NEGB, NEGW,
+        NEGL, NOP, NOT, NOTB, NOTW, NOTL, OR, ORB, ORW, ORL, OUT, OUTB, OUTW, OUTL, OUTSB, OUTSD,
+        OUTSW, POP, POPL, POPW, POPB, POPA, POPAD, POPF, POPFD, PUSH, PUSHL, PUSHW, PUSHB, PUSHA, 
+				PUSHAD, PUSHF, PUSHFD, RCL, RCLB, RCLW, MOVSL, MOVSB, MOVSW, STOSL, STOSB, STOSW, LODSB, LODSW,
+				LODSL, INSB, INSW, INSL, OUTSB, OUTSL, OUTSW
+        RCLL, RCR, RCRB, RCRW, RCRL, RDMSR, RDPMC, RDTSC, REP, REPE, REPNE, RET, ROL, ROLB, ROLW,
+        ROLL, ROR, RORB, RORW, RORL, SAHF, SAL, SALB, SALW, SALL, SAR, SARB, SARW, SARL, SBB,
+        SBBB, SBBW, SBBL, SCASB, SCASD, SCASW, SETA, SETAE, SETB, SETBE, SETC, SETE, SETG, SETGE,
+        SETL, SETLE, SETNA, SETNAE, SETNB, SETNBE, SETNC, SETNE, SETNG, SETNGE, SETNL, SETNLE,
+        SETNO, SETNP, SETNS, SETNZ, SETO, SETP, SETPE, SETPO, SETS, SETZ, SGDT, SHL, SHLB, SHLW,
+        SHLL, SHLD, SHR, SHRB, SHRW, SHRL, SHRD, SIDT, SLDT, SMSW, STC, STD, STI, STOSB, STOSD,
+        STOSW, STR, SUB, SUBB, SUBW, SUBL, TEST, TESTB, TESTW, TESTL, VERR, VERW, WAIT, WBINVD,
+        XADD, XADDB, XADDW, XADDL, XCHG, XCHGB, XCHGW, XCHGL, XLAT, XLATB, XOR, XORB, XORW, XORL},
+  keywordstyle=\color{blue}\bfseries,
+  ndkeywordstyle=\color{darkgray}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=false,
+  comment=[l]{\#},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{purple}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+
+\lstset{language=assembler, style=codestyle}
+
+% disponi sezioni
+\usepackage{titlesec}
+
+\titleformat{\section}
+	{\sffamily\Large\bfseries} 
+	{\thesection}{1em}{} 
+\titleformat{\subsection}
+	{\sffamily\large\bfseries}   
+	{\thesubsection}{1em}{} 
+\titleformat{\subsubsection}
+	{\sffamily\normalsize\bfseries} 
+	{\thesubsubsection}{1em}{}
+
+% tikz
+\usepackage{tikz}
+
+% float
+\usepackage{float}
+
+% grafici
+\usepackage{pgfplots}
+\pgfplotsset{width=10cm,compat=1.9}
+
+% disponi alberi
+\usepackage{forest}
+
+\forestset{
+	rectstyle/.style={
+		for tree={rectangle,draw,font=\large\sffamily}
+	},
+	roundstyle/.style={
+		for tree={circle,draw,font=\large}
+	}
+}
+
+% disponi algoritmi
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\makeatletter
+\renewcommand{\ALG@name}{Algoritmo}
+\makeatother
+
+% disponi numeri di pagina
+\usepackage{fancyhdr}
+\fancyhf{} 
+\fancyfoot[L]{\sffamily{\thepage}}
+
+\makeatletter
+\fancyhead[L]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@title \ \@date}}} 
+\fancyhead[R]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@author}}}
+\makeatother
+
+\begin{document}
+% sezione (data)
+\section{Lezione del 02-12-25}
+
+% stili pagina
+\thispagestyle{empty}
+\pagestyle{fancy}
+
+% testo
+Riprendiamo dopo tempo immemore l'argomento delle periferiche.
+
+\subsection{Processi esterni}
+Il comportamento del controllore di un dispositivo è assimilabile ad un processo, che chiamiamo \textbf{processo esterno}.
+Il controllo del comportamento del processo esterno esterno è influenzato dai bit del registro di controllo, che vengono aggiornati da un corrispondente \textit{processo interno}.
+
+Ipotizziamo un processo esterno che si attiva quando viene alzato un dato bit di controllo, detto \textit{bit di start}, e aggiorna un dato bit di stato, detto \textit{bit di flag}.
+Il suo funzionamento potrebbe quindi essere il seguente:
+\begin{enumerate}
+	\item Il PE attende l'invio di un comando sul registro di controllo;
+	\item Quando il bit di start transisce a 1, esegue il comando richiesto;
+	\item Successivamente all'esecuzione del comando aggiorna il bit di flag e torna allo stato 1.
+\end{enumerate}
+
+Il corrispondente processo interno si comporta quindi come segue:
+\begin{itemize}
+	\item Il PI prepara un comando;
+	\item Invia il comando impostando il bit di start a 1;
+	\item Attende la fine del comando aspettando che il bit di flag transisca a 1;
+	\item Finisce o eventualmente ripete tornando allo stato 1.
+\end{itemize}
+
+Il comportamento appena descritto può essere riassunto dal seguente schema, dove si mettono in evidenza (con linee tratteggiate), i cambiamenti di stato che rappresentano una comunicazione fra PE e PI: 
+\begin{center}
+	\includegraphics[scale=0.38]{../figures/proc_estern.png}
+\end{center}
+
+\subsubsection{Gestione dei processi esterni}
+Assumiamo che i processi esterni modellizzano il comportamento di periferiche che eseguono il loro codice, o comunque portano avanti le loro operazioni, in parallelo al sistema.
+Sarà quindi vero che i PE eseguno solitamente in parallelo ad altri processi (anche solo processi utente).
+
+La transizione da processo utente a PI, quando un PE si mette in attesa (magari alzando un bit di flag), viene fatta sfruttando il meccanismo dell'\textit{interruzione}.
+In particolare, prevediamo di associare un'interruzione alla modifica dei bit di flag da parte del dispositivo, e di predisporre nel sistema un handler per tale interruzione che rimetta in esecuzione il PI (che chiamiamo \textit{inth}).
+
+Possiamo visualizzare tale comportamento su un grafico:
+\begin{center}
+	\includegraphics[scale=0.3]{../figures/pe_timeline.png}
+\end{center}
+
+Notiamo che l'esecuzione continua dell'inth, e della transizione dall'inth al PI, porta ad avere diversi cambi di contesto per ogni byte (o quanto di informazione su cui è tarato il buffer del dispositivo), cosa che chiaramente porta ad un overhead non indifferente.
+Possiamo pensare di migliorare la situazione includendo all'interno del inth stesso routine per la gestione di buffer da più di un byte (cioè fare in modo che sia l'inth a tenere conto dei byte letti / scritti finora, e a leggere dal / fornire al dispositivo il prossimo se necessario). 
+
+In tal caso il grafico ha il seguente aspetto:
+\begin{center}
+	\includegraphics[scale=0.3]{../figures/pe_timeline_inth.png}
+\end{center}
+
+\subsubsection{Descrittori di dispositivo}
+All'interno del sistema, i dispositivi andranno raccontati da appositi \textbf{descrittori}.
+Questi descrittori vivranno all'interno dei driver (cioè assieme alla routine pensate per manipolarli, e per usarli per modificare lo stato dei dispositivi).
+
+Routine di lettura scrittura fornite al programmatore sotto forma di API come \lstinline|read()| e \lstinline|write()|, nonché l'inth stesso, dovranno interagire con questo descrittore per portare avanti operazioni di trasferimento su e da dispositivo.
+
+Vediamo quindi la struttura,a grandi linee, del descrittore di dispositivo:
+\begin{itemize}
+	\item \textbf{Indirizzi dei registri}, relativi per ogni funzione alla solita tripla:
+		\begin{itemize}
+			\item Indirizzo del registro di \textit{controllo} (chiamiato \lstinline|ctl|);
+			\item Indirizzo del registro di \textit{stato} (chiamato \lstinline|sts|);
+			\item Indirizzo del registro di \textit{dati} (chiamato \lstinline|dat|).
+		\end{itemize}
+		La configurazione di tali registri viene fatta in fase di boostrap del sistema (ricordiamo ad esempio che il bus PCI prevede uno spazio di indirizzamento specifico, quello di \textit{configurazione}, per il rilevamento dei dispositivi e la configurazione dei loro registri);
+	\item Dati relativi alla \textbf{sincronizzazione} sul dispositivo (o meglio sul processo esterno), fra cui:
+		\begin{itemize}
+			\item Un \textbf{semaforo} che indica se un dato è disponibile, detto appunto \lstinline|dato_disponibile| (su cui chiameremo le classiche \lstinline|signal()| e \lstinline|wait()|);
+			\item Un \textbf{contatore} che indica il numero di dati da trasferire, che chiamiamo semplicemente \lstinline|contatore|. 
+			\item Vorremo poi un \textbf{puntatore al buffer} in memoria su o da cui stiamo facendo trasferimento, che chiamiamo semplicemente \lstinline|puntatore|.
+		\end{itemize}
+	\item Infine, terremo traccia di un qualche flag rappresentante l'\textbf{esito del trasferimento}, che chiamiamo \lstinline|esito|.
+\end{itemize}
+
+\subsubsection{Vista di un device driver}
+Vediamo quindi l'implementazione di un semplice device driver, assumendo un dispositivo in sola lettura (si implementa solo la \lstinline|read()|). 
+
+Notiamo che ci aspettiamo di implementare il secondo approccio visto in 19.1.1, cioè quello dove è l'inth a occuparsi di tenere conto dei byte letti / scritti finora, e a leggere dal / fornire al dispositivo il prossimo se necessario).
+
+Infine, per i valori che restituiscono errore (come \lstinline|esito| del descrittore di dispositivo, o i registri di stato del dispositivo), assumiamo la costante \lstinline|ERR_CODE| $\neq 0$ come codice di errore generico.
+
+\begin{lstlisting}[language=C++, style=codestyle]	
+// descrittore del dispositivo
+struct des {
+	int ctl;
+	int sts;
+	int dat;
+
+	sem dato_disponibile;
+	int contatore;
+	char* puntatore;
+
+	int esito;
+}
+
+// primitiva read, legge @cont byte in @pbuf dal disp. @fd
+int read(int fd, char* pbuf, int cont) {
+	// ottiene il descrittore di dispositivo
+	// (assumimamo un'array indicizzata)
+	des* disp = &descr[fd];
+
+	// imposta  il buffer
+	disp->contatore = cont;
+	disp->puntatore = pbuf;
+
+	// attiva dispositivo
+	out(disp->ctl, 1);
+	
+	// aspetta per il termine dell'operazione
+	wait(disp->dato_disponibile);
+
+	// raccoglie l'esito
+	if(disp->esito == ERR_CODE) return -1;
+
+	// restituisce il numero di byte ancora da leggere
+	return(cont - disp->contatore);
+}
+
+// interrupt handler
+void inth() {
+	// assumiamo lettura
+	// inoltre, assumiamo che des* disp sia noto
+	
+	// legge registro di stato
+	char sts;
+	in(disp->sts, sts);
+	if(sts == ERR_CODE) {
+		< gestione di errore (device-specific) >
+
+		if(< errore non recuperabile >) {
+			// se non si puo recuperare, chiudi la comunicazione qui
+			disp->esito = ERR_CODE;
+			signal(disp->dato_disponibile);
+		}
+	}
+
+	// legge byte da dispositivo
+	char b;
+	in(disp->dat, b);
+
+	// copia nel buffer utente e aggiorna descrittore
+	*(disp->puntatore++) = b;
+	disp->contatore--;
+
+	// ha terminato?
+	if(disp->contatore != 0) {
+		// se no, chiede altro byte
+		out(disp->ctl, 1);
+	} else {
+		// se si, segnala
+		disp->esito = 0; // corretta terminazione
+		signal(disp->dato_disponibile);
+	}
+}
+\end{lstlisting}
+
+\subsection{Dispositivo timer}
+Vediamo nel dettaglio una periferiche reale, cioè il \textbf{timer}, che dovrà essere un \textit{generatore di eventi programmabile}, su base temporale.
+
+Il timer può essere molto utile, ad esempio solo per realizzare una primitiva di \lstinline|sleep()| all'interno del sistema.
+Ci occupiamo adesso di definire il comportamento del controllore e realizzarne un driver.
+
+\subsubsection{Descrittore del timer}
+Vediamo quindi il descrittore del dispositivo timer.
+
+Notiamo che questo dispositivo sarà capace di mantenere più timer \textit{virtuali} contemporaneamente.
+Ciò sarà implementato gestendo più timer virtuali nel descrittore e aggiornandoli cumulativamente all'arrivo di eventi (interruzione) da parte del singolo timer fisico installato nel sistema. 
+
+\begin{itemize}
+	\item \textbf{Indirizzi dei registri}, relativi per ogni funzione alla solita tripla:
+		\begin{itemize}
+			\item Indirizzo del registro di \textit{controllo} (chiamiato \lstinline|ctl|);
+			\item Indirizzo del registro di \textit{stato} (chiamato \lstinline|sts|);
+			\item Indirizzo del registro di \textit{dati} (chiamato \lstinline|dat|).
+		\end{itemize}
+	\item Dati relativi alla \textbf{sincronizzazione} sul timer, fra cui:
+		\begin{itemize}
+			\item Un'array di \textbf{semafori} che indicano se i timer hanno terminato, detti \lstinline|fine_attesa[N]|;
+			\item Un'array di interi che rappresenta i ritardi di ogni timer, detta \lstinline|ritardi[N]|. 
+		\end{itemize}
+	\item Infine, il classico flag di \lstinline|esito|.
+\end{itemize}
+
+\subsubsection{Driver del timer}
+Vediamo allora un semplice driver per il timer appena visto:
+\begin{lstlisting}[language=C++, style=codestyle]	
+// descrittore del timer
+struct des {
+	int ctl;
+	int sts;
+	int dat;
+
+	sem fine_attesa[N];
+	int ritardi[N];
+
+	int esito
+}
+
+des tim; // istanza globale
+
+// primitiva delay, aspetta per @ritardo
+void delay(int ritardo) {
+	// usiamo il proc. corrente per indicizzare il timer
+	int proc = < processo corrente >;
+
+	// configura il timer
+	tim.ritardo[proc] = ritardo;
+
+	// aspetta il timer
+	wait(tim.fine_attesa[proc]);
+}
+
+// interrupt handler
+void inth() {
+	for(int i = 0; i < N; i++) {
+		if(descr.ritardo[i] != 0) {
+			descr.ritardo[i]--;
+			if(descr.ritardo[i] == 0)
+				signal(descr.fine_attesa[i]);
+		}
+	}
+}
+\end{lstlisting}
+
+\subsubsection{Dispositivi a blocchi}
+Iniziamo a parlare dei \textit{dispositivi a blocchi}, e in particolare dei \textbf{dischi}.
+Questi sono dispositivi che permettono di memorizzare, seppur in maniera più lenta rispetto alla RAM, vaste quantità di dati per l'archiviazione a lungo termine.
+
+Storicamente (ed ancora oggi) i dischi venivano realizzati come dischi magnetici veri e propri (\textbf{HDD}, da \textit{Hard Disk Drive}), mentre oggi si stano diffondendo sempre più dischi allo stato solido (\textbf{SSD}, da \textit{Solid State Drive}). Una discussione più approfondita delle specifiche hardware si può trovare in \url{https://raw.githubusercontent.com/seggiani-luca/appunti-ce/638d3abf2e1d473632b575401582203c3b113c82/master/master.pdf}.
+
+Ciò che basta sapere in questo contesto è che un disco è formato da più \textbf{tracce} disposte radialmente, ed ogni traccia è divisa in \textbf{settori}.
+Spesso, inoltre, più dischi sono sovrapposti fra di loro a formare \textbf{cilindri}.
+
+\subsubsection{Scheduling di dischi}
+I dischi sono dispositivi ad accesso \textit{sequenziale}.
+Questo significa che è necessario un'algoritmo di \textbf{scheduling} degli accessi a disco, che minimizzi il movimento della testina di lettura e quindi i tempi medi diaccesso.
+
+Ne vediamo alcuni:
+\begin{itemize}
+	\item \textbf{FCFS} (\textit{First Come First Served}): è l'algoritmo più semplice, dove gestiamo le richieste di accesso nell'ordine in cui arrivano. Lato software è estremamente semplice e veloce, ma lato hardware richiede potenzialmente il numero massimo di spostamenti della testina;
+	\item \textbf{SSSF} (\textit{Shortest Seek Time First}): sceglie l'accesso più vicino alla posizione corrente della testina. In questo caso riduciamo il numero di movimenti della testina, ma l’overhead non è più trascurabile:
+		\begin{itemize}
+			\item Ogni volta che gestiamo una richiesta dobbiamo scorrere tutta la coda delle richieste per individuare quella più vicina;
+			\item C’è il rischio di starvation (se entrano spesso richieste con seek time minore).
+		\end{itemize}
+	\item \textbf{SCAN} (o \textit{algoritmo dell'ascensore}): è ispirato dal funzionamento degli ascensori. Si decide una direzione di andamento della testina, e si inizia a gestire le richieste seguendo tale direzione. Una volta arrivati ad un estremo (alla richiesta di indice più basso o più alto) si cambia direzione.
+
+\end{itemize}
+
+\end{document}
