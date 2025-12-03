@@ -1,0 +1,407 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[a4paper, margin=8em]{geometry}
+
+% usa i pacchetti per la scrittura in italiano
+\usepackage[french,italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\frenchspacing 
+
+% usa i pacchetti per la formattazione matematica
+\usepackage{amsmath, amssymb, amsthm, amsfonts}
+
+% usa altri pacchetti
+\usepackage{gensymb}
+\usepackage{hyperref}
+\usepackage{standalone}
+
+\usepackage{colortbl}
+
+\usepackage{xstring}
+\usepackage{karnaugh-map}
+
+% imposta il titolo
+\title{Appunti Sistemi Operativi}
+\author{Luca Seggiani}
+\date{2025}
+
+% imposta lo stile
+% usa helvetica
+\usepackage[scaled]{helvet}
+% usa palatino
+\usepackage{palatino}
+% usa un font monospazio guardabile
+\usepackage{lmodern}
+
+\renewcommand{\rmdefault}{ppl}
+\renewcommand{\sfdefault}{phv}
+\renewcommand{\ttdefault}{lmtt}
+
+% circuiti
+\usepackage{circuitikz}
+\usetikzlibrary{babel}
+
+% testo cerchiato
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+            \node[shape=circle,draw,inner sep=2pt] (char) {#1};}}
+
+% disponi il titolo
+\makeatletter
+\renewcommand{\maketitle} {
+	\begin{center} 
+		\begin{minipage}[t]{.8\textwidth}
+			\textsf{\huge\bfseries \@title} 
+		\end{minipage}%
+		\begin{minipage}[t]{.2\textwidth}
+			\raggedleft \vspace{-1.65em}
+			\textsf{\small \@author} \vfill
+			\textsf{\small \@date}
+		\end{minipage}
+		\par
+	\end{center}
+
+	\thispagestyle{empty}
+	\pagestyle{fancy}
+}
+\makeatother
+
+% disponi teoremi
+\usepackage{tcolorbox}
+\newtcolorbox[auto counter, number within=section]{theorem}[2][]{%
+	colback=blue!10, 
+	colframe=blue!40!black, 
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries, 
+	title=Teorema~\thetcbcounter: #2, 
+	#1
+}
+
+% disponi definizioni
+\newtcolorbox[auto counter, number within=section]{definition}[2][]{%
+	colback=red!10,
+	colframe=red!40!black,
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries,
+	title=Definizione~\thetcbcounter: #2,
+	#1
+}
+
+% disponi codice
+\usepackage{listings}
+\usepackage[table]{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{codestyle}{
+		backgroundcolor=\color{black!5}, 
+		commentstyle=\color{codegreen},
+		keywordstyle=\bfseries\color{magenta},
+		numberstyle=\sffamily\tiny\color{black!60},
+		stringstyle=\color{green!50!black},
+		basicstyle=\ttfamily\footnotesize,
+		breakatwhitespace=false,         
+		breaklines=true,                 
+		captionpos=b,                    
+		keepspaces=true,                 
+		numbers=left,                    
+		numbersep=5pt,                  
+		showspaces=false,                
+		showstringspaces=false,
+		showtabs=false,                  
+		tabsize=2
+}
+
+\lstdefinestyle{shellstyle}{
+		backgroundcolor=\color{black!5}, 
+		basicstyle=\ttfamily\footnotesize\color{black}, 
+		commentstyle=\color{black}, 
+		keywordstyle=\color{black},
+		numberstyle=\color{black!5},
+		stringstyle=\color{black}, 
+		showspaces=false,
+		showstringspaces=false, 
+		showtabs=false, 
+		tabsize=2, 
+		numbers=none, 
+		breaklines=true
+}
+
+
+\lstdefinelanguage{assembler}{ 
+  keywords={AAA, AAD, AAM, AAS, ADC, ADCB, ADCW, ADCL, ADD, ADDB, ADDW, ADDL, AND, ANDB, ANDW, ANDL,
+        ARPL, BOUND, BSF, BSFL, BSFW, BSR, BSRL, BSRW, BSWAP, BT, BTC, BTCB, BTCW, BTCL, BTR, 
+        BTRB, BTRW, BTRL, BTS, BTSB, BTSW, BTSL, CALL, CBW, CDQ, CLC, CLD, CLI, CLTS, CMC, CMP,
+        CMPB, CMPW, CMPL, CMPS, CMPSB, CMPSD, CMPSW, CMPXCHG, CMPXCHGB, CMPXCHGW, CMPXCHGL,
+        CMPXCHG8B, CPUID, CWDE, DAA, DAS, DEC, DECB, DECW, DECL, DIV, DIVB, DIVW, DIVL, ENTER,
+        HLT, IDIV, IDIVB, IDIVW, IDIVL, IMUL, IMULB, IMULW, IMULL, IN, INB, INW, INL, INC, INCB,
+        INCW, INCL, INS, INSB, INSD, INSW, INT, INT3, INTO, INVD, INVLPG, IRET, IRETD, JA, JAE,
+        JB, JBE, JC, JCXZ, JE, JECXZ, JG, JGE, JL, JLE, JMP, JNA, JNAE, JNB, JNBE, JNC, JNE, JNG,
+        JNGE, JNL, JNLE, JNO, JNP, JNS, JNZ, JO, JP, JPE, JPO, JS, JZ, LAHF, LAR, LCALL, LDS,
+        LEA, LEAVE, LES, LFS, LGDT, LGS, LIDT, LMSW, LOCK, LODSB, LODSD, LODSW, LOOP, LOOPE,
+        LOOPNE, LSL, LSS, LTR, MOV, MOVB, MOVW, MOVL, MOVSB, MOVSD, MOVSW, MOVSX, MOVSXB,
+        MOVSXW, MOVSXL, MOVZX, MOVZXB, MOVZXW, MOVZXL, MUL, MULB, MULW, MULL, NEG, NEGB, NEGW,
+        NEGL, NOP, NOT, NOTB, NOTW, NOTL, OR, ORB, ORW, ORL, OUT, OUTB, OUTW, OUTL, OUTSB, OUTSD,
+        OUTSW, POP, POPL, POPW, POPB, POPA, POPAD, POPF, POPFD, PUSH, PUSHL, PUSHW, PUSHB, PUSHA, 
+				PUSHAD, PUSHF, PUSHFD, RCL, RCLB, RCLW, MOVSL, MOVSB, MOVSW, STOSL, STOSB, STOSW, LODSB, LODSW,
+				LODSL, INSB, INSW, INSL, OUTSB, OUTSL, OUTSW
+        RCLL, RCR, RCRB, RCRW, RCRL, RDMSR, RDPMC, RDTSC, REP, REPE, REPNE, RET, ROL, ROLB, ROLW,
+        ROLL, ROR, RORB, RORW, RORL, SAHF, SAL, SALB, SALW, SALL, SAR, SARB, SARW, SARL, SBB,
+        SBBB, SBBW, SBBL, SCASB, SCASD, SCASW, SETA, SETAE, SETB, SETBE, SETC, SETE, SETG, SETGE,
+        SETL, SETLE, SETNA, SETNAE, SETNB, SETNBE, SETNC, SETNE, SETNG, SETNGE, SETNL, SETNLE,
+        SETNO, SETNP, SETNS, SETNZ, SETO, SETP, SETPE, SETPO, SETS, SETZ, SGDT, SHL, SHLB, SHLW,
+        SHLL, SHLD, SHR, SHRB, SHRW, SHRL, SHRD, SIDT, SLDT, SMSW, STC, STD, STI, STOSB, STOSD,
+        STOSW, STR, SUB, SUBB, SUBW, SUBL, TEST, TESTB, TESTW, TESTL, VERR, VERW, WAIT, WBINVD,
+        XADD, XADDB, XADDW, XADDL, XCHG, XCHGB, XCHGW, XCHGL, XLAT, XLATB, XOR, XORB, XORW, XORL},
+  keywordstyle=\color{blue}\bfseries,
+  ndkeywordstyle=\color{darkgray}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=false,
+  comment=[l]{\#},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{purple}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+
+\lstset{language=assembler, style=codestyle}
+
+% disponi sezioni
+\usepackage{titlesec}
+
+\titleformat{\section}
+	{\sffamily\Large\bfseries} 
+	{\thesection}{1em}{} 
+\titleformat{\subsection}
+	{\sffamily\large\bfseries}   
+	{\thesubsection}{1em}{} 
+\titleformat{\subsubsection}
+	{\sffamily\normalsize\bfseries} 
+	{\thesubsubsection}{1em}{}
+
+% tikz
+\usepackage{tikz}
+
+% float
+\usepackage{float}
+
+% grafici
+\usepackage{pgfplots}
+\pgfplotsset{width=10cm,compat=1.9}
+
+% disponi alberi
+\usepackage{forest}
+
+\forestset{
+	rectstyle/.style={
+		for tree={rectangle,draw,font=\large\sffamily}
+	},
+	roundstyle/.style={
+		for tree={circle,draw,font=\large}
+	}
+}
+
+% disponi algoritmi
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\makeatletter
+\renewcommand{\ALG@name}{Algoritmo}
+\makeatother
+
+% disponi numeri di pagina
+\usepackage{fancyhdr}
+\fancyhf{} 
+\fancyfoot[L]{\sffamily{\thepage}}
+
+\makeatletter
+\fancyhead[L]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@title \ \@date}}} 
+\fancyhead[R]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@author}}}
+\makeatother
+
+\begin{document}
+% sezione (data)
+\section{Lezione del 03-12-25}
+
+% stili pagina
+\thispagestyle{empty}
+\pagestyle{fancy}
+
+% testo
+\subsection{File system}
+Nella maggior parte dei S/O general purpose odierni è definito un componente destinato alla gestione dei \textbf{file system}.
+Un \textit{file system} è un sistema che governa l'organizzazione e l'accesso ai \textit{file}, spesso allocati su dispositivi a blocchi come i \textit{dischi}.
+
+Con un file system andiamo quindi a realizzare tutta una serie di concetti astratti, fra cui:
+\begin{itemize}
+	\item Il \textbf{file}, unità logica di memorizzazione dati;
+	\item La \textbf{directory} (o \textit{direttorio}), insieme di file o altre directory;
+	\item La \textbf{partizione}, un insieme di file associati ad un particolare dispositivo fisico (o una sua porzione).
+\end{itemize}
+
+File e directory rappresentano i nodi di una struttura ad \textit{albero}.
+Le caratteristiche di file, direttorio e partizione sono del tutto indipendenti dalla natura e dal tipo di dispositivo fisico utilizzato. Sono, appunto, \textit{astrazioni}.
+
+\subsubsection{Organizzazione logica del file system}
+Il file system è, come tutti i moduli del sistema, una struttura gerarchica:
+\begin{itemize}
+	\item Il livello più alto è quello \textit{logico}, dove esiste solamente l'astrazione di file e directory. Questo è il livello che viene offerto alle \textit{applicaziioni};
+	\item Segue il livello di \textit{accesso}, che governa le modalità in cui si accede ai file (sequenziale, diretta, ecc...), e i vari meccanismi di protezione che possono essere implementati;
+	\item Segue il livello di \textit{organizzazione fisica}, che riguarda l'allocazione dei file nei blocchi fisici. Vediamo infatto ogni \textit{disco virtuale} (più informazioni sotto) come un vettore di blocchi fisici, che vengono quindi distribuiti fra file;
+	\item In fondo c'è quindi l'astrazione del \textit{dispositivo virtuale}, costruita al di sopra dell'hardware (la memoria secondaria, cioè i dispositivi a blocchi), e visto come già introdotto come un vettore lineare di blocchi fisici.
+\end{itemize}
+
+\subsubsection{File}
+Un \textbf{file} è un insieme di informazioni, rappresentate secondo un insieme di \textit{record logici} (bit, byte, parole, ecc...). In UNIX il record è 1 byte.
+
+Ogni file è ulteriormente caratterizzato da un insieme di \textit{attributi}, cioè metadati che contengono il file:
+\begin{itemize}
+	\item \textbf{Nome} del file;
+	\item \textbf{Tipo} del file (si distingue fra file eseguibili, batch, di testo, ecc...);
+	\item \textbf{Indirizzo} del file nella memoria secondaria;
+	\item \textbf{Dimensione} del file, cioè il numero di record da cui è composto in memoria secondaria;
+	\item \textbf{Timestamp} di creazione del file, e di ultima modifica.
+\end{itemize}
+
+Nei sistemi operativi multiutente, inoltre, si vuole includere informazioni riguardo all'utente \textbf{proprietario} del file, e i \textbf{permessi} degli altri utenti riguardo alla manipolazione del file.
+
+\subsubsection{Alberi di file}
+Abbiamo tutti nota l'organizzazione ad albero dei moderni file system.
+A scopo di ripasso, notiamo che si definisce un primo direttorio detto \textit{radice}, rappresentato in sintassi come \lstinline|/|.
+Per individuare un oggetto (un'altra directory o un file) a partire dalla radice si continuano a frappore nomi di oggetti fra \lstinline|/|.
+Ad esempio, \lstinline|/home/luca/file.txt| cerca il file \lstinline|file.txt|, nella directory \lstinline|luca|, a sua volta nella directory \lstinline|home|, a sua volta nella diectory radice:
+
+\begin{center}
+	\begin{forest}
+		[/, rectstyle
+			[home
+				[luca
+					[file.txt]
+					[lista\_spesa.pdf]
+				]
+				[piero]
+				[luigi]
+			]
+			[sys]
+			[var]
+		]	
+	\end{forest}
+\end{center}
+
+Notiamo che in verità la presenza di \textit{link} all'interno del file system, cioè riferimenti allo stesso file fisico da più locazioni, rende l'astrazione migliore non più l'albero ma il \textbf{DAG} (\textit{Directed Acyclic Graph}), cioè il grafo aciclico diretto (che rispecchia un albero ma permette la connessione fra nodi con radici mutualmente diverse).
+
+\subsubsection{Operazioni su file system}
+Su un file system dobbiamo permettere, di base, un insieme minimo di operazioni:
+\begin{itemize}
+	\item \textbf{Creazione/cancellazione directory}: modificano la struttura logica del file system, aggiungendo/eliminando rami al grafo che rappresenta il file system;
+	\item \textbf{Aggiunta/cancellazione file}: inseriscono nuovi dati all'interno del file system;
+	\item \textbf{Listing}: generano listati dei contenuti delle directory;
+	\item \textbf{Attraversamento directory}: permettono il passagigo da una directory all'altra, e quindi la navigazione del file system.
+\end{itemize}
+
+\subsubsection{Descrittore di file}
+Per realizzare l'astrazione del file dobbiamo implementare un qualche tipo di struttura dati per la sua rappresentazione, cioè un \textbf{descrittore di file}.
+
+Questo conterrà gli attributi già notati in 20.1.2.
+I descrittori di file devono essere memorizzati in modo persistente, e quindi vengono allocati in apposite strutture in memoria secondaria.
+In particolare, ricordiamo la terminologia UNIX di \textit{i-node}, \textit{i-list} e \textit{i-number}.
+
+\par\smallskip
+
+Per la rappresentazione delle directory, che assumiamo come categorie particolari di file, dobbiamo sicuramente mantenere collegamenti ai descrittori di tutti i file che questa contiene.
+
+\subsubsection{Accesso ai file}
+Il compito del S/O p quello di consentire l'accesso \textit{on-line} ai file.
+Le operazioni permesse saranno quelle di \textbf{accesso} ai file, cioè:
+\begin{itemize}
+	\item \textbf{Lettura} di record logici dal file;
+	\item \textbf{Scrittura} su file, cioè inserimento di nuovi record logici all'interno del file. 
+\end{itemize}
+
+Ognuna di questa operazioni richiederebbe la localizzazione di informazioni sul disco, fra cui ad esempio:
+\begin{itemize}
+	\item Gli indirizzi dei record logici a cui accedere;
+	\item Gli altri attributi del file;
+	\item I record logici.
+\end{itemize}
+
+Per migliorare l'efficienza, il S/O mantiene in memoria centrale una struttura dati che registra i file attualmente in uso.
+Per ogni file aperto vogliamo mantenere il puntatore al file in memoria centrale (più informazioni sotto), il descrittore del file, e la sua posizione nel disco.
+I file aperti verranno quindi \textit{mappati} in memoria centrale, cioè temporaneamente copiati, durante l'accesso, per aumentare la velocità.
+
+Le operazioni necessarie saranno:
+\begin{itemize}
+	\item In fase di \textbf{apertura} del file, introduzione di un nuovo elemento nella tabella dei file aperti e eventuale mapping in memoria (se non era già stato fatto) del file;
+	\item In fase di \textbf{chiusura} del file, salvtaggio del file in memoria secondaria e eliminazione dell'elemento corrispondente della tabella dei file aperti.
+\end{itemize}
+
+\subsubsection{Metodi di accesso}
+L'accesso ai file può avvenire secondo varie modalità:
+\begin{itemize}
+	\item Accesso \textbf{sequenziale} \\
+		In questo caso il file è inteso come una sequenza $[R_1, R_2, ..., R_N]$ di record logici. Per accedere al record $R_i$, bisogna necessariamente accedere prima ai precedenti $R_1, ..., R_{i - 1}$ record.
+
+		In questo caso possiamo prevedere operazioni come:
+		\begin{itemize}
+			\item \lstinline|readn(f, &V)|, che permette la lettura del prossimo record logico (col riferimento \lstinline|$V|) del file \lstinline|f|;
+			\item \lstinline|writen(f, V)|, che permette la scrittura del prossimo record logico (ottenuto col riferimento \lstinline|V|) nel file \lstinline|f|.
+		\end{itemize}
+		Ad ogni modo, il nodo centrale dell'accesso sequenziale è che ognuna di queste operazioni posiziona il puntatore del file al record successivo a quello letto;
+	\item Accesso \textbf{diretto} \\
+		In questo caso il file è inteso come un insieme $\{R_1, R_2, ..., R_N\}$ di record logici. Noto l'indice $i$, si può accedere direttamente all'$i$-esimo record.
+
+		In questo caso possiamo prevedere operazioni come:
+		\begin{itemize}
+			\item \lstinline|readd(f, i, &V)|, che permette la lettura del $i$-esimo record logico (col riferimento \lstinline|$V|) del file \lstinline|f|;
+			\item \lstinline|writed(f, i, V)|, che permette la scrittura dell'$i$-esimo record logico (ottenuto col riferimento \lstinline|V|) nel file \lstinline|f|.
+		Vediamo quindi come il punto centrale dell'accesso diretto è la possibilità per il programmatore di poter specificare un indice specifico a cui scrivere nel file, senza aver bisogno di scannerizzarlo in una direzione o l'altra.
+
+		\end{itemize}
+	\item Accesso a \textbf{indice} \\
+		Con l'accesso a indice andiamo ad interporre fra l'accesso al file e il file stesso una struttura a \textit{indice}, che permette l'accesso alle informazioni nel file sfruttando \textit{chiavi}.
+		
+		\begin{itemize}
+			\item \lstinline|readk(f, key, &V)|, che permette la lettura del record logico indicizzato dalla chiave \lstinline|key| (col riferimento \lstinline|$V|) del file \lstinline|f|;
+			\item \lstinline|writek(f, i, V)|, che permette la scrittura del record logico indicizzato dalla chiave \lstinline|key| (ottenuto col riferimento \lstinline|V|) nel file \lstinline|f|.
+		\end{itemize}
+		In questo caso è chiaro che l'accesso al file avviene solo dopo un'operazione ricerca sull'indice, che dovrà essere memorizzato in un altro file, o comuunque in una locazione accessibile al filesystem.
+\end{itemize}
+
+La modalità di accesso è indipendente dal tipo di dispositivo utilizzato, o dalle tecnica di allocazione dei blocchi in memoria secondaria.
+Chiaramente, tali soluzioni detteranno le loro modalità di accesso, ma vorremo che il S/O faccia da livello di compatibilità per supportare qualsiasi metodo di accesso.
+
+\subsubsection{Organizzazione fisica del file system}
+Abbiamo giò detto che ogni dispositivo di memorizzazione secondaria verrà partizionato in \textit{blocchi}, che possiamo anche dire \textit{record fisici}.
+In particolare:
+\begin{itemize}
+	\item Un \textbf{blocco} è l'unità minima di trasferimento nelle operazioni di I/O da e verso il dispositivo \textit{fisico}. La sua dimensione è per questo costante;
+	\item Un \textbf{record fisico} è invece l'unità di trasferimenti minima nelle operazioni di accesso file, viste dai processi (e quindi dalle \textit{applicazioni}).
+\end{itemize}
+
+La corrispondenza fra blocchi è record logici è che un singolo blocco può contenere più record logici.
+Per questo motivo si ha che la dimensione di un blocco è maggiore di quella di un record logico.
+
+\subsubsection{Allocazione contigua}
+Iniziamo quindi a vedere come possiamo mappare i record logici dei file nei vari record fisici.
+Il caso pià semplice è quello dell'\textbf{allocazione contigua}, dove ogni file è mappato su insieme di blocchi fisicamente contigui.
+
+I vantaggi di questo approccio sono:
+\begin{itemize}
+	\item Velocità nella ricerca di un blocco: per trovare il blocco contenente l'$i$-esimo byte di un file allocato a partire dal blocco $B$ basta prendere:
+$$
+i_B = B + \frac{i}{N_\text{byte}}
+$$
+dove $N_\text{byte}$ è il numero di byte per blocco.
+	\item La possibilità di fornire accesso sequenziale e diretto in maniera molto semplice, che va in qualche modo di pari passo con la caratteristica di accesso rapido appena nominata.
+\end{itemize}
+
+Gli svantaggi sono invece:
+\begin{itemize}
+	\item La \textbf{frammentazione esterna}: man mano che il disco si riempie, rimangono zone contigue sempre più piccole e quindi inutilizzabili. A questo punto si rende necessario operare il \textit{compattamento} del file system;
+	\item Cercare spazio libero per un nuovo file ha un certo costo. In oltre bisogna fare le dovute considerazioni riguardo agli approcci \textit{first-fit} o \textit{best-fit};
+	\item Se la dimensione del file cambia, si hanno dei seri problemi generati dalla riallocazione del file, dovesse questo andare ad impattare per allocazione continua regioni già occupate da altri file.
+\end{itemize}
+
+\end{document}
