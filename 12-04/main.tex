@@ -429,8 +429,9 @@ Restando sull'argomento UNIX, vediamo nel dettaglio come questo sistema operativ
 
 \subsubsection{Stato dei processi UNIX}
 UNIX supporta lo \textit{swapping} di processo, per cui il diagramma di stato del processo è simile a quello riportato in 17.3.2:
-
-# diagramma di stato 17.3.2 + zombie
+\begin{center}
+	\includegraphics[scale=0.25]{../figures/proc_unix.png}
+\end{center}
 
 L'aggiunta a questo diagramma è quella dello stato \textbf{zombie}, in cui un processo va a trovarsi prima di essere effettivamente terminato.
 Un processo passa allo stato zombie quando viene effettivamente terminato, prima che il suo processo padre ne raccolga lo stato (il cosiddetto \textit{reaping}). 
@@ -468,7 +469,7 @@ Vediamo quindi come dividiamo il PCB:
 		\begin{itemize}
 			\item La copia dei \textbf{registri} CPU;
 			\item Come abbiamo già visto, le informazioni sulle risorse allocate, come ad esempio la tabella dei \textbf{file aperti};
-			\item ALtre informazioni riguardanti la gestione dei \textbf{segnali} (handler segnali, ecc...);
+			\item Altre informazioni riguardanti la gestione dei \textbf{segnali} (handler segnali, ecc...);
 			\item L'\textbf{ambiente} del processo, e quindi il direttorio corrente, gli argomenti, l'utente e il gruppo che lo hanno lanciato, le variabili di sistema (fra cui il PATH), ecc....
 		\end{itemize}
 	\item \textbf{Text structure}: contiene informazioni riguardo a dove il codice di un processo si trova. Questa tabella viene implementata in quanto UNIX sfrutta il cosiddetto codice \textit{rientrante}: più processi possono riferirsi allo stesso codice, e in tal caso il codice viene caricato una sola volta e riferito attraverso questa tabella.
@@ -479,8 +480,9 @@ Oltre a queste strutture, chiaramente, vorremo mantenere le aree \textit{dati} e
 \par\smallskip
 
 Vediamo quindi un diagramma che mostra come tutte le strutture riguardanti un processo appena visto sono disposite, sulla base delle 2 caratteristiche ortogonali viste prima:
-
-# schema strutture processo
+\begin{center}
+	\includegraphics[scale=0.36]{../figures/unix_proc_struct.png}
+\end{center}
 
 \subsection{Protezione e sicurezza}
 Veniamo quindi alla dicussione della \textbf{protezione} e della \textbf{sicurezza} nei S/O.
