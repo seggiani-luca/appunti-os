@@ -1,0 +1,547 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[a4paper, margin=8em]{geometry}
+
+% usa i pacchetti per la scrittura in italiano
+\usepackage[french,italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\frenchspacing 
+
+% usa i pacchetti per la formattazione matematica
+\usepackage{amsmath, amssymb, amsthm, amsfonts}
+
+% usa altri pacchetti
+\usepackage{gensymb}
+\usepackage{hyperref}
+\usepackage{standalone}
+
+\usepackage{colortbl}
+
+\usepackage{xstring}
+\usepackage{karnaugh-map}
+
+% imposta il titolo
+\title{Appunti Sistemi Operativi}
+\author{Luca Seggiani}
+\date{2025}
+
+% imposta lo stile
+% usa helvetica
+\usepackage[scaled]{helvet}
+% usa palatino
+\usepackage{palatino}
+% usa un font monospazio guardabile
+\usepackage{lmodern}
+
+\renewcommand{\rmdefault}{ppl}
+\renewcommand{\sfdefault}{phv}
+\renewcommand{\ttdefault}{lmtt}
+
+% circuiti
+\usepackage{circuitikz}
+\usetikzlibrary{babel}
+
+% testo cerchiato
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+            \node[shape=circle,draw,inner sep=2pt] (char) {#1};}}
+
+% disponi il titolo
+\makeatletter
+\renewcommand{\maketitle} {
+	\begin{center} 
+		\begin{minipage}[t]{.8\textwidth}
+			\textsf{\huge\bfseries \@title} 
+		\end{minipage}%
+		\begin{minipage}[t]{.2\textwidth}
+			\raggedleft \vspace{-1.65em}
+			\textsf{\small \@author} \vfill
+			\textsf{\small \@date}
+		\end{minipage}
+		\par
+	\end{center}
+
+	\thispagestyle{empty}
+	\pagestyle{fancy}
+}
+\makeatother
+
+% disponi teoremi
+\usepackage{tcolorbox}
+\newtcolorbox[auto counter, number within=section]{theorem}[2][]{%
+	colback=blue!10, 
+	colframe=blue!40!black, 
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries, 
+	title=Teorema~\thetcbcounter: #2, 
+	#1
+}
+
+% disponi definizioni
+\newtcolorbox[auto counter, number within=section]{definition}[2][]{%
+	colback=red!10,
+	colframe=red!40!black,
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries,
+	title=Definizione~\thetcbcounter: #2,
+	#1
+}
+
+% disponi codice
+\usepackage{listings}
+\usepackage[table]{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{codestyle}{
+		backgroundcolor=\color{black!5}, 
+		commentstyle=\color{codegreen},
+		keywordstyle=\bfseries\color{magenta},
+		numberstyle=\sffamily\tiny\color{black!60},
+		stringstyle=\color{green!50!black},
+		basicstyle=\ttfamily\footnotesize,
+		breakatwhitespace=false,         
+		breaklines=true,                 
+		captionpos=b,                    
+		keepspaces=true,                 
+		numbers=left,                    
+		numbersep=5pt,                  
+		showspaces=false,                
+		showstringspaces=false,
+		showtabs=false,                  
+		tabsize=2
+}
+
+\lstdefinestyle{shellstyle}{
+		backgroundcolor=\color{black!5}, 
+		basicstyle=\ttfamily\footnotesize\color{black}, 
+		commentstyle=\color{black}, 
+		keywordstyle=\color{black},
+		numberstyle=\color{black!5},
+		stringstyle=\color{black}, 
+		showspaces=false,
+		showstringspaces=false, 
+		showtabs=false, 
+		tabsize=2, 
+		numbers=none, 
+		breaklines=true
+}
+
+
+\lstdefinelanguage{assembler}{ 
+  keywords={AAA, AAD, AAM, AAS, ADC, ADCB, ADCW, ADCL, ADD, ADDB, ADDW, ADDL, AND, ANDB, ANDW, ANDL,
+        ARPL, BOUND, BSF, BSFL, BSFW, BSR, BSRL, BSRW, BSWAP, BT, BTC, BTCB, BTCW, BTCL, BTR, 
+        BTRB, BTRW, BTRL, BTS, BTSB, BTSW, BTSL, CALL, CBW, CDQ, CLC, CLD, CLI, CLTS, CMC, CMP,
+        CMPB, CMPW, CMPL, CMPS, CMPSB, CMPSD, CMPSW, CMPXCHG, CMPXCHGB, CMPXCHGW, CMPXCHGL,
+        CMPXCHG8B, CPUID, CWDE, DAA, DAS, DEC, DECB, DECW, DECL, DIV, DIVB, DIVW, DIVL, ENTER,
+        HLT, IDIV, IDIVB, IDIVW, IDIVL, IMUL, IMULB, IMULW, IMULL, IN, INB, INW, INL, INC, INCB,
+        INCW, INCL, INS, INSB, INSD, INSW, INT, INT3, INTO, INVD, INVLPG, IRET, IRETD, JA, JAE,
+        JB, JBE, JC, JCXZ, JE, JECXZ, JG, JGE, JL, JLE, JMP, JNA, JNAE, JNB, JNBE, JNC, JNE, JNG,
+        JNGE, JNL, JNLE, JNO, JNP, JNS, JNZ, JO, JP, JPE, JPO, JS, JZ, LAHF, LAR, LCALL, LDS,
+        LEA, LEAVE, LES, LFS, LGDT, LGS, LIDT, LMSW, LOCK, LODSB, LODSD, LODSW, LOOP, LOOPE,
+        LOOPNE, LSL, LSS, LTR, MOV, MOVB, MOVW, MOVL, MOVSB, MOVSD, MOVSW, MOVSX, MOVSXB,
+        MOVSXW, MOVSXL, MOVZX, MOVZXB, MOVZXW, MOVZXL, MUL, MULB, MULW, MULL, NEG, NEGB, NEGW,
+        NEGL, NOP, NOT, NOTB, NOTW, NOTL, OR, ORB, ORW, ORL, OUT, OUTB, OUTW, OUTL, OUTSB, OUTSD,
+        OUTSW, POP, POPL, POPW, POPB, POPA, POPAD, POPF, POPFD, PUSH, PUSHL, PUSHW, PUSHB, PUSHA, 
+				PUSHAD, PUSHF, PUSHFD, RCL, RCLB, RCLW, MOVSL, MOVSB, MOVSW, STOSL, STOSB, STOSW, LODSB, LODSW,
+				LODSL, INSB, INSW, INSL, OUTSB, OUTSL, OUTSW
+        RCLL, RCR, RCRB, RCRW, RCRL, RDMSR, RDPMC, RDTSC, REP, REPE, REPNE, RET, ROL, ROLB, ROLW,
+        ROLL, ROR, RORB, RORW, RORL, SAHF, SAL, SALB, SALW, SALL, SAR, SARB, SARW, SARL, SBB,
+        SBBB, SBBW, SBBL, SCASB, SCASD, SCASW, SETA, SETAE, SETB, SETBE, SETC, SETE, SETG, SETGE,
+        SETL, SETLE, SETNA, SETNAE, SETNB, SETNBE, SETNC, SETNE, SETNG, SETNGE, SETNL, SETNLE,
+        SETNO, SETNP, SETNS, SETNZ, SETO, SETP, SETPE, SETPO, SETS, SETZ, SGDT, SHL, SHLB, SHLW,
+        SHLL, SHLD, SHR, SHRB, SHRW, SHRL, SHRD, SIDT, SLDT, SMSW, STC, STD, STI, STOSB, STOSD,
+        STOSW, STR, SUB, SUBB, SUBW, SUBL, TEST, TESTB, TESTW, TESTL, VERR, VERW, WAIT, WBINVD,
+        XADD, XADDB, XADDW, XADDL, XCHG, XCHGB, XCHGW, XCHGL, XLAT, XLATB, XOR, XORB, XORW, XORL},
+  keywordstyle=\color{blue}\bfseries,
+  ndkeywordstyle=\color{darkgray}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=false,
+  comment=[l]{\#},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{purple}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+
+\lstset{language=assembler, style=codestyle}
+
+% disponi sezioni
+\usepackage{titlesec}
+
+\titleformat{\section}
+	{\sffamily\Large\bfseries} 
+	{\thesection}{1em}{} 
+\titleformat{\subsection}
+	{\sffamily\large\bfseries}   
+	{\thesubsection}{1em}{} 
+\titleformat{\subsubsection}
+	{\sffamily\normalsize\bfseries} 
+	{\thesubsubsection}{1em}{}
+
+% tikz
+\usepackage{tikz}
+
+% float
+\usepackage{float}
+
+% grafici
+\usepackage{pgfplots}
+\pgfplotsset{width=10cm,compat=1.9}
+
+% disponi alberi
+\usepackage{forest}
+
+\forestset{
+	rectstyle/.style={
+		for tree={rectangle,draw,font=\large\sffamily}
+	},
+	roundstyle/.style={
+		for tree={circle,draw,font=\large}
+	}
+}
+
+% disponi algoritmi
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\makeatletter
+\renewcommand{\ALG@name}{Algoritmo}
+\makeatother
+
+% disponi numeri di pagina
+\usepackage{fancyhdr}
+\fancyhf{} 
+\fancyfoot[L]{\sffamily{\thepage}}
+
+\makeatletter
+\fancyhead[L]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@title \ \@date}}} 
+\fancyhead[R]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@author}}}
+\makeatother
+
+\begin{document}
+% sezione (data)
+\section{Lezione del 04-12-25}
+
+% stili pagina
+\thispagestyle{empty}
+\pagestyle{fancy}
+
+% testo
+Continuiamo a trattare le tecniche di mappatura dei record fisici in record logici.
+
+\subsubsection{Allocazione a lista concatenata}
+In questo caso vogliamo organizzare i blocchi sui quali viene mappato ogni file secondo una struttura a \textbf{lista concatenata}.
+
+I vantaggi di questo approccio sono:
+\begin{itemize}
+	\item Non esiste frammentazione esterna, in quanto ogni record fisico libero può essere usato ed inserito come successivo a qualsiasi altro record logico;
+	\item Il costo di allocazione è quindi minore;
+	\item L'accesso sequenziale è a basso costo (le liste concatenate sono ottime proprio per gli accessi sequenziali).
+\end{itemize}
+
+Gli svantaggi sono invece:
+\begin{itemize}
+	\item La facilità di introdurre errori nel caso di danneggiamenti di link fra nodi della lista;
+	\item Lo spazio aggiuntivo occupato dai puntatori ai prossimi elementi di ogni elemento della lista;
+	\item L'accesso diretto risulta oneroso: per accedere all'$i$-esimo byte abbiamo bisogno di:
+		$$
+		t_B = \frac{i}{N_\text{byte}}
+		$$
+		iterazioni, cioè dobbiamo scansionare i primi $t_B$ blocchi della list;
+	\item Dobbiamo inoltre notare il costo della ricerca di un blocco puntato, che non è più contiguo ai blocchi precedenti, ma potrebbe trovarsi in regioni arbitrarie della memoria. 
+\end{itemize}
+
+\par\smallskip
+
+Il sistema operativo Microsoft Windows implementa l'allocazione a lista concatenata attraverso le cosiddette \textbf{FAT} (\textit{File Allocation Table}).
+Queste non sono altro che tabelle che associano ad ogni blocco fisico, il blocco fisico successivo.
+
+\subsubsection{Allocazione a lista doppiamente concatenata}
+Possiamo facilmente estendere l'approccio precedente rendendo la lista \textbf{doppiamente concatenata}.
+
+I vantaggi sono immediati:
+\begin{itemize}
+	\item Possiamo permettere la scansione in due direzioni di ogni file;
+	\item Il sistema è reso più robusto dalla presenza di più link (si possono recuperare errori di perdita di un link).
+\end{itemize}
+
+Gli svantaggi sono invece dati principalmente dall'aumento dello spazio necessario per blocco, in quanto raddoppierà il numero di puntatori da mantenere (da 1 a 2). 
+
+\subsubsection{Allocazione a indice}
+Nell'\textbf{allocazione a indice}, a ogni file viene associato un blocco (detto \textit{indice}) in cui sono contenuti tutti gli indirizzi dei blocchi su cui è allocato il file.
+
+I vantaggi sono gli stessi dell'allocazione a lista, con l'aggiunta di:
+\begin{itemize}
+	\item Possibilità di fare accesso diretto senza scansioni (sfruttando l'indice);
+	\item Maggiore velocità di accesso rispetto alle liste.
+\end{itemize}
+
+Lo svantaggio principale di questo approccio è la sua difficile \textbf{scalabilità}, data dalla crescita delle dimensioni dell'indice.
+
+Assunta $N_\text{byte}$ come la dimensione del blocco in byte, $S$ come la dimenzione del disco, abbiamo che ogni entrata dell'indice dovrà essere almeno:
+$$
+S_r = \frac{S}{N_\text{byte}}
+$$
+per cui il numero di blocchi che potremo indicizzare sarà:
+$$
+N_\text{blocchi} = \frac{N_\text{byte}}{S_r}
+$$
+e la dimensione massima del file indicizzabile:
+$$
+S_\text{max} = N_\text{blocchi} \times N_\text{byte}
+$$
+
+Una soluzione può essere di concatenare più indici, dedicando ad ogni indice un nuovo blocco.
+
+\par\smallskip
+
+Vediamo che in UNIX si usa un approccio simile all'allocazione a indice.
+
+\subsection{Filesystem UNIX}
+Abbiamo introdotto il fatto che in UNIX un file è rappresentato da un descrittore detto \textbf{i-node}.
+
+Questo è un descrittore che contiene i seguenti attributi:
+\begin{itemize}
+	\item Il \textbf{tipo} del file, scelto fra \textit{file ordinario}, \textit{directory} o \textit{file speciale};
+	\item Il \textbf{proprietario} del file (utente e gruppo, user-id e group-id);
+	\item I 12 bit di \textbf{protezione} (i 9 bit dei permessi, SUID, SGID e STIcky bit);
+	\item Le \textbf{date} di creazione e modifica del file;
+	\item La \textbf{dimensione} del file;
+	\item Il numero di \textbf{link} al file;
+	\item Il cosiddetto \textbf{vettore di indirizzamento} (costituito da 13 a 15 indirizzi di blocchi). Questo consente l’indirizzamento dei blocchi di dati sui quali è allocato il file secondo una struttura ad indice.
+\end{itemize}
+
+Approfondiamo il vettore di indirizzamento.
+Assunto che la dimensione di un blocco è 512 byte, e gli indirizzi si trovano su 32 byte, si ha che ogni blocco può contenere 128 indirizzi di blocco.
+
+Adottiamo quindi un'approccio a più livelli di indirezione sulla base della dimensione del file:
+\begin{itemize}
+	\item I primi $10$ blocchi di dati sono accessibili direttamente ($10 \times 512$ byte $= 5$ KiB);
+	\item I prossimi $128$ blocchi sono accessibili con \textit{indirezione singola}, accedendo al puntatore 11 ($128 \times 512$ byte $= 64$ KiB);
+\item I prossimi $128 \times 128$ blocchi sono accessibili con \textit{indirezione doppia}, accedendo al puntatore 12 ($128 \times 128 \times 512$ byte $= 8$ MiB);
+\item I prossimi $128 \times 128 \times 128$ blocchi sono accessibili con \textit{indirezione tripla}, accedendo al puntatore 13 ($128 \times 128 \times 128 \times 512$ byte $= 1$ GiB);
+\end{itemize}
+
+Questo approccio si ripete cos' fino al 15-esimo indice.
+In questo modo si riesce a raggiungere dimensioni massime del file dell'ordine del GB, mantenendo però le strutture a indice piccole e con poca indirezinoe per file di piccole dimensioni.
+
+\subsubsection{Organizzazione logica del file system UNIX}
+La filosofia del file system UNIX è che \textit{tutto è un file}, per cui un file può rappresentare un file effettivo in memoria, una directory, o un \textit{file speciale}, che può rappresentare un dispositivo accessibile in lettura/scrittura, come un socket, come un costrutto di sistema (come ad esempio le pipe).
+
+Abbiamo visto come il descrittore di file è l'i-node.
+Possiamo anticipare che gli i-node sono allocati in una tabella centralizzata detta i-list, dove ogni i-node è identificato da un identificatore univoco detto i-number.
+
+Una volta stabilita l'identificazione attraverso i-number, si possono rappresentare le directory semplicemente come liste di i-number associate a nomi per ogni file. 
+
+\subsubsection{Organizzazione fisica del filesystem UNIX}
+Abbiamo quindi visto che in UNIX si adotta un tipo di allocazione ibrida (allocazione ad indici a più livelli). I blocchi fisici hanno dimensione tra i 512-4096 byte. La superficie del disco virtuale è quindi divisa in quattro partizioni:
+\begin{itemize}
+	\item Il \textbf{boot block}: contiene informazioni fondamentali per il bootstrap (appendice sul disco delle informazioni o programmi che devono essere eseguiti al momento del bootstrap, inizializzazione del sistema);
+	\item Il \textbf{super block}: contiene nformazioni sull’organizzazione del file system (in particolare i limiti delle quattro regioni che stiamo descrivendo, il puntatore alla lista dei blocchi liberi e il puntatore a una lista degli i-node liberi)
+	\item L'\textbf{i-list}: tabella contenente tutti gli i-node di file, directory e dispositivi. Ogni file ha associato uno o più nomi simbolici, uno e un solo descrittore (già visto) detto i-node (raggiungibile a partire da un intero detto i-number, che è l’indice dell’elemento posto nell’array i-list);
+	\item La partizione \textbf{data blocks}: contenente i blocchi utilizzati per allocare file.
+\end{itemize}
+
+\subsubsection{Accesso ai file in UNIX}
+L'\textbf{accesso ai file} si fa con le solite primitive \lstinline|read()| e \lstinline|write()|, notando che si possono avere diversi tipi di accesso anche per la solita primitiva (\lstinline|write()| in truncate o append, ecc...).
+
+L'accesso è \textit{sequenziale}, e non si ha \textit{strutturazione} (i file sono solamente sequenze di record, cioè byte).
+La posizione corrente dell'accesso viene mantenuta da un puntatore detto \textit{I/O pointer}.
+
+Vediamo quindi come il programmatore accede al filesystem.
+A ogni processo è associata una tabella dei \textbf{file aperti}.
+Ogni elemento della tabella rappresenta un file (che ricordiamo può anche essere un dispositivo, cioè un file speciale).
+Il \textit{file descriptor} (o \textbf{filde}) di tale file non è altro che l'indice del file nella tabela dei file aperti di un processo.
+Esistono 3 filde di default:
+\begin{itemize}
+	\item \textbf{stdin} (indice 0): lo stream di ingresso di default;
+	\item \textbf{stdout} (indice 1): lo stream di uscita di default;
+	\item \textbf{stderr} (indice 2): lo stream di errore di default.
+\end{itemize}
+
+Essendo un'informazione utile quando il processo è caricato, la tabella dei file aperti del processo è allocata nella sua \textit{user structure}.
+
+\par\smallskip
+
+Lato kernel, manteniamo 2 tabelle per l'accesso ai file:
+\begin{itemize}
+	\item La tabella dei \textbf{file attivi}, che per ogni file aperto contiene una copia dell'i-node e il numero di riferimenti a tale file (per permettere la rimozione automatica quando si disattiva l'ultimo riferimento);
+	\item La tabella dei \textbf{file aperti di sistema}, che ha un elemento per ogni operazione di apertura non ancora chiusa, contenente:
+		\begin{itemize}
+			\item L'I/O pointer, cioè la posizione corrente all'interno del file;
+			\item Il puntatore all'i-node del file nella tabella dei \textit{file attivi}.
+		\end{itemize}
+\end{itemize}
+
+La divisione in due tabelle è resa necessaria dal fatto che più processi possono aprire lo stesso file: l'informazione condivisa fra i processi (cioè l'inode) è contenuta nella prima tabella, mentre l'informazione specifica ad ogni processo (cioè l'I/O pointer) è contenuta nella seconda tabella.
+
+\subsubsection{Primitive di accesso ai file}
+Vediamo quindi le primitive di accesso ai file nel dettaglio:
+\begin{itemize}
+	\item \lstinline|int open(char nomefile[], int flag, int? mode);| \\ 
+		Questa primitiva si occupa di aprire un file, cioè crearne l'entrata nella tabelle dei file aperti e restituirne il filde.
+
+		\begin{itemize}
+			\item \lstinline|nomefile| è il nome del file, relativo alla working directory corrente, o assoluto;
+			\item \lstinline|flag| esprime il metodo di accesso. Ad esempio, si può specificare \lstinline|O_RDONLY| per l'accesso in sola lettura, o \lstinline|O_WRONLY| per l'accesso in sola scrittura;
+			\item \lstinline|mode| è un parametro richiesto soltanto se l'operazione di apertura richiede la creazione di un file (con \lstinline|O_CREAT|). In tal caso, specifica i bit di protezione.
+		\end{itemize}
+
+		Il valore restituito è il fild del file, oppure -1 in caso di errore;
+
+	\item \lstinline|int close(int fd);| \\ 
+		Questa primitiva è la duale alla \lstinline|open()|, e si occupa di chiudere il file aperto indicizzato da un certo filde.
+
+		\begin{itemize}
+			\item \lstinline|fd| è, appunto, il fide del file da chiudere.
+		\end{itemize}
+
+		Restituisce 0 se l'operazione va a buon fine, e -1 in caso di errori;
+
+	\item \lstinline|int read(int fd, char* buf, int n);| \\ 
+		Si occupa di leggere \lstinline|n| byte nel buffer \lstinline|byf| da un certo filde.
+
+		\begin{itemize}
+			\item \lstinline|fd| è il filde del file da cui leggere;
+			\item \lstinline|buf| è l'area in cui trasferire i byte letti;
+			\item \lstinline|n| è il numero di byte da leggere.
+		\end{itemize}
+
+		In caso di successo, restituisce un intero positivo $\leq n$ che rappresenta il numero di byte letti. Altrimenti restituisce -1;
+
+	\item \lstinline|int write(int fd, char* buf, int n);| \\ 
+		Si occupa di scrivere \lstinline|n| byte dal buffer \lstinline|byf| su un certo filde.
+
+		\begin{itemize}
+			\item \lstinline|fd| è il filde del file da cui leggere;
+			\item \lstinline|buf| è l'area da cui ottenere i byte da scrivere;
+			\item \lstinline|n| è il numero di byte da scrivere.
+		\end{itemize}
+
+		In caso di successo, restituisce un intero positivo $\leq n$ che rappresenta il numero di byte scritti. Altrimenti restituisce -1.
+\end{itemize}
+
+\subsection{Processi in UNIX}
+Restando sull'argomento UNIX, vediamo nel dettaglio come questo sistema operativo gestisce i \textbf{processi}.
+
+\subsubsection{Stato dei processi UNIX}
+UNIX supporta lo \textit{swapping} di processo, per cui il diagramma di stato del processo è simile a quello riportato in 17.3.2:
+
+# diagramma di stato 17.3.2 + zombie
+
+L'aggiunta a questo diagramma è quella dello stato \textbf{zombie}, in cui un processo va a trovarsi prima di essere effettivamente terminato.
+Un processo passa allo stato zombie quando viene effettivamente terminato, prima che il suo processo padre ne raccolga lo stato (il cosiddetto \textit{reaping}). 
+
+\subsubsection{Descrittori di processo UNIX}
+Avevamo definito in 5.0.2 come un processo è rappresentato da un descrittore detto \textbf{PCB} (\textit{Process Control Block}).
+Questo descrittore è sostanzialmente quello adottato da UNIX.
+
+In verità, tale struttura si divide in più sottostrutture sulla base delle aree di competenza dei dati da rappresentare.
+In particolare, vogliamo distinguere su 2 caratteristiche ortogonali:
+\begin{itemize}
+	\item Dove i dati devono essere \textbf{accessibili}, cioè parte \textit{kernel} e parte \textit{utente};
+	\item Se i dati possono essere soggetti a \textbf{swapping}, cioè parte \textit{swappable} e parte \textit{non swappable} o \textit{residente}.
+\end{itemize}
+
+Vediamo quindi come dividiamo il PCB:
+\begin{itemize}
+	\item \textbf{Process structure}: contiene le informazioni necessarie al sistema per la gestione del processo (a prescindere dallo stato del processo).
+
+		In particolare, contiene:
+		\begin{itemize}
+			\item Il \textbf{PID} (\textit{Process IDentifier});
+			\item Lo \textbf{stato} del processo;
+			\item I puntatori alle aree \textbf{dati} e \textbf{stack};
+			\item Il riferimento alla \textbf{text structure}, su cui abbiamo più informazioni sotto;
+			\item Le informazioni sullo \textbf{scheduling} da operare sul processo;
+			\item Un riferimento al processo \textbf{padre} (cioè il suo PID),
+			\item Informazinoi relative alla gestione dei \textbf{segnali} UNIX (segnali inviati ma non ancora gestiti, maschere di segnale, ecc...);
+			\item Puntatori a processi successivi nelle \textbf{code} di scheduling;
+			\item Un puntatore alla \textbf{user structure} (la prossima che vediamo).
+		\end{itemize}
+	\item \textbf{User structure}: contiene le informazioni necessarie solo se il processo è \textit{residente} in memoria centrale (non si è fatto swap).
+
+		In particolare, contiene:
+		\begin{itemize}
+			\item La copia dei \textbf{registri} CPU;
+			\item Come abbiamo già visto, le informazioni sulle risorse allocate, come ad esempio la tabella dei \textbf{file aperti};
+			\item ALtre informazioni riguardanti la gestione dei \textbf{segnali} (handler segnali, ecc...);
+			\item L'\textbf{ambiente} del processo, e quindi il direttorio corrente, gli argomenti, l'utente e il gruppo che lo hanno lanciato, le variabili di sistema (fra cui il PATH), ecc....
+		\end{itemize}
+	\item \textbf{Text structure}: contiene informazioni riguardo a dove il codice di un processo si trova. Questa tabella viene implementata in quanto UNIX sfrutta il cosiddetto codice \textit{rientrante}: più processi possono riferirsi allo stesso codice, e in tal caso il codice viene caricato una sola volta e riferito attraverso questa tabella.
+\end{itemize}
+
+Oltre a queste strutture, chiaramente, vorremo mantenere le aree \textit{dati} e \textit{stack} del processo, nonché ovviamente l'area \textit{text} dove il codice puntato dalla text structure verrà effettivamente contenuto.
+
+\par\smallskip
+
+Vediamo quindi un diagramma che mostra come tutte le strutture riguardanti un processo appena visto sono disposite, sulla base delle 2 caratteristiche ortogonali viste prima:
+
+# schema strutture processo
+
+\subsection{Protezione e sicurezza}
+Veniamo quindi alla dicussione della \textbf{protezione} e della \textbf{sicurezza} nei S/O.
+
+\begin{itemize}
+	\item La \textit{protezione} riguarda l'insieme di attività che si occupano di garantire all'interno di un sistema il controllo dell'accesso alle risorse logiche e fisiche;
+	\item La \textbf{sicurezza} riguarda invece la prevenzione di comportamenti dannosi da parte di programmi o utenti all'interno del S/O.
+\end{itemize}
+
+\subsubsection{Protezione}
+Il controllo degli accessi, prerogativa della \textbf{protezione}, è suddivisibile in 3 livelli concettuali:
+\begin{itemize}
+	\item \textbf{Modelli}: rappresentano le astrazioni che il nostro sistema realizza.
+
+		In particolare, un \textit{modello di protezione} definisce \textit{soggetti}, e gli \textit{oggetti} ai quali i soggetti hanno accesso e diritto di accesso, ovvero su cui possono svolgere operazioni.
+		In questo, gli \textit{oggetti} sono la parte passiva del sistema (risorse fisiche e logiche), mentre i \textit{soggetti} sono la parte attiva (processi che agiscono per conto di utenti per accedere ad oggetti). Notiamo che un soggetto può avere diritti di accesso sia per gli oggetti che per altri soggetti (un soggetto può controllarne un altro).
+
+		Come abbiamo introdotto in 5.0.3, un soggetto in UNIX è rappresentato dalla tripla:
+$$
+S = < \text{PID}, \text{UID}, \text{GID} >
+$$
+composta da \textbf{PID} (\textit{Process IDentifier}, già visto), e \textbf{UID} e \textbf{GID} (\textit{User IDentifier} e \textit{Group IDentifier}), che rappresentano il proprietario del processo.
+
+Un soggetto può ulteriormente essere considerato come una coppia $(\textit{processo}, \textit{dominio})$, dove il dominio è l'\textit{ambiente} di protezione nel quale il processo sta eseguendo (l'insieme dei suoi diritti di accesso per ongi oggetto).
+Si possono avere domini \textit{disgunti} o domini con diritti di accesso \textit{comuni}.
+
+Un dominio di protezione è unico per un soggetto, mentre un processo può cambiare dominio durante la sua esecuzione.
+In altre parole, il soggetto $S_i$ può rappresentare il processo $P$ in un certo dominio, e $S_j$ può rappresentare lo stesso processo in un altro dominio.
+L'associazione fra processo è dominio può essere:
+\begin{itemize}
+	\item \textit{Statica}: cioè l'insieme delle risorse disponibili ad un processo rimane fisso durante il suo tempo di vita;
+	\item \textit{Dinamica}: l'associazione fra processo e dominio varia durante l'esecuzione del processo. In questo caso chiaramente dobbiamo prevedere meccanismi per consentire il passaggio da un dominio all'altro.
+\end{itemize}
+
+	\item \textbf{Politiche}: sono gli insiemi di regole attraverso le quali i soggetti possono accedere agli oggetti.
+
+		Possono essere di più tipi:
+		\begin{itemize}
+			\item \textbf{DAC} (\textit{Discretionary Access Control}): il creatore di un oggetto controlla i diritti di accesso per quell'oggetto. Ad esempio, è il tipo di politiche usate in UNIX;
+			\item \textbf{MAC} (\textit{Mandatory Access Control}): i diritti di accesso vengono gestiti centralmente. Viene usato in sistemi di alta sicurezza (enti governativi, difesa, ospedali, ecc...);
+			\item \textbf{RBAC} (\textit{Role-Based Access Control}): ad un ruolo sono assegnati specifici diritti di accesso sulle risorse. Gli utenti possono appartenere a diversi ruoli. 
+		\end{itemize}
+
+		Qualunque sia tipo di politica, si nota un concetto base, cioè quello del \textit{privilegio minimo}: ad ogni soggetto dovrebbero essere garantiti solo i diritti di accesso strettamente necessari alla sua esecuzione;
+
+	\item \textbf{Meccanismi}: sono gli strumenti messi a disposizione dal sistema di protezione per imporre una determinata politica.
+
+		La separazione fra politiche e meccanismi è la seguente:
+		\begin{itemize}
+			\item La politica definisce \textit{cosa} va fatto;
+			\item Il meccanismo definisce \textit{come} viene fatto.
+		\end{itemize}
+
+		Ci interessa assicurare la \textit{flessibilità} del sistema di protezione: i meccanismi di protezione devono essere sufficientemente generali per consentire l'applicazinoe di diverse politiche di protezione. 
+\end{itemize}
+
+\subsubsection{Implementazione in UNIX}
+Abbiamo già detto che in UNIX il \textit{soggetto} è rappresentato dalla solita tripla $S = < \text{PID}, \text{UID}, \text{GID} >$.
+Di questo UID e GID definiscono il \textit{dominio} di protezione.
+
+L'associazione soggetto/dominio è dinamica, in quanto è previsto il cambio da \textit{user mode} a \textit{system mode}.
+Inoltre, il programmatore ha a disposizione le primitive di tipo \lstinline|exec()| su processi con bit SUID o SGID attivati (che quindi vengono elevati ai diritti di accesso del loro proprietario o gruppo proprietario).
+
+\end{document}

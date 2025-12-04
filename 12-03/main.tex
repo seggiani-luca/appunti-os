@@ -312,6 +312,15 @@ In particolare, ricordiamo la terminologia UNIX di \textit{i-node}, \textit{i-li
 
 Per la rappresentazione delle directory, che assumiamo come categorie particolari di file, dobbiamo sicuramente mantenere collegamenti ai descrittori di tutti i file che questa contiene.
 
+\par\smallskip
+
+Notiamo a questo punto la differenza nella gestione del filesystem fra i due sistemi operativi principali:
+\begin{itemize}
+	\item In Microsoft Windows si adotta un approccio \textit{distribuito}, cioè le informazioni sui file sono contenute in strutture dati rappresentanti le loro directory, in maniera locale;
+	\item In UNIX si adotta invece un approccio \textit{centralizzato}, cioè dove le informazioni su file e directory sono contenute in tabelle centralizzate gestite dal S/O.
+\end{itemize}
+:wa
+
 \subsubsection{Accesso ai file}
 Il compito del S/O p quello di consentire l'accesso \textit{on-line} ai file.
 Le operazioni permesse saranno quelle di \textbf{accesso} ai file, cioè:
