@@ -1,0 +1,401 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[a4paper, margin=8em]{geometry}
+
+% usa i pacchetti per la scrittura in italiano
+\usepackage[french,italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\frenchspacing 
+
+% usa i pacchetti per la formattazione matematica
+\usepackage{amsmath, amssymb, amsthm, amsfonts}
+
+% usa altri pacchetti
+\usepackage{gensymb}
+\usepackage{hyperref}
+\usepackage{standalone}
+
+\usepackage{colortbl}
+
+\usepackage{xstring}
+\usepackage{karnaugh-map}
+
+% imposta il titolo
+\title{Appunti Sistemi Operativi}
+\author{Luca Seggiani}
+\date{2025}
+
+% imposta lo stile
+% usa helvetica
+\usepackage[scaled]{helvet}
+% usa palatino
+\usepackage{palatino}
+% usa un font monospazio guardabile
+\usepackage{lmodern}
+
+\renewcommand{\rmdefault}{ppl}
+\renewcommand{\sfdefault}{phv}
+\renewcommand{\ttdefault}{lmtt}
+
+% circuiti
+\usepackage{circuitikz}
+\usetikzlibrary{babel}
+
+% testo cerchiato
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+            \node[shape=circle,draw,inner sep=2pt] (char) {#1};}}
+
+% disponi il titolo
+\makeatletter
+\renewcommand{\maketitle} {
+	\begin{center} 
+		\begin{minipage}[t]{.8\textwidth}
+			\textsf{\huge\bfseries \@title} 
+		\end{minipage}%
+		\begin{minipage}[t]{.2\textwidth}
+			\raggedleft \vspace{-1.65em}
+			\textsf{\small \@author} \vfill
+			\textsf{\small \@date}
+		\end{minipage}
+		\par
+	\end{center}
+
+	\thispagestyle{empty}
+	\pagestyle{fancy}
+}
+\makeatother
+
+% disponi teoremi
+\usepackage{tcolorbox}
+\newtcolorbox[auto counter, number within=section]{theorem}[2][]{%
+	colback=blue!10, 
+	colframe=blue!40!black, 
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries, 
+	title=Teorema~\thetcbcounter: #2, 
+	#1
+}
+
+% disponi definizioni
+\newtcolorbox[auto counter, number within=section]{definition}[2][]{%
+	colback=red!10,
+	colframe=red!40!black,
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries,
+	title=Definizione~\thetcbcounter: #2,
+	#1
+}
+
+% disponi codice
+\usepackage{listings}
+\usepackage[table]{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{codestyle}{
+		backgroundcolor=\color{black!5}, 
+		commentstyle=\color{codegreen},
+		keywordstyle=\bfseries\color{magenta},
+		numberstyle=\sffamily\tiny\color{black!60},
+		stringstyle=\color{green!50!black},
+		basicstyle=\ttfamily\footnotesize,
+		breakatwhitespace=false,         
+		breaklines=true,                 
+		captionpos=b,                    
+		keepspaces=true,                 
+		numbers=left,                    
+		numbersep=5pt,                  
+		showspaces=false,                
+		showstringspaces=false,
+		showtabs=false,                  
+		tabsize=2
+}
+
+\lstdefinestyle{shellstyle}{
+		backgroundcolor=\color{black!5}, 
+		basicstyle=\ttfamily\footnotesize\color{black}, 
+		commentstyle=\color{black}, 
+		keywordstyle=\color{black},
+		numberstyle=\color{black!5},
+		stringstyle=\color{black}, 
+		showspaces=false,
+		showstringspaces=false, 
+		showtabs=false, 
+		tabsize=2, 
+		numbers=none, 
+		breaklines=true
+}
+
+
+\lstdefinelanguage{assembler}{ 
+  keywords={AAA, AAD, AAM, AAS, ADC, ADCB, ADCW, ADCL, ADD, ADDB, ADDW, ADDL, AND, ANDB, ANDW, ANDL,
+        ARPL, BOUND, BSF, BSFL, BSFW, BSR, BSRL, BSRW, BSWAP, BT, BTC, BTCB, BTCW, BTCL, BTR, 
+        BTRB, BTRW, BTRL, BTS, BTSB, BTSW, BTSL, CALL, CBW, CDQ, CLC, CLD, CLI, CLTS, CMC, CMP,
+        CMPB, CMPW, CMPL, CMPS, CMPSB, CMPSD, CMPSW, CMPXCHG, CMPXCHGB, CMPXCHGW, CMPXCHGL,
+        CMPXCHG8B, CPUID, CWDE, DAA, DAS, DEC, DECB, DECW, DECL, DIV, DIVB, DIVW, DIVL, ENTER,
+        HLT, IDIV, IDIVB, IDIVW, IDIVL, IMUL, IMULB, IMULW, IMULL, IN, INB, INW, INL, INC, INCB,
+        INCW, INCL, INS, INSB, INSD, INSW, INT, INT3, INTO, INVD, INVLPG, IRET, IRETD, JA, JAE,
+        JB, JBE, JC, JCXZ, JE, JECXZ, JG, JGE, JL, JLE, JMP, JNA, JNAE, JNB, JNBE, JNC, JNE, JNG,
+        JNGE, JNL, JNLE, JNO, JNP, JNS, JNZ, JO, JP, JPE, JPO, JS, JZ, LAHF, LAR, LCALL, LDS,
+        LEA, LEAVE, LES, LFS, LGDT, LGS, LIDT, LMSW, LOCK, LODSB, LODSD, LODSW, LOOP, LOOPE,
+        LOOPNE, LSL, LSS, LTR, MOV, MOVB, MOVW, MOVL, MOVSB, MOVSD, MOVSW, MOVSX, MOVSXB,
+        MOVSXW, MOVSXL, MOVZX, MOVZXB, MOVZXW, MOVZXL, MUL, MULB, MULW, MULL, NEG, NEGB, NEGW,
+        NEGL, NOP, NOT, NOTB, NOTW, NOTL, OR, ORB, ORW, ORL, OUT, OUTB, OUTW, OUTL, OUTSB, OUTSD,
+        OUTSW, POP, POPL, POPW, POPB, POPA, POPAD, POPF, POPFD, PUSH, PUSHL, PUSHW, PUSHB, PUSHA, 
+				PUSHAD, PUSHF, PUSHFD, RCL, RCLB, RCLW, MOVSL, MOVSB, MOVSW, STOSL, STOSB, STOSW, LODSB, LODSW,
+				LODSL, INSB, INSW, INSL, OUTSB, OUTSL, OUTSW
+        RCLL, RCR, RCRB, RCRW, RCRL, RDMSR, RDPMC, RDTSC, REP, REPE, REPNE, RET, ROL, ROLB, ROLW,
+        ROLL, ROR, RORB, RORW, RORL, SAHF, SAL, SALB, SALW, SALL, SAR, SARB, SARW, SARL, SBB,
+        SBBB, SBBW, SBBL, SCASB, SCASD, SCASW, SETA, SETAE, SETB, SETBE, SETC, SETE, SETG, SETGE,
+        SETL, SETLE, SETNA, SETNAE, SETNB, SETNBE, SETNC, SETNE, SETNG, SETNGE, SETNL, SETNLE,
+        SETNO, SETNP, SETNS, SETNZ, SETO, SETP, SETPE, SETPO, SETS, SETZ, SGDT, SHL, SHLB, SHLW,
+        SHLL, SHLD, SHR, SHRB, SHRW, SHRL, SHRD, SIDT, SLDT, SMSW, STC, STD, STI, STOSB, STOSD,
+        STOSW, STR, SUB, SUBB, SUBW, SUBL, TEST, TESTB, TESTW, TESTL, VERR, VERW, WAIT, WBINVD,
+        XADD, XADDB, XADDW, XADDL, XCHG, XCHGB, XCHGW, XCHGL, XLAT, XLATB, XOR, XORB, XORW, XORL},
+  keywordstyle=\color{blue}\bfseries,
+  ndkeywordstyle=\color{darkgray}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=false,
+  comment=[l]{\#},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{purple}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+
+\lstset{language=assembler, style=codestyle}
+
+% disponi sezioni
+\usepackage{titlesec}
+
+\titleformat{\section}
+	{\sffamily\Large\bfseries} 
+	{\thesection}{1em}{} 
+\titleformat{\subsection}
+	{\sffamily\large\bfseries}   
+	{\thesubsection}{1em}{} 
+\titleformat{\subsubsection}
+	{\sffamily\normalsize\bfseries} 
+	{\thesubsubsection}{1em}{}
+
+% tikz
+\usepackage{tikz}
+
+% float
+\usepackage{float}
+
+% grafici
+\usepackage{pgfplots}
+\pgfplotsset{width=10cm,compat=1.9}
+
+% disponi alberi
+\usepackage{forest}
+
+\forestset{
+	rectstyle/.style={
+		for tree={rectangle,draw,font=\large\sffamily}
+	},
+	roundstyle/.style={
+		for tree={circle,draw,font=\large}
+	}
+}
+
+% disponi algoritmi
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\makeatletter
+\renewcommand{\ALG@name}{Algoritmo}
+\makeatother
+
+% disponi numeri di pagina
+\usepackage{fancyhdr}
+\fancyhf{} 
+\fancyfoot[L]{\sffamily{\thepage}}
+
+\makeatletter
+\fancyhead[L]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@title \ \@date}}} 
+\fancyhead[R]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@author}}}
+\makeatother
+
+\begin{document}
+% sezione (data)
+\section{Lezione del 15-12-25}
+
+% stili pagina
+\thispagestyle{empty}
+\pagestyle{fancy}
+
+% testo
+Continuiamo a parlare di protezione nei S/O.
+
+\subsection{Matrice degli accessi}
+Un sistema di protezione può essere rappresentato sfruttando il modello a \textbf{matrice degli accessi}.
+
+Il modello mantiene tutta l'informazinoe che specifica il tipo di accesso che i soggetti hanno sugli oggetti e consente di:
+\begin{itemize}
+	\item Rappresentare lo \textit{stato di protezione};
+	\item Garantire il rispetto dei vincoli di accesso, come specificati dallo stato di protezione, per ogni tentativo di accesso;
+	\item Permettere la modifica controllata dello stato di protezione determinando una \textit{transizione} di stato. 
+\end{itemize}
+
+Il meccanismo associato al modello consiste nel:
+\begin{itemize}
+	\item Verificare se ogni richiesta di accesso che proviene da un processo che opera in un determinato dominio è consentita oppure no;
+	\item Avere la possibilità di modificare dinamicamente il numero di oggetti e soggetti;
+	\item Consentire ad un processo di cambiare dominio durante l'esecuzione;
+	\item Modificare in modo controllato il cambiamento dello stato di protezione, attraverso le sopranominate transizioni di stato. 
+\end{itemize}
+
+\newpage
+
+Vediamo quindi l'esempio di una matrice degli accessi, con 3 soggetti $\{ S_1, S_2, S_3 \}$ e 3 oggetti $\{ X_1, X_2, X_3 \}$:
+\begin{center}
+	\includegraphics[scale=0.45]{../figures/access_matrix.png}
+\end{center}
+
+Notiamo come i soggetti (che per noi rappresentano domini di processi) sono a loro volta oggetti di altro soggetti, attraverso le condizioni particolari (\textit{term}, cioè può terminare, ecc...).
+
+Inoltre, vediamo che la matrice degli accessi è una matrice \textit{sparsa}, cosa che chiaramente ci offre delle semplificazioni in termini di implementazione.
+
+Il meccanismo è quindi semplice: un processo che opera nel dominio $D_i$ (per noi le righe), può accedere soltanto agli oggetti specificati nella riga $i$ e con i diritti di processo indicati.
+
+Nello specifico:
+\begin{itemize}
+	\item Quando un soggetto $i$, con dominio $D_i$, vuole accedere ad un oggetto $j$, si deve controllare l'entrata $i,j$-esima della matrice. I diritti di accesso in tale entrata, se specificati, sono quelli che il soggetto avrà sull'oggetto;
+	\item Se usiamo l'approccio \textbf{DAC} (\textit{Discretionary Access Control}), le politiche di accesso sono definite dagli utenti stessi, e in particolare dai \textit{properietari} degli oggetti (per cui abbiamo visto una condizione particolare nella tabella superiore, la \textit{owner}). 
+
+		Questo significherà che le entrate della matrice degli accessi sono definite dagli utenti. 
+\end{itemize}
+
+\subsubsection{Propagazione dei diritti d'accesso}
+La possibilità di copiare un diritto di accesso per un oggetto da un dominio all'altro viene rappresentato in notazione con l'asterisco (\textbf{copy flag}).
+
+Nello specifico, un soggetto che possiede il copy flag su una modalità di accesso ad un certo oggetto, potrà trasferire tale modalità agli altri soggetti (cioè copiare la modalità sulla sua colonna).
+\begin{itemize}
+	\item Notiamo che la propagazione avviene copiando il solo diritto (\textit{propagazione limitata di un diritto}) oppure il diritto accompagnato da copy flag. Nel secondo caso il soggetto che riceve il diritto può a sua volta trasmetterlo;
+	\item La propagazione, in aggiunta, può comportare la perdita del diritto per il soggetto che lo ha trasmesso (\textit{trasferimento di un diritto}).
+\end{itemize}
+
+\par\smallskip
+
+La teoria sviluppata da Graham e Denning ci dimostra che con le matrici di accesso e le operazioni appena definite si ha:
+\begin{itemize}
+	\item Propagazione limitata e controllata dei metodi di accesso (\textit{confinement}); 
+	\item Sicurezza dalla modifica indiscriminata dei diritti di accesso (\textit{sharing parameters}).
+\end{itemize}
+
+\subsubsection{Implementazione delle matrici di accesso}
+Esistono più metodologie secondo le quali possiamo \textbf{implementare} una matrice di accesso.
+Ad esempio, abbiamo già detto che questa sarà rappresentata da una matrice sparsa.
+
+In esempio, vediamo i seguenti metodi:
+\begin{itemize}
+	\item \textbf{ACL} (\textit{Access Control List}): queste sono liste che elencano, per ogni oggetto, i soggetti e le relative modalità di accesso. Nel nostro esempio, ogni colonna è un ACL.
+
+		Vediamo che in UNIX i bit di protezione rappresentano un'ACL, e che queste ACL sono distribuite sugli i-node. Questo rende l'implementazione UNIX delle ACL un'implementazione \textit{distribuita} (le ACL sono sparse sui vari nodi, cioè gli oggetti);
+	\item \textbf{CL} (\textit{Capability List}): queste sono liste che elencano, per ogni soggettto, gli oggetti e le relative modalità di accesso. Nel nostro esempio, ogni riga è una CL.
+
+		In termini di efficineza, la CL è più efficiente delle ACL (quando si genera una richiesta da parte di un certo soggetto, la ricerca va fatta sulla CL del soggetto e non sull'ACL dell'oggeto richiesto, che va prima trovata).
+
+		Il problema delle CL è che i processi cambiano molto più spesso dei file, cioè mantenere ACL distribuite per gli oggetti nel sistema risulta a lungo termine molto meno dispendioso e molto più semplice che creare nuove CL per ogni nuovo oggetto.
+
+		Abbiamo detto che UNIX usa le ACL (9 + 3 bit di protezione) scritte negli inode dei file. In verità, quello che accade nella realtà è che l'ACL di ogni file viene usata una volta sola, cioè quando si fa la prima open su tale file. In seguito, l'ACL di tale file viene memorizzata nella tabella dei file aperti di sistema (e in particolare nella tabella degli inode a cui tale tabella punta).
+		A questo punto, la tabella dei file aperti di processo, cioè quella che indicizziamo coi \textit{filde}, andrà effettivamente a realizzare una CL, dove ad ogni file aperto verrà associata la politica di accesso corrispondente.
+\end{itemize}
+
+\subsubsection{ACL multiutente}
+Il concetto di ACL viene introdotto per sistemi \textit{monoutente}. 
+
+Nel caso di sistemi \textit{multiutente}, invece, si definiscono gruppi di utenti che hanno un nome e possono essere inclusi nella ACL.
+A questo punto, ogni entrata della ACL identifica un soggetto con UID (id utente) e GID (id gruppo), cioè:
+\begin{lstlisting}[language=C++, style=codestyle]	
+UID1, GID1 : < diritti soggetto 1 >
+UID2, GID2 : < diritti soggetto 2 >
+...
+\end{lstlisting}
+
+Il fatto che diverse coppie utente-gruppo possono avere diversi diritti significa che un utente può avere diritti diversi a seconda del gruppo al quale appartiene.
+Si possono quindi usare le \textit{wildcard} per avere regole più comprensive, come ad esempio che si applicano a tutti gli utenti di un certo gruppo, a allo stesso utente qualsiasi sia il suo gruppo.
+
+\subsection{Sicurezza multilivello}
+Abbiamo introdotto in 21.3.1 le diverse politiche di protezione possibili negli S/O.
+Riassumendo, la distinzione principale è fra:
+\begin{itemize}
+	\item \textbf{DAC} (\textit{Discretionary Access Control}), a controllo degli utenti che hanno diritti sui loro file, detti \textit{owner};
+	\item \textbf{MAC} (\textit{Mandatory Access Control}), più rigorosa e controllata, dove il S/O detta le regole su chi può vedere cosa. Queste regole possono essere modificate solo dopo aver ottenuto permessi speciali.
+\end{itemize}
+
+L'uso di sicurezza di tipo MAC viene reso necessario dal fatto che in sistemi DAC a matrice degli accessi c'è comunque il rischio che un soggetto ottenga diritti più elevati di quanto gli spettino.
+
+Abbiamo quindi bisogno di un nuovo modello che si affianchi a quello di Graham-Denning visto prima.
+
+\subsubsection{Modello Bell-LaPadula}
+Questo sarà il modello di \textbf{sicurezza multilivello} Bell-LaPadula.
+In tale modello, ad ogni soggetto è associata una classe $Y = SC(X)$ dove $Y$ è la classe e $X$ il soggetto.
+L'idea è che, date due classi $i$ e $j$, i soggetti $i$ abbiano accesso agli oggetti $j$ solo se $i > j$.
+
+Il modello di Bell-LaPadula definisce quindi regole su come le informazioni possono circolare:
+\begin{enumerate}
+	\item Proprietà di sicurezza: un soggetto in esecuzione al livello di sicurezza $k$ può \textbf{leggere} solo oggetti al suo livello o a livelli inferiori:
+		$$
+			\text{read:} \quad SC(O) \leq SC(S)
+		$$
+	\item Di contro, un soggetto in esecuzione al livello di sicurezza $k$ può \textbf{scrivere} solo oggetti al suo livello o a livelli superiori:
+		$$
+			\text{write:} \quad SC(S) \leq SC(O)
+		$$
+		Questo potrebbe sembrare poco intuitivo: Bell-La Padula non risolve il problema dell’integrità delle informazioni (paradossalmente posso scrivere dove non posso leggere), ma garantisce la sicurezza.
+		Infatti, non si possono leggere informazioni di livello più alto al nostro, e non si possono scrivere informazioni in livelli più bassi (potenzialmente rendendole disponibili a chi non dovrebbe poterle leggere).
+\end{enumerate}
+
+\subsubsection{Cavalli di Troia}
+Vediamo un esempio pratico per capire l'utilità della seconda regola del modello Bell-LaPadula, in un caso dove il modello a matrice degli accessi fallisce.
+
+\newpage
+
+Partiamo dalla seguente matrice degli accessi:
+\begin{center}
+	\includegraphics[scale=0.5]{../figures/trojan.png}
+\end{center}
+
+In questo caso abbiamo 3 oggetti:
+\begin{itemize}
+	\item $X_1$, che è un file riservato del soggetto $S_1$;
+	\item $X_2$, che è il nostro trojan in possesso di $S_2$;
+	\item $X_3$, che è un file di appoggio usato nell'attacco da $S_2$. 
+\end{itemize}
+
+La conformazione attuale della matrice degli accessi prevede che $S_1$ può eseguire $X_2$. Quando $X_2$ è in esecuzione nel dominio di $S_1$, può leggere da $X_1$ e scrivere in $X_3$.
+Questo, ad esempio, gli permetterebbe di copiare i contenuti di $X_1$ in $X_3$.
+$S_2$ potrebbe quindi successivamente leggere $X_3$, ed avere accesso ai file originariamente di proprietà solo di $X_1$.
+
+Tale problematica non si sarebbe posta fosse stato adottato il modello di Bell-LaPadula.
+Sarebbe infatti bastato porre:
+\begin{itemize}
+	\item $SC(S_1) = SC(O_1) = R$
+	\item $SC(S_2) = SC(O_2) = SC(O_3) = P$
+\end{itemize}
+con $R > P$.
+A questo punto, $S_1$ non avrebbe potuto scrivere su $O_3$, per la seconda regola, nemmeno eseguendo il trojan $O_2$. 
+
+\subsubsection{Modello BiBa}
+Il modello BBa è un alternativa al modello di Bell LaPadula, che non assicura la sicurezza ma l'integrità dei dati (nessuno tocca dati che non gli spettano).
+I 2 modelli sono complementari e non possono essere realizzati contemporaneamente.
+
+In particolare, le regole implementate dal modello BiBa sono:
+\begin{enumerate}
+	\item Proprietà di integrità: un soggetto in esecuzione al livello di sicurezza $k$ può \textbf{leggere} solo oggetti al suo livello o a livelli superiori 
+		$$
+			\text{read:} \quad SC(O) \geq SC(S)
+		$$
+	\item Di contro, un soggetto in esecuzione al livello di sicurezza $k$ può \textbf{scrivere} solo oggetti al suo livello o a livelli inferiori 
+		$$
+			\text{write:} \quad SC(S) \geq SC(O)
+		$$
+\end{enumerate}
+
+\end{document}
